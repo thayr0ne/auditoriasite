@@ -1,10 +1,12 @@
 from flask import Flask, jsonify
+from flask_cors import CORS
 import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
 import re
 
 app = Flask(__name__)
+CORS(app)  # Adicione esta linha para permitir CORS
 
 @app.route('/api/fetch-ans-links')
 def fetch_ans_links():
