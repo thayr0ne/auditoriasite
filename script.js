@@ -24,12 +24,14 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(data => {
                 linksContainer.innerHTML = `
                     <div class="link-item">
-                        <strong>Link da RN mais recente:</strong> 
-                        <a href="${data.latest_rn_link}" target="_blank">${data.latest_rn_link}</a>
+                        <strong>RN mais recente:</strong> 
+                        <button onclick="window.open('${data.latest_rn.link}', '_blank')">Acessar</button>
+                        <button onclick="downloadFile('${data.latest_rn.link}', 'RN_${data.latest_rn.number}.pdf')">Download</button>
                     </div>
                     <div class="link-item">
-                        <strong>Link do Anexo II mais recente:</strong> 
-                        <a href="${data.latest_anexo_ii_link}" target="_blank">${data.latest_anexo_ii_link}</a>
+                        <strong>Anexo II mais recente:</strong> 
+                        <button onclick="window.open('${data.latest_anexo_ii.link}', '_blank')">Acessar</button>
+                        <button onclick="downloadFile('${data.latest_anexo_ii.link}', 'Anexo_II.pdf')">Download</button>
                     </div>
                 `;
             })
@@ -41,3 +43,21 @@ document.addEventListener('DOMContentLoaded', function() {
     // Show the default section
     document.getElementById('anexos').classList.add('active');
 });
+
+// Função para fazer o download do arquivo
+function downloadFile(url, filename) {
+    fetch(url)
+        .then(response => response.blob())
+        .then(blob => {
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+        })
+        .catch(() => alert('Erro ao fazer o download do arquivo.'));
+}
