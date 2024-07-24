@@ -22,18 +22,28 @@ document.addEventListener('DOMContentLoaded', function() {
         fetch('https://auditoriasite.vercel.app/api/fetch-ans-links')
             .then(response => response.json())
             .then(data => {
-                linksContainer.innerHTML = `
-                    <div class="link-item">
-                        <strong>RN mais recente:</strong> 
-                        <button onclick="window.open('${data.latest_rn.link}', '_blank')">Acessar</button>
-                        <button onclick="downloadFile('${data.latest_rn.link}', 'RN_${data.latest_rn.number}.pdf')">Download</button>
-                    </div>
-                    <div class="link-item">
-                        <strong>Anexo II mais recente:</strong> 
-                        <button onclick="window.open('${data.latest_anexo_ii.link}', '_blank')">Acessar</button>
-                        <button onclick="downloadFile('${data.latest_anexo_ii.link}', 'Anexo_II.pdf')">Download</button>
-                    </div>
-                `;
+                if (data.latest_rn && data.latest_anexo_ii) {
+                    const rnLink = data.latest_rn.link ? `<button onclick="window.open('${data.latest_rn.link}', '_blank')">Acessar</button>
+                    <button onclick="downloadFile('${data.latest_rn.link}', 'RN_${data.latest_rn.number}.pdf')">Download</button>` : 'Link não disponível';
+
+                    const anexoLink = data.latest_anexo_ii.link ? `<button onclick="window.open('${data.latest_anexo_ii.link}', '_blank')">Acessar</button>
+                    <button onclick="downloadFile('${data.latest_anexo_ii.link}', 'Anexo_II.pdf')">Download</button>` : 'Link não disponível';
+
+                    linksContainer.innerHTML = `
+                        <div class="link-item">
+                            <strong>RN mais recente:</strong> 
+                            <span>${data.latest_rn.text || 'Texto não disponível'}</span>
+                            ${rnLink}
+                        </div>
+                        <div class="link-item">
+                            <strong>Anexo II mais recente:</strong> 
+                            <span>${data.latest_anexo_ii.text || 'Texto não disponível'}</span>
+                            ${anexoLink}
+                        </div>
+                    `;
+                } else {
+                    linksContainer.innerHTML = 'Erro ao obter os links.';
+                }
             })
             .catch(error => {
                 alert('Erro ao obter os links: ' + error);
