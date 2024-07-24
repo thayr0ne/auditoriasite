@@ -4,61 +4,47 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ANS Anexo II Fetcher</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-        }
-        .container {
-            text-align: center;
-        }
-        button {
-            padding: 10px 20px;
-            font-size: 16px;
-            margin-top: 20px;
-            cursor: pointer;
-        }
-        .links {
-            margin-top: 20px;
-        }
-        .link-item {
-            margin-bottom: 10px;
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="container">
-        <h1>ANS Anexo II Fetcher</h1>
-        <button id="fetchLinksBtn">Obter Links do Anexo II</button>
-        <div class="links" id="linksContainer"></div>
-    </div>
-    
-    <script>
-        document.getElementById('fetchLinksBtn').addEventListener('click', function() {
-            fetch('https://auditoriasite.vercel.app/api/fetch-ans-links')
-                .then(response => response.json())
-                .then(data => {
-                    const linksContainer = document.getElementById('linksContainer');
-                    linksContainer.innerHTML = `
-                        <div class="link-item">
-                            <strong>Link da RN mais recente:</strong> 
-                            <a href="${data.latest_rn_link}" target="_blank">${data.latest_rn_link}</a>
-                        </div>
-                        <div class="link-item">
-                            <strong>Link do Anexo II mais recente:</strong> 
-                            <a href="${data.latest_anexo_ii_link}" target="_blank">${data.latest_anexo_ii_link}</a>
-                        </div>
-                    `;
-                })
-                .catch(error => {
-                    alert('Erro ao obter os links: ' + error);
-                });
-        });
-    </script>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="#" data-content="anexos">Anexos Vigentes</a></li>
+                <li><a href="#" data-content="rol">Rol Vigente</a></li>
+                <li><a href="#" data-content="procedures">Buscar Procedimentos</a></li>
+                <li><a href="#" data-content="cbhpm">CBHPM</a></li>
+                <li><a href="#" data-content="reports">Relatórios</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <div id="content">
+            <!-- Dynamic content will be loaded here -->
+            <div id="anexos" class="content-section">
+                <h1>ANS Anexo II Fetcher</h1>
+                <button id="fetchLinksBtn">Obter Links do Anexo II</button>
+                <div class="links" id="linksContainer"></div>
+            </div>
+            <div id="rol" class="content-section" style="display:none;">
+                <h1>Rol Vigente</h1>
+                <!-- Content for Rol Vigente -->
+            </div>
+            <div id="procedures" class="content-section" style="display:none;">
+                <h1>Buscar Procedimentos</h1>
+                <!-- Content for Buscar Procedimentos -->
+            </div>
+            <div id="cbhpm" class="content-section" style="display:none;">
+                <h1>CBHPM</h1>
+                <!-- Content for CBHPM -->
+            </div>
+            <div id="reports" class="content-section" style="display:none;">
+                <h1>Relatórios</h1>
+                <!-- Content for Relatórios -->
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
 </body>
 </html>
