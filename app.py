@@ -6,7 +6,7 @@ from urllib.parse import urljoin
 import re
 
 app = Flask(__name__)
-CORS(app, resources={r"/api/*": {"origins": "*"}})
+CORS(app, resources={r"/api/*": {"origins": "*"}})  # Permitir todas as origens
 
 @app.route('/api/fetch-ans-links', methods=['GET'])
 def fetch_ans_links():
@@ -45,8 +45,9 @@ def fetch_ans_links():
         latest_anexo_ii_link = ""
         latest_anexo_ii_date = ""
         if anexo_ii_links:
-            latest_anexo_ii_link = urljoin(url, anexo_ii_links[0][1])
-            latest_anexo_ii_date_match = re.search(r'(\d{2}/\d{2}/\d{4})', anexo_ii_links[0][0])
+            latest_anexo_ii_text, latest_anexo_ii_href = anexo_ii_links[0]
+            latest_anexo_ii_link = urljoin(url, latest_anexo_ii_href)
+            latest_anexo_ii_date_match = re.search(r'(\d{2}/\d{2}/\d{4})', latest_anexo_ii_text)
             if latest_anexo_ii_date_match:
                 latest_anexo_ii_date = latest_anexo_ii_date_match.group(1)
 
@@ -63,23 +64,18 @@ def fetch_ans_links():
 @app.route('/api/fetch-rn-summary', methods=['POST'])
 def fetch_rn_summary():
     data = request.get_json()
-    rn_url = data.get('url')
+    url = data.get('url')
+    if not url:
+        return jsonify({'error': 'URL não fornecida'}), 400
 
-    if not rn_url:
-        return jsonify({'error': 'URL da RN não fornecida'}), 400
-
-    response = requests.get(rn_url)
-
+    response = requests.get(url)
     if response.status_code == 200:
         soup = BeautifulSoup(response.content, 'html.parser')
-        summary = soup.find_all('p', align='right')
-        if summary:
-            summary_text = ' '.join([p.get_text().strip() for p in summary])
-            return jsonify({'summary': summary_text})
-        else:
-            return jsonify({'error': 'Resumo não encontrado'}), 404
+        paragraphs = soup.find_all('p', align='right')
+        summary = "\n".join(p.get_text().strip() for p in paragraphs)
+        return jsonify({'summary': summary})
     else:
-        return jsonify({'error': 'Erro ao acessar a RN'}), 500
+        return jsonify({'error': 'Erro ao acessar a página da RN'}), 500
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
