@@ -2,61 +2,52 @@ from flask import Flask, jsonify
 from flask_cors import CORS
 import requests
 from bs4 import BeautifulSoup
+from urllib.parse import urljoin
 import re
 
 app = Flask(__name__)
-CORS(app)
+CORS(app)  # Adicione esta linha para permitir CORS
 
-@app.route('/api/fetch-ans-links', methods=['GET'])
+@app.route('/api/fetch-ans-links')
 def fetch_ans_links():
     url = 'https://www.ans.gov.br/component/legislacao/?view=legislacao&task=TextoLei&format=raw&id=NDAzMw==#anexosvigentes'
     response = requests.get(url)
-
+    
     if response.status_code == 200:
         soup = BeautifulSoup(response.content, 'html.parser')
         links = soup.find_all('a')
-
-        latest_anexo_ii_link = None
-        latest_anexo_ii_date = None
-        latest_rn_links = []
-
+        
+        rn_links = []
+        anexo_ii_links = []
         for link in links:
-            text = link.get_text(strip=True)
             href = link.get('href')
-            if 'Anexo II' in text and href:
-                latest_anexo_ii_link = complete_url(href)
-                latest_anexo_ii_date = extract_date_from_text(text)
-            if 'Alterado pela RN' in text and href:
-                latest_rn_links.append({
-                    'url': complete_url(href),
-                    'number': extract_rn_number_from_text(text),
-                    'date': extract_date_from_text(text)
-                })
+            texto = link.get_text().strip()
+            if 'Alterado pela RN' in texto:
+                rn_match = re.search(r'RN nº (\d+), de', texto)
+                if rn_match:
+                    rn_num = int(rn_match.group(1))
+                    rn_links.append((rn_num, texto, href))
+            elif 'ANEXO II' in texto and href.endswith('.pdf'):
+                anexo_ii_links.append(href)
+        
+        latest_rn_link = ""
+        if rn_links:
+            rn_links.sort(reverse=True, key=lambda x: x[0])
+            _, _, rn_href = rn_links[0]
+            latest_rn_link = urljoin(url, rn_href)
 
-        if latest_anexo_ii_link and latest_anexo_ii_date:
-            latest_rn_links.sort(key=lambda x: x['date'], reverse=True)
-            return jsonify({
-                'latest_anexo_ii_link': latest_anexo_ii_link,
-                'latest_anexo_ii_date': latest_anexo_ii_date,
-                'latest_rn_links': latest_rn_links
-            })
-        else:
-            return jsonify({'error': 'Nenhum anexo II encontrado'}), 404
+        latest_anexo_ii_link = ""
+        if anexo_ii_links:
+            latest_anexo_ii_link = urljoin(url, anexo_ii_links[0])
+
+        return jsonify({
+            'latest_rn_link': latest_rn_link,
+            'latest_anexo_ii_link': latest_anexo_ii_link
+        })
     else:
-        return jsonify({'error': 'Erro ao acessar a página da ANS'}), 500
-
-def extract_date_from_text(text):
-    match = re.search(r'\d{2}/\d{2}/\d{4}', text)
-    return match.group(0) if match else None
-
-def extract_rn_number_from_text(text):
-    match = re.search(r'RN nº (\d+)', text)
-    return match.group(1) if match else None
-
-def complete_url(href):
-    if href.startswith('http'):
-        return href
-    return f"https://www.ans.gov.br{href.replace('../../..', '')}"
+        return jsonify({
+            'error': 'Erro ao acessar a página'
+        })
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
