@@ -20,31 +20,33 @@
     </header>
     <main>
         <div id="content">
-            <!-- Dynamic content will be loaded here -->
-            <div id="anexos" class="content-section">
-                <h1>ANS Anexo II Fetcher</h1>
-                <button id="fetchLinksBtn">Obter Links do Anexo II</button>
-                <div class="links" id="linksContainer"></div>
+            <div id="anexos" class="content-section active">
+                <div class="column-left">
+                    <div class="section" id="recentSection">
+                        <h2>Mais Recentes</h2>
+                        <div id="recentLinksContainer"></div>
+                    </div>
+                    <div class="section" id="historySection">
+                        <h2>Histórico</h2>
+                        <div id="historyLinksContainer" class="scrollable"></div>
+                    </div>
+                </div>
+                <div class="column-center">
+                    <div class="viewer" id="viewerCenter">
+                        <h2>Visualização do Arquivo</h2>
+                        <iframe id="fileViewer" src="" width="100%" height="500px"></iframe>
+                    </div>
+                </div>
+                <div class="column-right">
+                    <div class="viewer" id="viewerRight">
+                        <h2>Detalhes do Arquivo</h2>
+                        <iframe id="fileViewerRight" src="" width="100%" height="500px"></iframe>
+                    </div>
+                </div>
             </div>
-            <div id="rol" class="content-section" style="display:none;">
-                <h1>Rol Vigente</h1>
-                <!-- Content for Rol Vigente -->
-            </div>
-            <div id="procedures" class="content-section" style="display:none;">
-                <h1>Buscar Procedimentos</h1>
-                <!-- Content for Buscar Procedimentos -->
-            </div>
-            <div id="cbhpm" class="content-section" style="display:none;">
-                <h1>CBHPM</h1>
-                <!-- Content for CBHPM -->
-            </div>
-            <div id="reports" class="content-section" style="display:none;">
-                <h1>Relatórios</h1>
-                <!-- Content for Relatórios -->
-            </div>
+            <!-- Other sections will be added here -->
         </div>
     </main>
-
     <script src="script.js"></script>
 </body>
 </html>
