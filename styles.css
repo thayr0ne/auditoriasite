@@ -40,13 +40,11 @@ nav ul li a:hover {
 }
 
 main {
-    display: flex;
     padding: 20px;
 }
 
 .content-section {
     display: none;
-    width: 100%;
 }
 
 .content-section.active {
