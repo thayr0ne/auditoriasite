@@ -3,49 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ANS Anexo II Fetcher</title>
+    <title>Anexos Vigentes</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <header>
         <nav>
             <ul>
-                <li><a href="#" data-content="anexos">Anexos Vigentes</a></li>
-                <li><a href="#" data-content="rol">Rol Vigente</a></li>
-                <li><a href="#" data-content="procedures">Buscar Procedimentos</a></li>
-                <li><a href="#" data-content="cbhpm">CBHPM</a></li>
-                <li><a href="#" data-content="reports">Relatórios</a></li>
+                <li><a href="#" class="active">Anexos Vigentes</a></li>
+                <li><a href="#">Rol Vigente</a></li>
+                <li><a href="#">Buscar Procedimentos</a></li>
+                <li><a href="#">CBHPM</a></li>
+                <li><a href="#">Relatórios</a></li>
             </ul>
         </nav>
     </header>
     <main>
-        <div id="content">
-            <div id="anexos" class="content-section active">
-                <div class="column-left">
-                    <div class="section" id="recentSection">
-                        <h2>Mais Recentes</h2>
-                        <div id="recentLinksContainer"></div>
+        <div class="container">
+            <aside class="sidebar-left">
+                <div class="section recent">
+                    <h2>Recentes</h2>
+                    <div class="anexo">
+                        <h3>Anexo I - Alterado pela RN nº 607, de 14/06/2024</h3>
+                        <button onclick="exibirAnexo('link-anexo-i')">Exibir</button>
+                        <button onclick="downloadAnexo('link-anexo-i')">Download</button>
                     </div>
-                    <div class="section" id="historySection">
-                        <h2>Histórico</h2>
-                        <div id="historyLinksContainer" class="scrollable"></div>
-                    </div>
-                </div>
-                <div class="column-center">
-                    <div class="viewer" id="viewerCenter">
-                        <h2>Visualização do Arquivo</h2>
-                        <iframe id="fileViewer" src="" width="100%" height="500px"></iframe>
+                    <div class="anexo">
+                        <h3>Anexo II - Alterado pela RN nº 607, de 14/06/2024</h3>
+                        <button onclick="exibirAnexo('link-anexo-ii')">Exibir</button>
+                        <button onclick="downloadAnexo('link-anexo-ii')">Download</button>
                     </div>
                 </div>
-                <div class="column-right">
-                    <div class="viewer" id="viewerRight">
-                        <h2>Detalhes do Arquivo</h2>
-                        <iframe id="fileViewerRight" src="" width="100%" height="500px"></iframe>
-                    </div>
+                <div class="section history">
+                    <h2>Histórico</h2>
+                    <ul id="historico-list">
+                        <!-- Lista de RNs será inserida aqui -->
+                    </ul>
                 </div>
-            </div>
+            </aside>
+            <section class="content">
+                <iframe id="viewer" src="" frameborder="0"></iframe>
+            </section>
         </div>
     </main>
-    <script src="script.js"></script>
+    <script src="scripts.js"></script>
 </body>
 </html>
