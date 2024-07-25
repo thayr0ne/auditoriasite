@@ -19,10 +19,15 @@
         </nav>
     </header>
     <main>
-        <section id="anexosVigentes" class="content-section">
+        <section id="anexosVigentes" class="content-section active">
             <h1>Anexos Vigentes</h1>
             <button id="fetchLinksBtn">Obter Links do Anexo II</button>
-            <div class="links" id="linksContainer"></div>
+            <div class="container">
+                <div class="links" id="linksContainer"></div>
+                <div class="pdf-viewer" id="pdfViewerContainer">
+                    <iframe id="pdfViewer" src="" frameborder="0"></iframe>
+                </div>
+            </div>
         </section>
         <section id="rolVigente" class="content-section">
             <h1>Rol Vigente</h1>
