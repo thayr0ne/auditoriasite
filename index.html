@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ANS Anexo II Fetcher</title>
+    <title>ANS Auditoria</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -19,40 +19,30 @@
         </nav>
     </header>
     <main>
-        <section id="anexosVigentes" class="content-section active">
-            <h1>Anexos Vigentes</h1>
-            <button id="fetchLinksBtn">Obter Links do Anexo II</button>
-            <div class="container">
-                <div class="links-section">
-                    <div class="links" id="latestAnexoIIContainer">
-                        <h2>Recente</h2>
-                        <!-- Conteúdo será inserido via JavaScript -->
-                    </div>
-                    <div class="links" id="latestRnContainer">
-                        <h2>Histórico</h2>
-                        <!-- Conteúdo será inserido via JavaScript -->
-                    </div>
-                </div>
-                <div class="pdf-viewer" id="pdfViewerContainer">
-                    <iframe id="pdfViewer" src="" frameborder="0"></iframe>
-                </div>
+        <section id="anexosVigentes" class="content active">
+            <div class="left-pane">
+                <div id="latestAnexoIIContainer"></div>
+                <div id="latestRnContainer"></div>
+            </div>
+            <div class="right-pane">
+                <iframe id="pdfViewer" src="" width="100%" height="600px"></iframe>
             </div>
         </section>
-        <section id="rolVigente" class="content-section">
-            <h1>Rol Vigente</h1>
-            <p>Conteúdo a ser desenvolvido</p>
+        <section id="rolVigente" class="content">
+            <h2>Rol Vigente</h2>
+            <p>Conteúdo a ser desenvolvido...</p>
         </section>
-        <section id="buscarProcedimentos" class="content-section">
-            <h1>Buscar Procedimentos</h1>
-            <p>Conteúdo a ser desenvolvido</p>
+        <section id="buscarProcedimentos" class="content">
+            <h2>Buscar Procedimentos</h2>
+            <p>Conteúdo a ser desenvolvido...</p>
         </section>
-        <section id="cbhpm" class="content-section">
-            <h1>CBHPM</h1>
-            <p>Conteúdo a ser desenvolvido</p>
+        <section id="cbhpm" class="content">
+            <h2>CBHPM</h2>
+            <p>Conteúdo a ser desenvolvido...</p>
         </section>
-        <section id="relatorios" class="content-section">
-            <h1>Relatórios</h1>
-            <p>Conteúdo a ser desenvolvido</p>
+        <section id="relatorios" class="content">
+            <h2>Relatórios</h2>
+            <p>Conteúdo a ser desenvolvido...</p>
         </section>
     </main>
     <script src="scripts.js"></script>
