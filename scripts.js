@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             latestAnexoIIContainer.innerHTML = `
                 <div class="link-item">
-                    <strong>Anexo II - Modificado em ${formatDate(data.latest_rn.date)}</strong>
+                    <strong>Anexo II - Modificado em ${data.latest_rn.date}</strong>
                     <button onclick="viewPDF('${data.latest_anexo_ii_link}')">Exibir</button>
                     <button onclick="downloadPDF('${data.latest_anexo_ii_link}')">Download</button>
                 </div>
@@ -55,7 +55,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (data.rn_links && data.rn_links.length > 0) {
                 latestRnContainer.innerHTML = data.rn_links.map(rn => `
                     <div class="link-item">
-                        <strong>RN nº ${rn.number} (${formatDate(rn.date)})</strong>
+                        <strong>RN nº ${rn.number} (${rn.date})</strong>
                         <button onclick="viewPDF('${rn.url}')">Exibir</button>
                     </div>
                 `).join('');
@@ -74,9 +74,4 @@ document.addEventListener('DOMContentLoaded', function() {
     window.downloadPDF = function(link) {
         window.open(link, '_blank');
     };
-
-    function formatDate(dateStr) {
-        const [day, month, year] = dateStr.split('/');
-        return `${day}/${month}/${year}`;
-    }
 });
