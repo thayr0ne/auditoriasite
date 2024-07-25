@@ -72,9 +72,9 @@ def fetch_rn_summary():
 
     if response.status_code == 200:
         soup = BeautifulSoup(response.content, 'html.parser')
-        summary = soup.find('p', align='right')
+        summary = soup.find_all('p', align='right')
         if summary:
-            summary_text = summary.get_text().strip()
+            summary_text = ' '.join([p.get_text().strip() for p in summary])
             return jsonify({'summary': summary_text})
         else:
             return jsonify({'error': 'Resumo não encontrado'}), 404
