@@ -52,13 +52,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
             `;
 
-            if (data.latest_rn) {
-                latestRnContainer.innerHTML = `
+            if (data.rn_links && data.rn_links.length > 0) {
+                latestRnContainer.innerHTML = data.rn_links.map(rn => `
                     <div class="link-item">
-                        <strong>RN nº ${data.latest_rn.number} (${formatDate(data.latest_rn.date)})</strong>
-                        <button onclick="viewPDF('${data.latest_rn.url}')">Exibir</button>
+                        <strong>RN nº ${rn.number} (${formatDate(rn.date)})</strong>
+                        <button onclick="viewPDF('${rn.url}')">Exibir</button>
                     </div>
-                `;
+                `).join('');
             } else {
                 latestRnContainer.innerHTML = '<p>Nenhuma RN encontrada</p>';
             }
@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     function formatDate(dateStr) {
-        const date = new Date(dateStr);
-        return date.toLocaleDateString('pt-BR');
+        const [day, month, year] = dateStr.split('/');
+        return `${day}/${month}/${year}`;
     }
 });
