@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (data.latest_anexo_ii_date && data.latest_anexo_ii_link) {
                 latestAnexoIIContainer.innerHTML = `
                     <div class="link-item">
-                        <strong>Anexo II - Modificado em ${formatDate(data.latest_anexo_ii_date)}</strong>
+                        <strong>Anexo II - Modificado em ${data.latest_anexo_ii_date}</strong>
                         <button onclick="viewPDF('${data.latest_anexo_ii_link}')">Exibir</button>
                         <button onclick="downloadPDF('${data.latest_anexo_ii_link}')">Download</button>
                     </div>
@@ -59,7 +59,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (Array.isArray(data.latest_rn_links)) {
                 latestRnContainer.innerHTML = data.latest_rn_links.map(link => `
                     <div class="link-item">
-                        <strong>RN nº ${link.number} (${formatDate(link.date)})</strong>
+                        <strong>RN nº ${link.number} (${link.date})</strong>
                         <button onclick="viewPDF('${link.url}')">Exibir</button>
                         <button onclick="fetchRnSummary('${link.url}')">Resumo</button>
                     </div>
@@ -102,9 +102,4 @@ document.addEventListener('DOMContentLoaded', function() {
             alert('Erro ao obter o resumo: ' + error);
         });
     };
-
-    function formatDate(dateStr) {
-        const date = new Date(dateStr);
-        return date.toLocaleDateString('pt-BR');
-    }
 });
