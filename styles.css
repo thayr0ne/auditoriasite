@@ -63,6 +63,6 @@ section.active {
 }
 
 .scrollable-container {
-    max-height: 400px;
+    max-height: 400px; /* Ajuste conforme necessário */
     overflow-y: auto;
 }
