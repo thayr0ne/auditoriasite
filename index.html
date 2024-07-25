@@ -3,39 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Anexos Vigentes</title>
+    <title>ANS Anexo II Fetcher</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <header>
         <nav>
             <ul>
-                <li><a href="#" class="active">Anexos Vigentes</a></li>
-                <li><a href="#">Rol Vigente</a></li>
-                <li><a href="#">Buscar Procedimentos</a></li>
-                <li><a href="#">CBHPM</a></li>
-                <li><a href="#">Relatórios</a></li>
+                <li><a href="#" id="anexosVigentesMenu">Anexos Vigentes</a></li>
+                <li><a href="#" id="rolVigenteMenu">Rol Vigente</a></li>
+                <li><a href="#" id="buscarProcedimentosMenu">Buscar Procedimentos</a></li>
+                <li><a href="#" id="cbhpmMenu">CBHPM</a></li>
+                <li><a href="#" id="relatoriosMenu">Relatórios</a></li>
             </ul>
         </nav>
     </header>
     <main>
-        <div class="container">
-            <aside class="sidebar-left">
-                <div class="section recent">
-                    <h2>Recentes</h2>
-                    <div id="anexos-recentes"></div>
-                </div>
-                <div class="section history">
-                    <h2>Histórico</h2>
-                    <ul id="historico-list">
-                        <!-- Lista de RNs será inserida aqui -->
-                    </ul>
-                </div>
-            </aside>
-            <section class="content">
-                <iframe id="viewer" src="" frameborder="0"></iframe>
-            </section>
-        </div>
+        <section id="anexosVigentes" class="content-section">
+            <h1>Anexos Vigentes</h1>
+            <button id="fetchLinksBtn">Obter Links do Anexo II</button>
+            <div class="links" id="linksContainer"></div>
+        </section>
+        <section id="rolVigente" class="content-section">
+            <h1>Rol Vigente</h1>
+            <p>Conteúdo a ser desenvolvido</p>
+        </section>
+        <section id="buscarProcedimentos" class="content-section">
+            <h1>Buscar Procedimentos</h1>
+            <p>Conteúdo a ser desenvolvido</p>
+        </section>
+        <section id="cbhpm" class="content-section">
+            <h1>CBHPM</h1>
+            <p>Conteúdo a ser desenvolvido</p>
+        </section>
+        <section id="relatorios" class="content-section">
+            <h1>Relatórios</h1>
+            <p>Conteúdo a ser desenvolvido</p>
+        </section>
     </main>
     <script src="scripts.js"></script>
 </body>
