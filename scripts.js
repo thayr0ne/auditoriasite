@@ -54,15 +54,19 @@ document.addEventListener('DOMContentLoaded', function() {
                     </div>
                 `;
 
-                latestRnContainer.innerHTML = `
-                    <h2>Histórico</h2>
-                    ${data.latest_rn_links.map(link => `
-                        <div class="link-item">
-                            <strong>RN nº ${link.number} (${formatDate(link.date)})</strong>
-                            <button onclick="viewPDF('${link.url}')">Exibir</button>
-                        </div>
-                    `).join('')}
-                `;
+                if (Array.isArray(data.latest_rn_links)) {
+                    latestRnContainer.innerHTML = `
+                        <h2>Histórico</h2>
+                        ${data.latest_rn_links.map(link => `
+                            <div class="link-item">
+                                <strong>RN nº ${link.number} (${formatDate(link.date)})</strong>
+                                <button onclick="viewPDF('${link.url}')">Exibir</button>
+                            </div>
+                        `).join('')}
+                    `;
+                } else {
+                    latestRnContainer.innerHTML = '<h2>Histórico</h2><p>Nenhuma RN encontrada</p>';
+                }
             })
             .catch(error => {
                 alert('Erro ao obter os links: ' + error);
