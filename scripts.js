@@ -41,10 +41,11 @@ document.addEventListener('DOMContentLoaded', function() {
     fetch('https://auditoriasite.onrender.com/api/fetch-ans-links')
         .then(response => response.json())
         .then(data => {
+            console.log('Dados recebidos da API:', data); // Log para depuração
+
             const latestAnexoIIContainer = document.getElementById('latestAnexoIIContainer');
             const latestRnContainer = document.getElementById('latestRnContainer');
 
-            // Verificação adicional para garantir que os dados existem
             if (data.latest_anexo_ii_date && data.latest_anexo_ii_link) {
                 latestAnexoIIContainer.innerHTML = `
                     <div class="link-item">
@@ -75,10 +76,12 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
     window.viewPDF = function(link) {
+        console.log('Exibindo PDF:', link); // Log para depuração
         document.getElementById('pdfViewer').src = link;
     };
 
     window.downloadPDF = function(link) {
+        console.log('Baixando PDF:', link); // Log para depuração
         window.open(link, '_blank');
     };
 
