@@ -1,15 +1,14 @@
 from flask import Flask, jsonify
-from flask_cors import CORS, cross_origin
+from flask_cors import CORS
 import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
 import re
 
 app = Flask(__name__)
-CORS(app)  # Adicione esta linha para permitir CORS
+CORS(app)
 
 @app.route('/api/fetch-ans-links')
-@cross_origin()
 def fetch_ans_links():
     url = 'https://www.ans.gov.br/component/legislacao/?view=legislacao&task=TextoLei&format=raw&id=NDAzMw==#anexosvigentes'
     response = requests.get(url)
@@ -24,32 +23,37 @@ def fetch_ans_links():
             href = link.get('href')
             texto = link.get_text().strip()
             if 'Alterado pela RN' in texto:
-                rn_match = re.search(r'RN nº (\d+), de (\d{2}/\d{2}/\d{4})', texto)
+                rn_match = re.search(r'RN nº (\d+), de', texto)
                 if rn_match:
                     rn_num = int(rn_match.group(1))
-                    rn_date = rn_match.group(2)
-                    rn_links.append({
-                        'number': rn_num,
-                        'date': rn_date,
-                        'url': urljoin(url, href)
-                    })
+                    rn_links.append((rn_num, texto, href))
             elif 'ANEXO II' in texto and href.endswith('.pdf'):
                 anexo_ii_links.append(href)
         
-        latest_rn_link = ""
-        latest_rn_data = {}
-        if rn_links:
-            rn_links.sort(reverse=True, key=lambda x: x['number'])
-            latest_rn_data = rn_links[0]
+        rn_links.sort(reverse=True, key=lambda x: x[0])
+        latest_rn_links = []
+        for rn_num, texto, href in rn_links:
+            date_match = re.search(r'de (\d{2}/\d{2}/\d{4})', texto)
+            if date_match:
+                date = date_match.group(1)
+                latest_rn_links.append({
+                    'number': rn_num,
+                    'date': date,
+                    'url': urljoin(url, href)
+                })
 
         latest_anexo_ii_link = ""
+        latest_anexo_ii_date = ""
         if anexo_ii_links:
             latest_anexo_ii_link = urljoin(url, anexo_ii_links[0])
+            latest_anexo_ii_date_match = re.search(r'(\d{2}/\d{2}/\d{4})', anexo_ii_links[0])
+            if latest_anexo_ii_date_match:
+                latest_anexo_ii_date = latest_anexo_ii_date_match.group(1)
 
         return jsonify({
-            'latest_rn': latest_rn_data,
+            'latest_rn_links': latest_rn_links,
             'latest_anexo_ii_link': latest_anexo_ii_link,
-            'rn_links': rn_links  # Adiciona todas as RNs encontradas
+            'latest_anexo_ii_date': latest_anexo_ii_date
         })
     else:
         return jsonify({
