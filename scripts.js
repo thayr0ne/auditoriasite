@@ -44,6 +44,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const latestAnexoIIContainer = document.getElementById('latestAnexoIIContainer');
             const latestRnContainer = document.getElementById('latestRnContainer');
 
+            // Verificação adicional para garantir que os dados existem
             if (data.latest_anexo_ii_date && data.latest_anexo_ii_link) {
                 latestAnexoIIContainer.innerHTML = `
                     <div class="link-item">
