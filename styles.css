@@ -58,11 +58,11 @@ section.active {
     margin-bottom: 20px;
 }
 
-.link-item {
-    margin-bottom: 10px;
+.history {
+    max-height: 50vh;
+    overflow-y: auto;
 }
 
-.scrollable-container {
-    max-height: 400px; /* Ajuste conforme necessário */
-    overflow-y: auto;
+.link-item {
+    margin-bottom: 10px;
 }
