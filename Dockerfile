@@ -1,19 +1,15 @@
-# Usar a imagem base do Python
-FROM python:3.9
+FROM python:3.9-slim
 
-# Definir o diretório de trabalho no contêiner
+# Define o diretório de trabalho
 WORKDIR /app
 
-# Copiar o arquivo requirements.txt para o diretório de trabalho
-COPY requirements.txt .
+# Copia os arquivos necessários para o contêiner
+COPY . /app
 
-# Instalar as dependências do Python
+# Instala as dependências do Python
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copiar o restante do código da aplicação para o diretório de trabalho
-COPY . .
-
-# Expor a porta em que a aplicação irá rodar
+# Exponha a porta que a aplicação irá rodar
 EXPOSE 5000
 
 # Comando para rodar a aplicação
