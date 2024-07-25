@@ -24,25 +24,30 @@ def fetch_ans_links():
             href = link.get('href')
             texto = link.get_text().strip()
             if 'Alterado pela RN' in texto:
-                rn_match = re.search(r'RN nº (\d+), de', texto)
+                rn_match = re.search(r'RN nº (\d+), de (\d{2}/\d{2}/\d{4})', texto)
                 if rn_match:
                     rn_num = int(rn_match.group(1))
-                    rn_links.append((rn_num, texto, href))
+                    rn_date = rn_match.group(2)
+                    rn_links.append((rn_num, rn_date, href))
             elif 'ANEXO II' in texto and href.endswith('.pdf'):
                 anexo_ii_links.append(href)
         
         latest_rn_link = ""
+        latest_rn_data = {}
         if rn_links:
             rn_links.sort(reverse=True, key=lambda x: x[0])
-            _, _, rn_href = rn_links[0]
-            latest_rn_link = urljoin(url, rn_href)
+            latest_rn_data = {
+                'number': rn_links[0][0],
+                'date': rn_links[0][1],
+                'url': urljoin(url, rn_links[0][2])
+            }
 
         latest_anexo_ii_link = ""
         if anexo_ii_links:
             latest_anexo_ii_link = urljoin(url, anexo_ii_links[0])
 
         return jsonify({
-            'latest_rn_link': latest_rn_link,
+            'latest_rn': latest_rn_data,
             'latest_anexo_ii_link': latest_anexo_ii_link
         })
     else:
