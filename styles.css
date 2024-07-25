@@ -47,7 +47,8 @@ main {
 }
 
 .content.active {
-    display: block;
+    display: flex;
+    justify-content: space-between;
 }
 
 .left-pane {
