@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
+    const recentContainer = document.getElementById('anexos-recentes');
     const historicoList = document.getElementById('historico-list');
 
     fetch('https://auditoriasite.vercel.app/api/fetch-ans-links')
@@ -8,6 +9,23 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.error('Erro ao obter os links:', data.error);
                 return;
             }
+
+            // Adicionar itens recentes
+            const anexoIHtml = `
+                <div class="anexo">
+                    <h3>Anexo I - Alterado pela RN nº ${data.latest_rn.number}, de ${data.latest_rn.date}</h3>
+                    <button onclick="exibirAnexo('${data.latest_anexo_ii.link}')">Exibir</button>
+                    <button onclick="downloadAnexo('${data.latest_anexo_ii.link}')">Download</button>
+                </div>
+            `;
+            const anexoIIHtml = `
+                <div class="anexo">
+                    <h3>Anexo II - Alterado pela RN nº ${data.latest_rn.number}, de ${data.latest_rn.date}</h3>
+                    <button onclick="exibirAnexo('${data.latest_anexo_ii.link}')">Exibir</button>
+                    <button onclick="downloadAnexo('${data.latest_anexo_ii.link}')">Download</button>
+                </div>
+            `;
+            recentContainer.innerHTML = anexoIHtml + anexoIIHtml;
 
             // Adicionar itens ao histórico
             data.history.forEach(item => {
@@ -24,28 +42,12 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error('Erro ao obter os links:', error);
         });
 
-    window.exibirAnexo = function(linkId) {
+    window.exibirAnexo = function(link) {
         const viewer = document.getElementById('viewer');
-        let link;
-
-        if (linkId === 'link-anexo-i') {
-            link = 'https://www.ans.gov.br/images/stories/Legislacao/rn/Anexo_I_Rol_2021_RN_465.2021_RN606_RN607.pdf'; // substituir pelo link correto
-        } else if (linkId === 'link-anexo-ii') {
-            link = 'https://www.ans.gov.br/images/stories/Legislacao/rn/Anexo_II_DUT_2021_RN_465.2021_RN606_RN607.pdf'; // substituir pelo link correto
-        }
-
         viewer.src = link;
     };
 
-    window.downloadAnexo = function(linkId) {
-        let link;
-
-        if (linkId === 'link-anexo-i') {
-            link = 'https://www.ans.gov.br/images/stories/Legislacao/rn/Anexo_I_Rol_2021_RN_465.2021_RN606_RN607.pdf'; // substituir pelo link correto
-        } else if (linkId === 'link-anexo-ii') {
-            link = 'https://www.ans.gov.br/images/stories/Legislacao/rn/Anexo_II_DUT_2021_RN_465.2021_RN606_RN607.pdf'; // substituir pelo link correto
-        }
-
+    window.downloadAnexo = function(link) {
         window.open(link, '_blank');
     };
 });
