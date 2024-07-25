@@ -1,8 +1,11 @@
 document.addEventListener('DOMContentLoaded', function() {
     const links = document.querySelectorAll('nav ul li a');
     const sections = document.querySelectorAll('.content-section');
-    const linksContainer = document.getElementById('linksContainer');
     const fetchLinksBtn = document.getElementById('fetchLinksBtn');
+    const recentLinksContainer = document.getElementById('recentLinksContainer');
+    const historyLinksContainer = document.getElementById('historyLinksContainer');
+    const fileViewer = document.getElementById('fileViewer');
+    const fileViewerRight = document.getElementById('fileViewerRight');
 
     links.forEach(link => {
         link.addEventListener('click', function(event) {
@@ -23,32 +26,41 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(response => response.json())
             .then(data => {
                 if (data.latest_rn && data.latest_anexo_ii) {
-                    const rnLink = data.latest_rn.link ? `<button onclick="window.open('${data.latest_rn.link}', '_blank')">Acessar</button>
-                    <button onclick="window.location.href='${data.latest_rn.link}'">Download</button>` : 'Link não disponível';
-
-                    const anexoLink = data.latest_anexo_ii.link ? `<button onclick="window.open('${data.latest_anexo_ii.link}', '_blank')">Acessar</button>
-                    <button onclick="window.location.href='${data.latest_anexo_ii.link}'">Download</button>` : 'Link não disponível';
-
-                    linksContainer.innerHTML = `
+                    // Atualizar links mais recentes
+                    recentLinksContainer.innerHTML = `
                         <div class="link-item">
-                            <strong>RN mais recente:</strong> 
-                            <span>${data.latest_rn.text || 'Texto não disponível'}</span>
-                            ${rnLink}
+                            <strong>Anexo I:</strong> 
+                            <span>Anexo I - Alterado pela RN nº ${data.latest_rn.number}, de ${data.latest_rn.date}</span>
+                            <button onclick="viewFile('${data.latest_rn.link}')">Visualizar</button>
                         </div>
                         <div class="link-item">
-                            <strong>Anexo II mais recente:</strong> 
-                            <span>${data.latest_anexo_ii.text || 'Texto não disponível'}</span>
-                            ${anexoLink}
+                            <strong>Anexo II:</strong> 
+                            <span>Anexo II - Alterado pela RN nº ${data.latest_rn.number}, de ${data.latest_rn.date}</span>
+                            <button onclick="viewFile('${data.latest_anexo_ii.link}')">Visualizar</button>
                         </div>
                     `;
+
+                    // Atualizar histórico
+                    historyLinksContainer.innerHTML = data.history.map(rn => `
+                        <div class="link-item">
+                            <strong>${rn.text}</strong>
+                            <button onclick="viewFile('${rn.link}')">Visualizar</button>
+                        </div>
+                    `).join('');
                 } else {
-                    linksContainer.innerHTML = 'Erro ao obter os links.';
+                    recentLinksContainer.innerHTML = 'Erro ao obter os links.';
+                    historyLinksContainer.innerHTML = 'Erro ao obter os links.';
                 }
             })
             .catch(error => {
                 alert('Erro ao obter os links: ' + error);
             });
     });
+
+    window.viewFile = function(link) {
+        fileViewer.src = link;
+        fileViewerRight.src = link;
+    }
 
     // Show the default section
     document.getElementById('anexos').classList.add('active');
