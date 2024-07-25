@@ -1,8 +1,10 @@
 from flask import Flask, jsonify
+from flask_cors import CORS
 import requests
 from bs4 import BeautifulSoup
 
 app = Flask(__name__)
+CORS(app)
 
 @app.route('/api/fetch-ans-links', methods=['GET'])
 def fetch_ans_links():
@@ -13,35 +15,46 @@ def fetch_ans_links():
         soup = BeautifulSoup(response.content, 'html.parser')
         links = soup.find_all('a')
 
-        latest_anexo_ii_link = ""
-        latest_anexo_ii_date = ""
+        latest_anexo_ii_link = None
+        latest_anexo_ii_date = None
         latest_rn_links = []
 
         for link in links:
-            href = link.get('href')
             text = link.get_text(strip=True)
-            if 'Anexo II' in text and href.endswith('.pdf'):
-                latest_anexo_ii_link = 'https://www.ans.gov.br' + href.replace('../../../', '/')
-            if 'RN nº' in text:
-                rn_number = text.split('nº')[-1].split(' ')[0]
-                rn_date = text.split('(')[-1].replace(')', '')
+            href = link.get('href')
+            if 'Anexo II' in text and href:
+                latest_anexo_ii_link = f"https://www.ans.gov.br{href.replace('../../..', '')}"
+                latest_anexo_ii_date = extract_date_from_text(text)
+
+            if 'Alterado pela RN' in text and href:
                 latest_rn_links.append({
-                    "number": rn_number,
-                    "date": rn_date,
-                    "url": 'https://www.ans.gov.br' + href
+                    'url': f"https://www.ans.gov.br{href.replace('../../..', '')}",
+                    'number': extract_rn_number_from_text(text),
+                    'date': extract_date_from_text(text)
                 })
 
-        if latest_rn_links:
-            latest_rn_links = sorted(latest_rn_links, key=lambda x: x['date'], reverse=True)
-            latest_anexo_ii_date = latest_rn_links[0]['date']
+        if latest_anexo_ii_link and latest_anexo_ii_date:
+            latest_rn_links.sort(key=lambda x: x['date'], reverse=True)
 
-        return jsonify({
-            "latest_anexo_ii_link": latest_anexo_ii_link,
-            "latest_anexo_ii_date": latest_anexo_ii_date,
-            "latest_rn_links": latest_rn_links
-        })
+            return jsonify({
+                'latest_anexo_ii_link': latest_anexo_ii_link,
+                'latest_anexo_ii_date': latest_anexo_ii_date,
+                'latest_rn_links': latest_rn_links
+            })
+        else:
+            return jsonify({'error': 'Nenhum anexo II encontrado'}), 404
+    else:
+        return jsonify({'error': 'Erro ao acessar a página da ANS'}), 500
 
-    return jsonify({"error": "Erro ao obter os links"}), 500
+def extract_date_from_text(text):
+    import re
+    match = re.search(r'\d{2}/\d{2}/\d{4}', text)
+    return match.group(0) if match else None
+
+def extract_rn_number_from_text(text):
+    import re
+    match = re.search(r'\d+', text)
+    return match.group(0) if match else None
 
 if __name__ == '__main__':
     app.run()
