@@ -46,6 +46,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const latestRnContainer = document.getElementById('latestRnContainer');
 
                 latestAnexoIIContainer.innerHTML = `
+                    <h2>Recentes</h2>
                     <div class="link-item">
                         <strong>Anexo II - Modificado em ${formatDate(data.latest_anexo_ii_date)}</strong>
                         <button onclick="viewPDF('${data.latest_anexo_ii_link}')">Exibir</button>
@@ -54,10 +55,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 `;
 
                 latestRnContainer.innerHTML = `
-                    <div class="link-item">
-                        <strong>RN nº ${data.latest_rn_number} (${formatDate(data.latest_rn_date)})</strong>
-                        <button onclick="viewPDF('${data.latest_rn_link}')">Exibir</button>
-                    </div>
+                    <h2>Histórico</h2>
+                    ${data.latest_rn_links.map(link => `
+                        <div class="link-item">
+                            <strong>RN nº ${link.number} (${formatDate(link.date)})</strong>
+                            <button onclick="viewPDF('${link.url}')">Exibir</button>
+                        </div>
+                    `).join('')}
                 `;
             })
             .catch(error => {
@@ -70,16 +74,11 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     window.downloadPDF = function(link) {
-        const a = document.createElement('a');
-        a.href = link;
-        a.download = 'Anexo_II.pdf';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
+        window.open(link, '_blank');
     };
 
-    function formatDate(dateString) {
-        const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
-        return new Date(dateString).toLocaleDateString(undefined, options);
+    function formatDate(dateStr) {
+        const date = new Date(dateStr);
+        return date.toLocaleDateString('pt-BR');
     }
 });
