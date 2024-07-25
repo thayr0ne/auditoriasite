@@ -45,7 +45,6 @@ document.addEventListener('DOMContentLoaded', function() {
             const latestRnContainer = document.getElementById('latestRnContainer');
 
             latestAnexoIIContainer.innerHTML = `
-                <h2>Recentes</h2>
                 <div class="link-item">
                     <strong>Anexo II - Modificado em ${formatDate(data.latest_anexo_ii_date)}</strong>
                     <button onclick="viewPDF('${data.latest_anexo_ii_link}')">Exibir</button>
@@ -54,17 +53,14 @@ document.addEventListener('DOMContentLoaded', function() {
             `;
 
             if (Array.isArray(data.latest_rn_links)) {
-                latestRnContainer.innerHTML = `
-                    <h2>Histórico</h2>
-                    ${data.latest_rn_links.map(link => `
-                        <div class="link-item">
-                            <strong>RN nº ${link.number} (${formatDate(link.date)})</strong>
-                            <button onclick="viewPDF('${link.url}')">Exibir</button>
-                        </div>
-                    `).join('')}
-                `;
+                latestRnContainer.innerHTML = data.latest_rn_links.map(link => `
+                    <div class="link-item">
+                        <strong>RN nº ${link.number} (${formatDate(link.date)})</strong>
+                        <button onclick="viewPDF('${link.url}')">Exibir</button>
+                    </div>
+                `).join('');
             } else {
-                latestRnContainer.innerHTML = '<h2>Histórico</h2><p>Nenhuma RN encontrada</p>';
+                latestRnContainer.innerHTML = '<p>Nenhuma RN encontrada</p>';
             }
         })
         .catch(error => {
