@@ -1,83 +1,51 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const links = document.querySelectorAll('nav ul li a');
-    const sections = document.querySelectorAll('.content-section');
-    const recentLinksContainer = document.getElementById('recentLinksContainer');
-    const historyLinksContainer = document.getElementById('historyLinksContainer');
-    const fileViewer = document.getElementById('fileViewer');
-    const fileViewerRight = document.getElementById('fileViewerRight');
+    const historicoList = document.getElementById('historico-list');
 
-    links.forEach(link => {
-        link.addEventListener('click', function(event) {
-            event.preventDefault();
-            const content = this.getAttribute('data-content');
-            sections.forEach(section => {
-                if (section.id === content) {
-                    section.classList.add('active');
-                } else {
-                    section.classList.remove('active');
-                }
+    fetch('https://auditoriasite.vercel.app/api/fetch-ans-links')
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                console.error('Erro ao obter os links:', data.error);
+                return;
+            }
+
+            // Adicionar itens ao histórico
+            data.history.forEach(item => {
+                const listItem = document.createElement('li');
+                const link = document.createElement('a');
+                link.href = item.link;
+                link.textContent = item.text;
+                link.target = '_blank';
+                listItem.appendChild(link);
+                historicoList.appendChild(listItem);
             });
+        })
+        .catch(error => {
+            console.error('Erro ao obter os links:', error);
         });
-    });
 
-    function fetchLinks() {
-        fetch('https://auditoriasite.vercel.app/api/fetch-ans-links')
-            .then(response => response.json())
-            .then(data => {
-                if (data.latest_rn && data.latest_anexo_ii) {
-                    // Atualizar links mais recentes
-                    recentLinksContainer.innerHTML = `
-                        <div class="link-item">
-                            <strong>Anexo I:</strong> 
-                            <span>Anexo I - Alterado pela RN nº ${data.latest_rn.number}, de ${data.latest_rn.date}</span>
-                            <button onclick="viewFile('${data.latest_rn.link}', 'center')">Exibir</button>
-                            <button onclick="downloadFile('${data.latest_rn.link}')">Download</button>
-                        </div>
-                        <div class="link-item">
-                            <strong>Anexo II:</strong> 
-                            <span>Anexo II - Alterado pela RN nº ${data.latest_rn.number}, de ${data.latest_rn.date}</span>
-                            <button onclick="viewFile('${data.latest_anexo_ii.link}', 'center')">Exibir</button>
-                            <button onclick="downloadFile('${data.latest_anexo_ii.link}')">Download</button>
-                        </div>
-                    `;
+    window.exibirAnexo = function(linkId) {
+        const viewer = document.getElementById('viewer');
+        let link;
 
-                    // Atualizar histórico
-                    historyLinksContainer.innerHTML = data.history.map(rn => `
-                        <div class="link-item">
-                            <strong>${rn.text}</strong>
-                            <button onclick="viewFile('${rn.link}', 'right')">Exibir</button>
-                        </div>
-                    `).join('');
-                } else {
-                    recentLinksContainer.innerHTML = 'Erro ao obter os links.';
-                    historyLinksContainer.innerHTML = 'Erro ao obter os links.';
-                }
-            })
-            .catch(error => {
-                alert('Erro ao obter os links: ' + error);
-            });
-    }
-
-    window.viewFile = function(link, position) {
-        if (position === 'center') {
-            fileViewer.src = link;
-        } else {
-            fileViewerRight.src = link;
+        if (linkId === 'link-anexo-i') {
+            link = 'https://www.ans.gov.br/images/stories/Legislacao/rn/Anexo_I_Rol_2021_RN_465.2021_RN606_RN607.pdf'; // substituir pelo link correto
+        } else if (linkId === 'link-anexo-ii') {
+            link = 'https://www.ans.gov.br/images/stories/Legislacao/rn/Anexo_II_DUT_2021_RN_465.2021_RN606_RN607.pdf'; // substituir pelo link correto
         }
-    }
 
-    window.downloadFile = function(link) {
-        const a = document.createElement('a');
-        a.href = link;
-        a.download = '';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-    }
+        viewer.src = link;
+    };
 
-    // Show the default section
-    document.getElementById('anexos').classList.add('active');
+    window.downloadAnexo = function(linkId) {
+        let link;
 
-    // Fetch the links when the page loads
-    fetchLinks();
+        if (linkId === 'link-anexo-i') {
+            link = 'https://www.ans.gov.br/images/stories/Legislacao/rn/Anexo_I_Rol_2021_RN_465.2021_RN606_RN607.pdf'; // substituir pelo link correto
+        } else if (linkId === 'link-anexo-ii') {
+            link = 'https://www.ans.gov.br/images/stories/Legislacao/rn/Anexo_II_DUT_2021_RN_465.2021_RN606_RN607.pdf'; // substituir pelo link correto
+        }
+
+        window.open(link, '_blank');
+    };
 });
