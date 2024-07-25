@@ -1,7 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
     const links = document.querySelectorAll('nav ul li a');
     const sections = document.querySelectorAll('.content-section');
-    const fetchLinksBtn = document.getElementById('fetchLinksBtn');
     const recentLinksContainer = document.getElementById('recentLinksContainer');
     const historyLinksContainer = document.getElementById('historyLinksContainer');
     const fileViewer = document.getElementById('fileViewer');
@@ -21,7 +20,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    fetchLinksBtn.addEventListener('click', function() {
+    function fetchLinks() {
         fetch('https://auditoriasite.vercel.app/api/fetch-ans-links')
             .then(response => response.json())
             .then(data => {
@@ -31,12 +30,14 @@ document.addEventListener('DOMContentLoaded', function() {
                         <div class="link-item">
                             <strong>Anexo I:</strong> 
                             <span>Anexo I - Alterado pela RN nº ${data.latest_rn.number}, de ${data.latest_rn.date}</span>
-                            <button onclick="viewFile('${data.latest_rn.link}')">Visualizar</button>
+                            <button onclick="viewFile('${data.latest_rn.link}', 'center')">Exibir</button>
+                            <button onclick="downloadFile('${data.latest_rn.link}')">Download</button>
                         </div>
                         <div class="link-item">
                             <strong>Anexo II:</strong> 
                             <span>Anexo II - Alterado pela RN nº ${data.latest_rn.number}, de ${data.latest_rn.date}</span>
-                            <button onclick="viewFile('${data.latest_anexo_ii.link}')">Visualizar</button>
+                            <button onclick="viewFile('${data.latest_anexo_ii.link}', 'center')">Exibir</button>
+                            <button onclick="downloadFile('${data.latest_anexo_ii.link}')">Download</button>
                         </div>
                     `;
 
@@ -44,7 +45,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     historyLinksContainer.innerHTML = data.history.map(rn => `
                         <div class="link-item">
                             <strong>${rn.text}</strong>
-                            <button onclick="viewFile('${rn.link}')">Visualizar</button>
+                            <button onclick="viewFile('${rn.link}', 'right')">Exibir</button>
                         </div>
                     `).join('');
                 } else {
@@ -55,13 +56,28 @@ document.addEventListener('DOMContentLoaded', function() {
             .catch(error => {
                 alert('Erro ao obter os links: ' + error);
             });
-    });
+    }
 
-    window.viewFile = function(link) {
-        fileViewer.src = link;
-        fileViewerRight.src = link;
+    window.viewFile = function(link, position) {
+        if (position === 'center') {
+            fileViewer.src = link;
+        } else {
+            fileViewerRight.src = link;
+        }
+    }
+
+    window.downloadFile = function(link) {
+        const a = document.createElement('a');
+        a.href = link;
+        a.download = '';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
     }
 
     // Show the default section
     document.getElementById('anexos').classList.add('active');
+
+    // Fetch the links when the page loads
+    fetchLinks();
 });
