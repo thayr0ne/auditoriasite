@@ -69,6 +69,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         })
         .catch(error => {
+            console.error('Erro ao obter os links:', error);
             alert('Erro ao obter os links: ' + error);
         });
 
@@ -90,9 +91,14 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .then(response => response.json())
         .then(data => {
-            alert('Resumo: ' + data.summary);
+            if (data.summary) {
+                alert('Resumo: ' + data.summary);
+            } else {
+                alert('Erro ao obter o resumo: ' + (data.error || 'Erro desconhecido'));
+            }
         })
         .catch(error => {
+            console.error('Erro ao obter o resumo:', error);
             alert('Erro ao obter o resumo: ' + error);
         });
     };
