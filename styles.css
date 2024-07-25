@@ -1,116 +1,82 @@
 body {
-    font-family: Arial, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     margin: 0;
-    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: #f5f5f5;
 }
 
 header {
-    background: #f8f8f8;
-    padding: 10px 0;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    background-color: #fff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 nav ul {
-    list-style: none;
-    display: flex;
-    justify-content: center;
+    list-style-type: none;
     margin: 0;
     padding: 0;
+    display: flex;
+    justify-content: center;
 }
 
-nav ul li {
+nav li {
     margin: 0 15px;
 }
 
-nav ul li a {
+nav a {
     text-decoration: none;
     color: #333;
+    font-weight: 600;
+    padding: 20px 10px;
+    display: block;
+}
+
+nav a:hover {
+    color: #007aff;
+    border-bottom: 2px solid #007aff;
+}
+
+main {
+    padding: 20px;
+    width: 80%;
+    max-width: 1200px;
+    margin: 0 auto;
+    background-color: #fff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    margin-top: 20px;
+}
+
+.content-section {
+    display: none;
+}
+
+.content-section.active {
+    display: block;
+}
+
+button {
     padding: 10px 20px;
-    transition: background 0.3s, color 0.3s;
-}
-
-nav ul li a.active,
-nav ul li a:hover {
-    background: #007bff;
-    color: #fff;
-    border-radius: 5px;
-}
-
-.container {
-    display: flex;
-}
-
-.sidebar-left {
-    width: 25%;
-    padding: 20px;
-    background: #f0f0f0;
-}
-
-.section {
-    margin-bottom: 20px;
-}
-
-.section h2 {
-    font-size: 1.2em;
-    margin-bottom: 10px;
-}
-
-.anexo h3 {
-    font-size: 1em;
-    margin: 0;
-}
-
-.anexo button {
-    display: inline-block;
-    margin-top: 5px;
-    margin-right: 10px;
-    padding: 5px 10px;
-    font-size: 0.9em;
+    font-size: 16px;
     cursor: pointer;
+    background-color: #007aff;
+    color: #fff;
     border: none;
-    background: #007bff;
-    color: white;
-    border-radius: 5px;
-    transition: background 0.3s;
+    border-radius: 4px;
+    margin-top: 20px;
 }
 
-.anexo button:hover {
-    background: #0056b3;
+button:hover {
+    background-color: #005bb5;
 }
 
-.content {
-    flex: 1;
-    padding: 20px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.links {
+    margin-top: 20px;
 }
 
-#viewer {
-    width: 100%;
-    height: 800px;
-    border: 1px solid #ccc;
-}
-
-#historico-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    max-height: 400px;
-    overflow-y: auto;
-}
-
-#historico-list li {
+.link-item {
     margin-bottom: 10px;
 }
-
-#historico-list li a {
-    text-decoration: none;
-    color: #007bff;
-    transition: color 0.3s;
-}
-
-#historico-list li a:hover {
-    color: #0056b3;
-}
-
