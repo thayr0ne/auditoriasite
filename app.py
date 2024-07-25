@@ -46,9 +46,7 @@ def fetch_ans_links():
         latest_anexo_ii_date = ""
         if anexo_ii_links:
             latest_anexo_ii_link = urljoin(url, anexo_ii_links[0])
-            latest_anexo_ii_date_match = re.search(r'(\d{2}/\d{2}/\d{4})', anexo_ii_links[0])
-            if latest_anexo_ii_date_match:
-                latest_anexo_ii_date = latest_anexo_ii_date_match.group(1)
+            latest_anexo_ii_date = rn_links[0][1].split('de')[1].strip()  # Extrair a data correta do texto do link
 
         return jsonify({
             'latest_rn_links': latest_rn_links,
