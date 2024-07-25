@@ -6,7 +6,7 @@ from urllib.parse import urljoin
 import re
 
 app = Flask(__name__)
-CORS(app)  # Adicione esta linha para permitir CORS
+CORS(app)
 
 @app.route('/api/fetch-ans-links')
 def fetch_ans_links():
@@ -53,18 +53,22 @@ def fetch_ans_links():
         }
         if anexo_ii_links:
             latest_anexo_ii = {
-                'text': anexo_ii_links[0][0],
-                'link': urljoin(url, anexo_ii_links[0][1])
+                'text': anexo_ii_links[-1][0],
+                'link': urljoin(url, anexo_ii_links[-1][1])
             }
-
+        
         return jsonify({
             'latest_rn': latest_rn,
-            'latest_anexo_ii': latest_anexo_ii
+            'latest_anexo_ii': latest_anexo_ii,
+            'history': [
+                {
+                    'text': text,
+                    'link': urljoin(url, href)
+                } for _, _, text, href in rn_links[1:]
+            ]
         })
-    else:
-        return jsonify({
-            'error': 'Erro ao acessar a página'
-        })
+
+    return jsonify({'error': 'Erro ao acessar a página da ANS.'}), 500
 
 if __name__ == '__main__':
     app.run(debug=True)
