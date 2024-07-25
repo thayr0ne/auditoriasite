@@ -39,7 +39,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Lógica para buscar links do backend
     fetch('https://auditoriasite.onrender.com/api/fetch-ans-links')
-        .then(response => response.json())
+        .then(response => {
+            console.log('Response status:', response.status);
+            return response.json();
+        })
         .then(data => {
             console.log('Dados recebidos da API:', data); // Log para depuração
 
@@ -49,7 +52,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (data.latest_anexo_ii_date && data.latest_anexo_ii_link) {
                 latestAnexoIIContainer.innerHTML = `
                     <div class="link-item">
-                        <strong>Anexo II - Modificado em ${data.latest_anexo_ii_date}</strong>
+                        <strong>Anexo II - Modificado em ${formatDate(data.latest_anexo_ii_date)}</strong>
                         <button onclick="viewPDF('${data.latest_anexo_ii_link}')">Exibir</button>
                         <button onclick="downloadPDF('${data.latest_anexo_ii_link}')">Download</button>
                     </div>
@@ -104,4 +107,9 @@ document.addEventListener('DOMContentLoaded', function() {
             alert('Erro ao obter o resumo: ' + error);
         });
     };
+
+    function formatDate(dateStr) {
+        const [day, month, year] = dateStr.split('/');
+        return `${day}/${month}/${year}`;
+    }
 });
