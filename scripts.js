@@ -44,13 +44,17 @@ document.addEventListener('DOMContentLoaded', function() {
             const latestAnexoIIContainer = document.getElementById('latestAnexoIIContainer');
             const latestRnContainer = document.getElementById('latestRnContainer');
 
-            latestAnexoIIContainer.innerHTML = `
-                <div class="link-item">
-                    <strong>Anexo II - Modificado em ${data.latest_rn.date}</strong>
-                    <button onclick="viewPDF('${data.latest_anexo_ii_link}')">Exibir</button>
-                    <button onclick="downloadPDF('${data.latest_anexo_ii_link}')">Download</button>
-                </div>
-            `;
+            if (data.latest_rn && data.latest_rn.date) {
+                latestAnexoIIContainer.innerHTML = `
+                    <div class="link-item">
+                        <strong>Anexo II - Modificado em ${data.latest_rn.date}</strong>
+                        <button onclick="viewPDF('${data.latest_anexo_ii_link}')">Exibir</button>
+                        <button onclick="downloadPDF('${data.latest_anexo_ii_link}')">Download</button>
+                    </div>
+                `;
+            } else {
+                latestAnexoIIContainer.innerHTML = '<p>Nenhum Anexo II encontrado</p>';
+            }
 
             if (data.rn_links && data.rn_links.length > 0) {
                 latestRnContainer.innerHTML = data.rn_links.map(rn => `
