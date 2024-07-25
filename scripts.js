@@ -80,21 +80,17 @@ document.addEventListener('DOMContentLoaded', function() {
         window.open(link, '_blank');
     };
 
-    window.fetchRnSummary = function(link) {
+    window.fetchRnSummary = function(url) {
         fetch('https://auditoriasite.onrender.com/api/fetch-rn-summary', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ url: link })
+            body: JSON.stringify({ url: url })
         })
         .then(response => response.json())
         .then(data => {
-            if (data.summary) {
-                alert(`Resumo: ${data.summary}`);
-            } else {
-                alert('Resumo não encontrado.');
-            }
+            alert('Resumo: ' + data.summary);
         })
         .catch(error => {
             alert('Erro ao obter o resumo: ' + error);
