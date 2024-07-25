@@ -6,7 +6,7 @@ from urllib.parse import urljoin
 import re
 
 app = Flask(__name__)
-CORS(app)
+CORS(app)  # Adicione esta linha para permitir CORS
 
 @app.route('/api/fetch-ans-links')
 def fetch_ans_links():
@@ -21,42 +21,33 @@ def fetch_ans_links():
         anexo_ii_links = []
         for link in links:
             href = link.get('href')
-            text = link.get_text(strip=True)
-            match_rn = re.search(r'RN nº (\d+), de (\d{2}/\d{2}/\d{4})', text)
-            match_anexo_ii = re.search(r'Anexo II', text, re.IGNORECASE)
-            if match_rn:
-                rn_number = match_rn.group(1)
-                rn_date = match_rn.group(2)
-                rn_links.append((int(rn_number), rn_date, text, href))
-            if match_anexo_ii and 'pdf' in href:
-                anexo_ii_links.append((text, href))
-
+            texto = link.get_text().strip()
+            if 'Alterado pela RN' in texto:
+                rn_match = re.search(r'RN nº (\d+), de', texto)
+                if rn_match:
+                    rn_num = int(rn_match.group(1))
+                    rn_links.append((rn_num, texto, href))
+            elif 'ANEXO II' in texto and href.endswith('.pdf'):
+                anexo_ii_links.append(href)
+        
+        latest_rn_link = ""
         if rn_links:
             rn_links.sort(reverse=True, key=lambda x: x[0])
-            latest_rn = {
-                'number': rn_links[0][0],
-                'date': rn_links[0][1],
-                'text': rn_links[0][2],
-                'link': urljoin(url, rn_links[0][3])
-            }
-        if anexo_ii_links:
-            latest_anexo_ii = {
-                'text': anexo_ii_links[-1][0],
-                'link': urljoin(url, anexo_ii_links[-1][1])
-            }
-        
-        return jsonify({
-            'latest_rn': latest_rn,
-            'latest_anexo_ii': latest_anexo_ii,
-            'history': [
-                {
-                    'text': text,
-                    'link': urljoin(url, href)
-                } for _, _, text, href in rn_links[1:]
-            ]
-        })
+            _, _, rn_href = rn_links[0]
+            latest_rn_link = urljoin(url, rn_href)
 
-    return jsonify({'error': 'Erro ao acessar a página da ANS.'}), 500
+        latest_anexo_ii_link = ""
+        if anexo_ii_links:
+            latest_anexo_ii_link = urljoin(url, anexo_ii_links[0])
+
+        return jsonify({
+            'latest_rn_link': latest_rn_link,
+            'latest_anexo_ii_link': latest_anexo_ii_link
+        })
+    else:
+        return jsonify({
+            'error': 'Erro ao acessar a página'
+        })
 
 if __name__ == '__main__':
     app.run(debug=True)
