@@ -61,3 +61,8 @@ section.active {
 .link-item {
     margin-bottom: 10px;
 }
+
+.scrollable-container {
+    max-height: 400px;
+    overflow-y: auto;
+}
