@@ -61,6 +61,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <div class="link-item">
                         <strong>RN nº ${link.number} (${formatDate(link.date)})</strong>
                         <button onclick="viewPDF('${link.url}')">Exibir</button>
+                        <button onclick="fetchRnSummary('${link.url}')">Resumo</button>
                     </div>
                 `).join('');
             } else {
@@ -77,6 +78,27 @@ document.addEventListener('DOMContentLoaded', function() {
 
     window.downloadPDF = function(link) {
         window.open(link, '_blank');
+    };
+
+    window.fetchRnSummary = function(link) {
+        fetch('https://auditoriasite.onrender.com/api/fetch-rn-summary', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ url: link })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.summary) {
+                alert(`Resumo: ${data.summary}`);
+            } else {
+                alert('Resumo não encontrado.');
+            }
+        })
+        .catch(error => {
+            alert('Erro ao obter o resumo: ' + error);
+        });
     };
 
     function formatDate(dateStr) {
