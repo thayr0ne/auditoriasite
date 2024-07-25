@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', function() {
     showSection('anexosVigentes');
 
     // Lógica para buscar links do backend
-    fetch('https://auditoriasite.vercel.app/api/fetch-ans-links')
+    fetch('https://auditoriasite.onrender.com/api/fetch-ans-links')
         .then(response => response.json())
         .then(data => {
             const latestAnexoIIContainer = document.getElementById('latestAnexoIIContainer');
