@@ -6,7 +6,7 @@ from urllib.parse import urljoin
 import re
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/api/*": {"origins": "*"}})  # Permitir todas as origens
 
 @app.route('/api/fetch-ans-links')
 def fetch_ans_links():
