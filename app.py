@@ -26,7 +26,6 @@ def fetch_ans_links():
             if 'Anexo II' in text and href:
                 latest_anexo_ii_link = complete_url(href)
                 latest_anexo_ii_date = extract_date_from_text(text)
-
             if 'Alterado pela RN' in text and href:
                 latest_rn_links.append({
                     'url': complete_url(href),
@@ -36,7 +35,6 @@ def fetch_ans_links():
 
         if latest_anexo_ii_link and latest_anexo_ii_date:
             latest_rn_links.sort(key=lambda x: x['date'], reverse=True)
-
             return jsonify({
                 'latest_anexo_ii_link': latest_anexo_ii_link,
                 'latest_anexo_ii_date': latest_anexo_ii_date,
@@ -52,8 +50,8 @@ def extract_date_from_text(text):
     return match.group(0) if match else None
 
 def extract_rn_number_from_text(text):
-    match = re.search(r'\d+', text)
-    return match.group(0) if match else None
+    match = re.search(r'RN nº (\d+)', text)
+    return match.group(1) if match else None
 
 def complete_url(href):
     if href.startswith('http'):
