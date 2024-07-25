@@ -37,7 +37,7 @@ nav a:hover {
 
 main {
     padding: 20px;
-    width: 80%;
+    width: 90%;
     max-width: 1200px;
     margin: 0 auto;
     background-color: #fff;
@@ -74,9 +74,15 @@ button:hover {
     margin-top: 20px;
 }
 
-.links {
+.links-section {
     width: 30%;
     padding-right: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.links {
+    margin-bottom: 20px;
 }
 
 .pdf-viewer {
@@ -85,7 +91,7 @@ button:hover {
 
 iframe {
     width: 100%;
-    height: 500px;
+    height: 700px;
     border: none;
 }
 
@@ -100,4 +106,19 @@ iframe {
 
 .link-item a:hover {
     text-decoration: underline;
+}
+
+.link-item button {
+    margin-left: 10px;
+    padding: 5px 10px;
+    font-size: 14px;
+    cursor: pointer;
+    background-color: #007aff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+}
+
+.link-item button:hover {
+    background-color: #005bb5;
 }
