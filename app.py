@@ -1,5 +1,5 @@
 from flask import Flask, jsonify
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
@@ -9,6 +9,7 @@ app = Flask(__name__)
 CORS(app)  # Adicione esta linha para permitir CORS
 
 @app.route('/api/fetch-ans-links')
+@cross_origin()
 def fetch_ans_links():
     url = 'https://www.ans.gov.br/component/legislacao/?view=legislacao&task=TextoLei&format=raw&id=NDAzMw==#anexosvigentes'
     response = requests.get(url)
