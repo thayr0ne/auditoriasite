@@ -46,19 +46,19 @@ document.addEventListener('DOMContentLoaded', function() {
 
             latestAnexoIIContainer.innerHTML = `
                 <div class="link-item">
-                    <strong>Anexo II - Modificado em ${formatDate(data.latest_anexo_ii_date)}</strong>
+                    <strong>Anexo II - Modificado em ${formatDate(data.latest_rn.date)}</strong>
                     <button onclick="viewPDF('${data.latest_anexo_ii_link}')">Exibir</button>
                     <button onclick="downloadPDF('${data.latest_anexo_ii_link}')">Download</button>
                 </div>
             `;
 
-            if (Array.isArray(data.latest_rn_links)) {
-                latestRnContainer.innerHTML = data.latest_rn_links.map(link => `
+            if (data.latest_rn) {
+                latestRnContainer.innerHTML = `
                     <div class="link-item">
-                        <strong>RN nº ${link.number} (${formatDate(link.date)})</strong>
-                        <button onclick="viewPDF('${link.url}')">Exibir</button>
+                        <strong>RN nº ${data.latest_rn.number} (${formatDate(data.latest_rn.date)})</strong>
+                        <button onclick="viewPDF('${data.latest_rn.url}')">Exibir</button>
                     </div>
-                `).join('');
+                `;
             } else {
                 latestRnContainer.innerHTML = '<p>Nenhuma RN encontrada</p>';
             }
