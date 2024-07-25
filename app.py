@@ -48,6 +48,12 @@ def fetch_ans_links():
             latest_anexo_ii_text, latest_anexo_ii_href = anexo_ii_links[0]
             latest_anexo_ii_link = urljoin(url, latest_anexo_ii_href)
             latest_anexo_ii_date_match = re.search(r'(\d{2}/\d{2}/\d{4})', latest_anexo_ii_text)
+            if not latest_anexo_ii_date_match:
+                date_response = requests.get(latest_anexo_ii_link)
+                if date_response.status_code == 200:
+                    date_soup = BeautifulSoup(date_response.content, 'html.parser')
+                    date_text = date_soup.get_text()
+                    latest_anexo_ii_date_match = re.search(r'(\d{2}/\d{2}/\d{4})', date_text)
             if latest_anexo_ii_date_match:
                 latest_anexo_ii_date = latest_anexo_ii_date_match.group(1)
 
