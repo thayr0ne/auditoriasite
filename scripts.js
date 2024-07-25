@@ -42,27 +42,44 @@ document.addEventListener('DOMContentLoaded', function() {
         fetch('https://auditoriasite.vercel.app/api/fetch-ans-links')
             .then(response => response.json())
             .then(data => {
-                const linksContainer = document.getElementById('linksContainer');
-                linksContainer.innerHTML = `
+                const latestAnexoIIContainer = document.getElementById('latestAnexoIIContainer');
+                const latestRnContainer = document.getElementById('latestRnContainer');
+
+                latestAnexoIIContainer.innerHTML = `
                     <div class="link-item">
-                        <strong>Link da RN mais recente:</strong> 
-                        <a href="#" data-link="${data.latest_rn_link}" class="link">RN mais recente</a>
-                    </div>
-                    <div class="link-item">
-                        <strong>Link do Anexo II mais recente:</strong> 
-                        <a href="#" data-link="${data.latest_anexo_ii_link}" class="link">Anexo II mais recente</a>
+                        <strong>Anexo II - Modificado em ${formatDate(data.latest_anexo_ii_date)}</strong>
+                        <button onclick="viewPDF('${data.latest_anexo_ii_link}')">Exibir</button>
+                        <button onclick="downloadPDF('${data.latest_anexo_ii_link}')">Download</button>
                     </div>
                 `;
-                document.querySelectorAll('.link').forEach(link => {
-                    link.addEventListener('click', function(event) {
-                        event.preventDefault();
-                        const linkUrl = event.target.getAttribute('data-link');
-                        document.getElementById('pdfViewer').src = linkUrl;
-                    });
-                });
+
+                latestRnContainer.innerHTML = `
+                    <div class="link-item">
+                        <strong>RN nº ${data.latest_rn_number} (${formatDate(data.latest_rn_date)})</strong>
+                        <button onclick="viewPDF('${data.latest_rn_link}')">Exibir</button>
+                    </div>
+                `;
             })
             .catch(error => {
                 alert('Erro ao obter os links: ' + error);
             });
     });
+
+    window.viewPDF = function(link) {
+        document.getElementById('pdfViewer').src = link;
+    };
+
+    window.downloadPDF = function(link) {
+        const a = document.createElement('a');
+        a.href = link;
+        a.download = 'Anexo_II.pdf';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    };
+
+    function formatDate(dateString) {
+        const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+        return new Date(dateString).toLocaleDateString(undefined, options);
+    }
 });
