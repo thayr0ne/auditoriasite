@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ANS Auditoria</title>
+    <title>Auditoria Site</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -19,33 +19,25 @@
         </nav>
     </header>
     <main>
-        <section id="anexosVigentes" class="content active">
-            <div class="left-pane">
-                <h2>Recentes</h2>
-                <div id="latestAnexoIIContainer"></div>
-                <h2>Histórico</h2>
-                <div id="latestRnContainer"></div>
+        <section id="anexosVigentes" class="active">
+            <div class="left-container">
+                <div class="recent">
+                    <h3>RECENTES</h3>
+                    <div id="latestAnexoIIContainer"></div>
+                </div>
+                <div class="history">
+                    <h3>HISTÓRICO</h3>
+                    <div id="latestRnContainer"></div>
+                </div>
             </div>
-            <div class="right-pane">
-                <iframe id="pdfViewer" src="" width="100%" height="600px"></iframe>
+            <div class="right-container">
+                <iframe id="pdfViewer" style="width:100%; height:100%;" frameborder="0"></iframe>
             </div>
         </section>
-        <section id="rolVigente" class="content">
-            <h2>Rol Vigente</h2>
-            <p>Conteúdo a ser desenvolvido...</p>
-        </section>
-        <section id="buscarProcedimentos" class="content">
-            <h2>Buscar Procedimentos</h2>
-            <p>Conteúdo a ser desenvolvido...</p>
-        </section>
-        <section id="cbhpm" class="content">
-            <h2>CBHPM</h2>
-            <p>Conteúdo a ser desenvolvido...</p>
-        </section>
-        <section id="relatorios" class="content">
-            <h2>Relatórios</h2>
-            <p>Conteúdo a ser desenvolvido...</p>
-        </section>
+        <section id="rolVigente">Conteúdo a ser desenvolvido</section>
+        <section id="buscarProcedimentos">Conteúdo a ser desenvolvido</section>
+        <section id="cbhpm">Conteúdo a ser desenvolvido</section>
+        <section id="relatorios">Conteúdo a ser desenvolvido</section>
     </main>
     <script src="scripts.js"></script>
 </body>
