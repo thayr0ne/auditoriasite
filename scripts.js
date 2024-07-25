@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <div class="link-item">
                         <strong>RN nº ${link.number} (${link.date})</strong>
                         <button onclick="viewPDF('${link.url}')">Exibir</button>
-                        <button onclick="fetchRnSummary('${link.url}')">Resumo</button>
+                        <button onclick="fetchSummary('${link.url}')">Resumo</button>
                     </div>
                 `).join('');
             } else {
@@ -76,16 +76,14 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
     window.viewPDF = function(link) {
-        console.log('Exibindo PDF:', link); // Log para depuração
         document.getElementById('pdfViewer').src = link;
     };
 
     window.downloadPDF = function(link) {
-        console.log('Baixando PDF:', link); // Log para depuração
         window.open(link, '_blank');
     };
 
-    window.fetchRnSummary = function(url) {
+    window.fetchSummary = function(url) {
         fetch('https://auditoriasite.onrender.com/api/fetch-rn-summary', {
             method: 'POST',
             headers: {
@@ -96,9 +94,9 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(response => response.json())
         .then(data => {
             if (data.summary) {
-                alert('Resumo: ' + data.summary);
+                alert(data.summary);
             } else {
-                alert('Erro ao obter o resumo: ' + (data.error || 'Erro desconhecido'));
+                alert('Nenhum resumo encontrado.');
             }
         })
         .catch(error => {
