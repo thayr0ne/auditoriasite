@@ -8,7 +8,7 @@ import re
 app = Flask(__name__)
 CORS(app, resources={r"/api/*": {"origins": "*"}})
 
-@app.route('/api/fetch-ans-links')
+@app.route('/api/fetch-ans-links', methods=['GET'])
 def fetch_ans_links():
     url = 'https://www.ans.gov.br/component/legislacao/?view=legislacao&task=TextoLei&format=raw&id=NDAzMw==#anexosvigentes'
     response = requests.get(url)
