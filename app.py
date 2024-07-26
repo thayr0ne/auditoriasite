@@ -86,6 +86,7 @@ def fetch_rn_summary():
     if response.status_code == 200:
         soup = BeautifulSoup(response.content, 'html.parser')
         paragraphs = soup.find_all('p', align='right')
+        logging.info(f'Found {len(paragraphs)} paragraphs with right alignment')
         summary = "\n".join(p.get_text().strip() for p in paragraphs)
         logging.info(f'Summary found: {summary}')
         return jsonify({'summary': summary})
