@@ -79,7 +79,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         })
         .catch(error => {
-            console.error('Erro ao obter os links:', error);
+            console.error('Erro ao obter os links:', error); // Log de erro
             alert('Erro ao obter os links: ' + error);
         });
 
