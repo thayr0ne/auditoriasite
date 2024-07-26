@@ -56,6 +56,10 @@ def fetch_ans_links():
         if anexo_ii_links:
             latest_anexo_ii_text, latest_anexo_ii_href = anexo_ii_links[0]
             latest_anexo_ii_link = urljoin(url, latest_anexo_ii_href)
+            # Adicionar logging para texto e href
+            logging.info(f'Latest Anexo II text: {latest_anexo_ii_text}')
+            logging.info(f'Latest Anexo II href: {latest_anexo_ii_href}')
+            # Buscar pela data dentro do href
             latest_anexo_ii_date_match = re.search(r'(\d{2}/\d{2}/\d{4})', latest_anexo_ii_text)
             if latest_anexo_ii_date_match:
                 latest_anexo_ii_date = latest_anexo_ii_date_match.group(1)
