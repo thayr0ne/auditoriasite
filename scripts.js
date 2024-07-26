@@ -39,10 +39,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Lógica para buscar links do backend
     fetch('https://auditoriasite.onrender.com/api/fetch-ans-links')
-        .then(response => {
-            console.log('Response status:', response.status);
-            return response.json();
-        })
+        .then(response => response.json())
         .then(data => {
             console.log('Dados recebidos da API:', data); // Log para depuração
 
@@ -50,9 +47,10 @@ document.addEventListener('DOMContentLoaded', function() {
             const latestRnContainer = document.getElementById('latestRnContainer');
 
             if (data.latest_anexo_ii_date && data.latest_anexo_ii_link) {
+                console.log('Anexo II mais recente:', data.latest_anexo_ii_link); // Log de depuração
                 latestAnexoIIContainer.innerHTML = `
                     <div class="link-item">
-                        <strong>Anexo II - Modificado em ${formatDate(data.latest_anexo_ii_date)}</strong>
+                        <strong>Anexo II - Modificado em ${data.latest_anexo_ii_date}</strong>
                         <button onclick="viewPDF('${data.latest_anexo_ii_link}')">Exibir</button>
                         <button onclick="downloadPDF('${data.latest_anexo_ii_link}')">Download</button>
                     </div>
@@ -66,7 +64,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <div class="link-item">
                         <strong>RN nº ${link.number} (${link.date})</strong>
                         <button onclick="viewPDF('${link.url}')">Exibir</button>
-                        <button onclick="fetchSummary('${link.url}')">Resumo</button>
+                        <button onclick="fetchRnSummary('${link.url}')">Resumo</button>
                     </div>
                 `).join('');
             } else {
@@ -79,14 +77,16 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
     window.viewPDF = function(link) {
+        console.log('Exibindo PDF:', link); // Log para depuração
         document.getElementById('pdfViewer').src = link;
     };
 
     window.downloadPDF = function(link) {
+        console.log('Baixando PDF:', link); // Log para depuração
         window.open(link, '_blank');
     };
 
-    window.fetchSummary = function(url) {
+    window.fetchRnSummary = function(url) {
         fetch('https://auditoriasite.onrender.com/api/fetch-rn-summary', {
             method: 'POST',
             headers: {
@@ -97,9 +97,9 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(response => response.json())
         .then(data => {
             if (data.summary) {
-                alert(data.summary);
+                alert('Resumo: ' + data.summary);
             } else {
-                alert('Nenhum resumo encontrado.');
+                alert('Erro ao obter o resumo: ' + (data.error || 'Erro desconhecido'));
             }
         })
         .catch(error => {
@@ -107,9 +107,4 @@ document.addEventListener('DOMContentLoaded', function() {
             alert('Erro ao obter o resumo: ' + error);
         });
     };
-
-    function formatDate(dateStr) {
-        const [day, month, year] = dateStr.split('/');
-        return `${day}/${month}/${year}`;
-    }
 });
