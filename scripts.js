@@ -51,6 +51,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const latestRnContainer = document.getElementById('latestRnContainer');
 
             if (data.latest_anexo_ii_date && data.latest_anexo_ii_link) {
+                console.log('Anexo II mais recente:', data.latest_anexo_ii_link); // Log de depuração
                 latestAnexoIIContainer.innerHTML = `
                     <div class="link-item">
                         <strong>Anexo II - Modificado em ${data.latest_anexo_ii_date}</strong>
@@ -59,10 +60,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     </div>
                 `;
             } else {
+                console.error('Nenhum Anexo II encontrado'); // Log de erro
                 latestAnexoIIContainer.innerHTML = '<p>Nenhum Anexo II encontrado</p>';
             }
 
             if (Array.isArray(data.latest_rn_links)) {
+                console.log('RN links encontrados:', data.latest_rn_links); // Log de depuração
                 latestRnContainer.innerHTML = data.latest_rn_links.map(link => `
                     <div class="link-item">
                         <strong>RN nº ${link.number} (${link.date})</strong>
@@ -71,6 +74,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     </div>
                 `).join('');
             } else {
+                console.error('Nenhuma RN encontrada'); // Log de erro
                 latestRnContainer.innerHTML = '<p>Nenhuma RN encontrada</p>';
             }
         })
@@ -100,8 +104,10 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(response => response.json())
         .then(data => {
             if (data.summary) {
+                console.log('Resumo encontrado:', data.summary); // Log de depuração
                 alert('Resumo: ' + data.summary);
             } else {
+                console.error('Erro ao obter o resumo:', data.error); // Log de erro
                 alert('Erro ao obter o resumo: ' + (data.error || 'Erro desconhecido'));
             }
         })
