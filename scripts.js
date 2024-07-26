@@ -94,6 +94,7 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     window.fetchRnSummary = function(url) {
+        console.log('Fetching summary for URL:', url); // Log para depuração
         fetch('https://auditoriasite.onrender.com/api/fetch-rn-summary', {
             method: 'POST',
             headers: {
@@ -104,7 +105,7 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(response => response.json())
         .then(data => {
             if (data.summary) {
-                console.log('Resumo encontrado:', data.summary); // Log de depuração
+                console.log('Resumo encontrado:', data.summary); // Log para depuração
                 alert('Resumo: ' + data.summary);
             } else {
                 console.error('Erro ao obter o resumo:', data.error); // Log de erro
