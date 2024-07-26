@@ -46,12 +46,11 @@ document.addEventListener('DOMContentLoaded', function() {
             return response.json();
         })
         .then(data => {
-            console.log('Dados recebidos da API:', data);  // Log para depuração
+            console.log('Dados recebidos da API:', data); // Log para depuração
             const latestAnexoIIContainer = document.getElementById('latestAnexoIIContainer');
             const latestRnContainer = document.getElementById('latestRnContainer');
 
             if (data.latest_anexo_ii_date && data.latest_anexo_ii_link) {
-                console.log('Anexo II mais recente:', data.latest_anexo_ii_link);  // Log de depuração
                 latestAnexoIIContainer.innerHTML = `
                     <div class="link-item">
                         <strong>Anexo II - Modificado em ${data.latest_anexo_ii_date}</strong>
@@ -81,12 +80,12 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
     window.viewPDF = function(link) {
-        console.log('Exibindo PDF:', link);  // Log para depuração
+        console.log('Exibindo PDF:', link); // Log para depuração
         document.getElementById('pdfViewer').src = link;
     };
 
     window.downloadPDF = function(link) {
-        console.log('Baixando PDF:', link);  // Log para depuração
+        console.log('Baixando PDF:', link); // Log para depuração
         window.open(link, '_blank');
     };
 
