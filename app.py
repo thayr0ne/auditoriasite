@@ -30,6 +30,7 @@ def fetch_ans_links():
             elif 'ANEXO II' in texto and href.endswith('.pdf'):
                 anexo_ii_links.append((texto, href))
         
+        rn_links = list(dict.fromkeys(rn_links))  # Remove duplicatas
         rn_links.sort(reverse=True, key=lambda x: x[0])
         latest_rn_links = []
         for rn_num, texto, href in rn_links:
@@ -47,9 +48,9 @@ def fetch_ans_links():
         if anexo_ii_links:
             latest_anexo_ii_text, latest_anexo_ii_href = anexo_ii_links[0]
             latest_anexo_ii_link = urljoin(url, latest_anexo_ii_href)
-            latest_anexo_ii_date_match = re.search(r'\d{2}/\d{2}/\d{4}', latest_anexo_ii_text)
+            latest_anexo_ii_date_match = re.search(r'(\d{2}/\d{2}/\d{4})', latest_anexo_ii_text)
             if latest_anexo_ii_date_match:
-                latest_anexo_ii_date = latest_anexo_ii_date_match.group(0)
+                latest_anexo_ii_date = latest_anexo_ii_date_match.group(1)
 
         return jsonify({
             'latest_rn_links': latest_rn_links,
