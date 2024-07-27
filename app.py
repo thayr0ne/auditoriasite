@@ -16,7 +16,11 @@ logging.basicConfig(level=logging.INFO)
 def fetch_ans_links():
     url = 'https://www.ans.gov.br/component/legislacao/?view=legislacao&task=TextoLei&format=raw&id=NDAzMw==#anexosvigentes'
     logging.info(f'Fetching data from URL: {url}')
-    response = requests.get(url)
+    try:
+        response = requests.get(url)
+    except requests.exceptions.RequestException as e:
+        logging.error(f'Error fetching data from URL: {e}')
+        return jsonify({'error': f'Error fetching data from URL: {e}'}), 500
     
     if response.status_code == 200:
         logging.info('Page fetched successfully')
@@ -96,7 +100,12 @@ def fetch_rn_summary():
         logging.error('URL não fornecida')
         return jsonify({'error': 'URL não fornecida'}), 400
 
-    response = requests.get(url)
+    try:
+        response = requests.get(url)
+    except requests.exceptions.RequestException as e:
+        logging.error(f'Error fetching data from URL: {e}')
+        return jsonify({'error': f'Error fetching data from URL: {e}'}), 500
+    
     if response.status_code == 200:
         soup = BeautifulSoup(response.content, 'html.parser')
         paragraphs = soup.find_all('p', align='right')
