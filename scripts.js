@@ -60,12 +60,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     </div>
                 `;
             } else {
-                console.error('Nenhum Anexo II encontrado'); // Log de erro
+                console.log('Nenhum Anexo II encontrado'); // Log de depuração
                 latestAnexoIIContainer.innerHTML = '<p>Nenhum Anexo II encontrado</p>';
             }
 
             if (Array.isArray(data.latest_rn_links)) {
-                console.log('RN links encontrados:', data.latest_rn_links); // Log de depuração
+                console.log('RN links encontrados:', data.latest_rn_links); // Log para depuração
                 latestRnContainer.innerHTML = data.latest_rn_links.map(link => `
                     <div class="link-item">
                         <strong>RN nº ${link.number} (${link.date})</strong>
@@ -74,12 +74,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     </div>
                 `).join('');
             } else {
-                console.error('Nenhuma RN encontrada'); // Log de erro
                 latestRnContainer.innerHTML = '<p>Nenhuma RN encontrada</p>';
             }
         })
         .catch(error => {
-            console.error('Erro ao obter os links:', error); // Log de erro
+            console.error('Erro ao obter os links:', error);
             alert('Erro ao obter os links: ' + error);
         });
 
@@ -97,18 +96,14 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('Fetching summary for URL:', url); // Log para depuração
         fetch('https://auditoriasite.onrender.com/api/fetch-rn-summary', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ url: url })
         })
         .then(response => response.json())
         .then(data => {
             if (data.summary) {
-                console.log('Resumo encontrado:', data.summary); // Log para depuração
                 alert('Resumo: ' + data.summary);
             } else {
-                console.error('Erro ao obter o resumo:', data.error); // Log de erro
                 alert('Erro ao obter o resumo: ' + (data.error || 'Erro desconhecido'));
             }
         })
