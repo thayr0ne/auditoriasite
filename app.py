@@ -60,15 +60,12 @@ def fetch_ans_links():
         if anexo_ii_links:
             latest_anexo_ii_text, latest_anexo_ii_href = anexo_ii_links[0]
             latest_anexo_ii_link = urljoin(url, latest_anexo_ii_href)
-            # Adicionar logging para texto e href
             logging.info(f'Latest Anexo II text: {latest_anexo_ii_text}')
             logging.info(f'Latest Anexo II href: {latest_anexo_ii_href}')
-            # Buscar pela data dentro do texto
             latest_anexo_ii_date_match = re.search(r'(\d{2}/\d{2}/\d{4})', latest_anexo_ii_text)
             if latest_anexo_ii_date_match:
                 latest_anexo_ii_date = latest_anexo_ii_date_match.group(1)
             else:
-                # Se não encontrar a data, verificar em outros textos
                 for _, href in anexo_ii_links:
                     text_content = requests.get(urljoin(url, href)).text
                     date_match = re.search(r'(\d{2}/\d{2}/\d{4})', text_content)
@@ -112,7 +109,6 @@ def fetch_rn_summary():
         logging.info(f'Found {len(paragraphs)} paragraphs with right alignment')
         summary = "\n".join(p.get_text().strip() for p in paragraphs)
         if not summary:
-            # Tentar outro método se não houver parágrafos alinhados à direita
             first_paragraph = soup.find('p')
             if first_paragraph:
                 summary = first_paragraph.get_text().strip()
