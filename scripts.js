@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', function() {
     showSection('anexosVigentes');
 
     // Lógica para buscar links do backend
-    fetch('https://auditoriasite.vercel.app/api/fetch-ans-links')
+    fetch('https://auditoriasite.onrender.com/api/fetch-ans-links')
         .then(response => {
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
@@ -50,11 +50,11 @@ document.addEventListener('DOMContentLoaded', function() {
             const latestAnexoIIContainer = document.getElementById('latestAnexoIIContainer');
             const latestRnContainer = document.getElementById('latestRnContainer');
 
-            if (data.latest_anexo_ii_date && data.latest_anexo_ii_link) {
+            if (data.latest_anexo_ii_link) {
                 console.log('Anexo II mais recente:', data.latest_anexo_ii_link); // Log de depuração
                 latestAnexoIIContainer.innerHTML = `
                     <div class="link-item">
-                        <strong>Anexo II - Modificado em ${data.latest_anexo_ii_date}</strong>
+                        <strong>Anexo II mais recente</strong>
                         <button onclick="viewPDF('${data.latest_anexo_ii_link}')">Exibir</button>
                         <button onclick="downloadPDF('${data.latest_anexo_ii_link}')">Download</button>
                     </div>
@@ -112,9 +112,4 @@ document.addEventListener('DOMContentLoaded', function() {
             alert('Erro ao obter o resumo: ' + error);
         });
     };
-
-    function formatDate(dateStr) {
-        const date = new Date(dateStr);
-        return date.toLocaleDateString('pt-BR');
-    }
 });
