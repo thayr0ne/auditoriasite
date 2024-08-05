@@ -56,31 +56,17 @@ def fetch_ans_links():
                 })
 
         latest_anexo_ii_link = ""
-        latest_anexo_ii_date = ""
         if anexo_ii_links:
             latest_anexo_ii_text, latest_anexo_ii_href = anexo_ii_links[0]
             latest_anexo_ii_link = urljoin(url, latest_anexo_ii_href)
             logging.info(f'Latest Anexo II text: {latest_anexo_ii_text}')
             logging.info(f'Latest Anexo II href: {latest_anexo_ii_href}')
-            latest_anexo_ii_date_match = re.search(r'(\d{2}/\d{2}/\d{4})', latest_anexo_ii_text)
-            if latest_anexo_ii_date_match:
-                latest_anexo_ii_date = latest_anexo_ii_date_match.group(1)
-            else:
-                for _, href in anexo_ii_links:
-                    text_content = requests.get(urljoin(url, href)).text
-                    date_match = re.search(r'(\d{2}/\d{2}/\d{4})', text_content)
-                    if date_match:
-                        latest_anexo_ii_date = date_match.group(1)
-                        break
-                if not latest_anexo_ii_date:
-                    logging.warning(f'Date not found in Anexo II text: {latest_anexo_ii_text}')
 
-        logging.info(f'Latest Anexo II link: {latest_anexo_ii_link}, date: {latest_anexo_ii_date}')
+        logging.info(f'Latest Anexo II link: {latest_anexo_ii_link}')
 
         return jsonify({
             'latest_rn_links': latest_rn_links,
-            'latest_anexo_ii_link': latest_anexo_ii_link,
-            'latest_anexo_ii_date': latest_anexo_ii_date
+            'latest_anexo_ii_link': latest_anexo_ii_link
         })
     else:
         logging.error(f'Error fetching page: {response.status_code}')
