@@ -29,7 +29,12 @@ def fetch_ans_links():
         logging.info(f'Found {len(links)} links on the page')
         
         rn_links = []
-        anexo_ii_links = []
+        anexo_links = {
+            'I': [],
+            'II': [],
+            'III': [],
+            'IV': []
+        }
         for link in links:
             href = link.get('href')
             texto = link.get_text().strip()
@@ -38,8 +43,9 @@ def fetch_ans_links():
                 if rn_match:
                     rn_num = int(rn_match.group(1))
                     rn_links.append((rn_num, texto, href))
-            elif 'ANEXO II' in texto and href.endswith('.pdf'):
-                anexo_ii_links.append((texto, href))
+            for anexo in anexo_links.keys():
+                if f'ANEXO {anexo}' in texto and href.endswith('.pdf'):
+                    anexo_links[anexo].append((texto, href))
         
         rn_links = list(dict.fromkeys(rn_links))  # Remove duplicatas
         rn_links.sort(reverse=True, key=lambda x: x[0])
@@ -55,18 +61,21 @@ def fetch_ans_links():
                     'url': urljoin(url, href)
                 })
 
-        latest_anexo_ii_link = ""
-        if anexo_ii_links:
-            latest_anexo_ii_text, latest_anexo_ii_href = anexo_ii_links[0]
-            latest_anexo_ii_link = urljoin(url, latest_anexo_ii_href)
-            logging.info(f'Latest Anexo II text: {latest_anexo_ii_text}')
-            logging.info(f'Latest Anexo II href: {latest_anexo_ii_href}')
+        latest_anexo_links = {}
+        for anexo, links in anexo_links.items():
+            if links:
+                latest_anexo_text, latest_anexo_href = links[0]
+                latest_anexo_links[anexo] = urljoin(url, latest_anexo_href)
+                logging.info(f'Latest Anexo {anexo} text: {latest_anexo_text}')
+                logging.info(f'Latest Anexo {anexo} href: {latest_anexo_href}')
+            else:
+                latest_anexo_links[anexo] = ""
 
-        logging.info(f'Latest Anexo II link: {latest_anexo_ii_link}')
+        logging.info(f'Latest Anexo links: {latest_anexo_links}')
 
         return jsonify({
             'latest_rn_links': latest_rn_links,
-            'latest_anexo_ii_link': latest_anexo_ii_link
+            'latest_anexo_links': latest_anexo_links
         })
     else:
         logging.error(f'Error fetching page: {response.status_code}')
