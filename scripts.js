@@ -47,21 +47,28 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .then(data => {
             console.log('Dados recebidos da API:', data); // Log para depuração
-            const latestAnexoIIContainer = document.getElementById('latestAnexoIIContainer');
+            const latestAnexoContainers = {
+                I: document.getElementById('latestAnexoIContainer'),
+                II: document.getElementById('latestAnexoIIContainer'),
+                III: document.getElementById('latestAnexoIIIContainer'),
+                IV: document.getElementById('latestAnexoIVContainer')
+            };
             const latestRnContainer = document.getElementById('latestRnContainer');
 
-            if (data.latest_anexo_ii_link) {
-                console.log('Anexo II mais recente:', data.latest_anexo_ii_link); // Log de depuração
-                latestAnexoIIContainer.innerHTML = `
-                    <div class="link-item">
-                        <strong>Anexo II mais recente</strong>
-                        <button onclick="viewPDF('${data.latest_anexo_ii_link}')">Exibir</button>
-                        <button onclick="downloadPDF('${data.latest_anexo_ii_link}')">Download</button>
-                    </div>
-                `;
-            } else {
-                console.log('Nenhum Anexo II encontrado'); // Log de depuração
-                latestAnexoIIContainer.innerHTML = '<p>Nenhum Anexo II encontrado</p>';
+            for (let anexo in latestAnexoContainers) {
+                if (data.latest_anexo_links[anexo]) {
+                    console.log(`Anexo ${anexo} mais recente:`, data.latest_anexo_links[anexo]); // Log de depuração
+                    latestAnexoContainers[anexo].innerHTML = `
+                        <div class="link-item">
+                            <strong>Anexo ${anexo} mais recente</strong>
+                            <button onclick="viewPDF('${data.latest_anexo_links[anexo]}')">Exibir</button>
+                            <button onclick="downloadPDF('${data.latest_anexo_links[anexo]}')">Download</button>
+                        </div>
+                    `;
+                } else {
+                    console.log(`Nenhum Anexo ${anexo} encontrado`); // Log de depuração
+                    latestAnexoContainers[anexo].innerHTML = `<p>Nenhum Anexo ${anexo} encontrado</p>`;
+                }
             }
 
             if (Array.isArray(data.latest_rn_links)) {
