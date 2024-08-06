@@ -1,68 +1,91 @@
-body {
-    font-family: Arial, sans-serif;
+/* Reset básico */
+* {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
 }
 
-header {
-    background: #f8f8f8;
-    padding: 10px 0;
-    border-bottom: 1px solid #ddd;
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+nav {
+    background-color: #333;
+    padding: 1rem;
 }
 
 nav ul {
     list-style-type: none;
-    padding: 0;
     display: flex;
-    justify-content: center;
+    justify-content: space-around;
 }
 
 nav ul li {
-    margin: 0 15px;
+    color: #fff;
+    cursor: pointer;
+    padding: 0.5rem 1rem;
+    transition: background-color 0.3s;
 }
 
-nav ul li a {
-    text-decoration: none;
-    color: #333;
+nav ul li:hover {
+    background-color: #555;
 }
 
 main {
-    display: flex;
-    height: calc(100vh - 50px);
+    padding: 2rem;
 }
 
-section {
+.section {
     display: none;
-    flex: 1;
-    padding: 20px;
 }
 
-section.active {
-    display: flex;
+.section.active {
+    display: block;
 }
 
-.left-container {
-    width: 30%;
-    padding-right: 20px;
-    border-right: 1px solid #ddd;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+.anexo-container {
+    background: #fff;
+    padding: 1rem;
+    margin: 1rem 0;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
 }
 
-.right-container {
-    width: 70%;
-}
-
-.recent, .history {
-    margin-bottom: 20px;
-}
-
-.history {
-    max-height: 50vh;
-    overflow-y: auto;
+.anexo-container:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
 .link-item {
-    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.link-item strong {
+    flex: 1;
+}
+
+.link-item button {
+    background-color: #007BFF;
+    color: #fff;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-left: 0.5rem;
+}
+
+.link-item button:hover {
+    background-color: #0056b3;
+}
+
+h2 {
+    margin-bottom: 1rem;
+    color: #333;
+    font-size: 1.5rem;
 }
