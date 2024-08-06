@@ -56,18 +56,20 @@ document.addEventListener('DOMContentLoaded', function() {
             const latestRnContainer = document.getElementById('latestRnContainer');
 
             for (let anexo in latestAnexoContainers) {
-                if (data.latest_anexo_links[anexo]) {
-                    console.log(`Anexo ${anexo} mais recente:`, data.latest_anexo_links[anexo]); // Log de depuração
-                    latestAnexoContainers[anexo].innerHTML = `
-                        <div class="link-item">
-                            <strong>Anexo ${anexo} mais recente</strong>
-                            <button onclick="viewPDF('${data.latest_anexo_links[anexo]}')">Exibir</button>
-                            <button onclick="downloadPDF('${data.latest_anexo_links[anexo]}')">Download</button>
-                        </div>
-                    `;
-                } else {
-                    console.log(`Nenhum Anexo ${anexo} encontrado`); // Log de depuração
-                    latestAnexoContainers[anexo].innerHTML = `<p>Nenhum Anexo ${anexo} encontrado</p>`;
+                if (latestAnexoContainers[anexo]) {
+                    if (data.latest_anexo_links[anexo]) {
+                        console.log(`Anexo ${anexo} mais recente:`, data.latest_anexo_links[anexo]); // Log de depuração
+                        latestAnexoContainers[anexo].innerHTML = `
+                            <div class="link-item">
+                                <strong>Anexo ${anexo} mais recente</strong>
+                                <button onclick="viewPDF('${data.latest_anexo_links[anexo]}')">Exibir</button>
+                                <button onclick="downloadPDF('${data.latest_anexo_links[anexo]}')">Download</button>
+                            </div>
+                        `;
+                    } else {
+                        console.log(`Nenhum Anexo ${anexo} encontrado`); // Log de depuração
+                        latestAnexoContainers[anexo].innerHTML = `<p>Nenhum Anexo ${anexo} encontrado</p>`;
+                    }
                 }
             }
 
