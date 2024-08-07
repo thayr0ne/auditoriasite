@@ -165,7 +165,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function fetchRolVigente() {
         fetch('https://auditoriasite.onrender.com/api/fetch-rol-vigente')
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
             .then(data => {
                 if (data.rol_excel_link) {
                     const rolVigenteContainer = document.getElementById('rolVigenteContainer');
