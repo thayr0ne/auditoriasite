@@ -68,6 +68,7 @@ def fetch_rn_summary():
     else:
         return jsonify({'error': 'Erro ao acessar a página da RN'}), 500
 
+@app.route('/api/fetch-rol-vigente', methods=['GET'])
 def fetch_rol_vigente():
     url = 'https://www.gov.br/ans/pt-br/acesso-a-informacao/participacao-da-sociedade/atualizacao-do-rol-de-procedimentos'
     response = requests.get(url)
@@ -82,7 +83,7 @@ def fetch_rol_vigente():
         else:
             return jsonify({'error': 'Link do arquivo Excel não encontrado'}), 404
     else:
-        return jsonify({'error': 'Erro ao acessar a página'}), 500
+        return jsonify({'error': 'Erro ao acessar a página', 'status_code': response.status_code}), response.status_code
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
