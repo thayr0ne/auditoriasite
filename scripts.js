@@ -9,22 +9,33 @@ document.addEventListener('DOMContentLoaded', function() {
 
     document.getElementById('anexosVigentesMenu').addEventListener('click', function() {
         showSection('anexosVigentes');
+        document.getElementById('sidebar').style.display = 'block';
+        document.getElementById('pdfViewerContainer').style.display = 'block';
     });
 
     document.getElementById('rolVigenteMenu').addEventListener('click', function() {
         showSection('rolVigente');
+        document.getElementById('sidebar').style.display = 'none';
+        document.getElementById('pdfViewerContainer').style.display = 'none';
+        fetchRolVigente();
     });
 
     document.getElementById('buscarProcedimentosMenu').addEventListener('click', function() {
         showSection('buscarProcedimentos');
+        document.getElementById('sidebar').style.display = 'none';
+        document.getElementById('pdfViewerContainer').style.display = 'none';
     });
 
     document.getElementById('cbhpmMenu').addEventListener('click', function() {
         showSection('cbhpm');
+        document.getElementById('sidebar').style.display = 'none';
+        document.getElementById('pdfViewerContainer').style.display = 'none';
     });
 
     document.getElementById('relatoriosMenu').addEventListener('click', function() {
         showSection('relatorios');
+        document.getElementById('sidebar').style.display = 'none';
+        document.getElementById('pdfViewerContainer').style.display = 'none';
     });
 
     function showSection(sectionId) {
@@ -32,74 +43,81 @@ document.addEventListener('DOMContentLoaded', function() {
             sections[key].classList.remove('active');
         }
         sections[sectionId].classList.add('active');
-        if (sectionId === 'rolVigente') {
-            fetchRolVigente();
-        }
     }
 
     // Inicialmente mostrar a seção Anexos Vigentes
     showSection('anexosVigentes');
+    document.getElementById('sidebar').style.display = 'block';
+    document.getElementById('pdfViewerContainer').style.display = 'block';
 
     // Lógica para buscar links do backend
     fetch('https://auditoriasite.onrender.com/api/fetch-ans-links')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.json();
-        })
+        .then(response => response.json())
         .then(data => {
-            console.log('Dados recebidos da API:', data); // Log para depuração
+            const latestAnexoContainers = {
+                I: document.getElementById('latestAnexoIContainer'),
+                II: document.getElementById('latestAnexoIIContainer'),
+                III: document.getElementById('latestAnexoIIIContainer'),
+                IV: document.getElementById('latestAnexoIVContainer')
+            };
 
-            const latestAnexoIContainer = document.getElementById('latestAnexoIContainer');
-            const latestAnexoIIContainer = document.getElementById('latestAnexoIIContainer');
-            const latestAnexoIIIContainer = document.getElementById('latestAnexoIIIContainer');
-            const latestAnexoIVContainer = document.getElementById('latestAnexoIVContainer');
-            const latestRnContainer = document.getElementById('historicoRnContainer');
-
-            if (data.latest_anexo_links) {
-                latestAnexoIContainer.innerHTML = `
-                    <div class="link-item">
-                        <strong>Anexo I</strong>
-                        <button onclick="viewPDF('${data.latest_anexo_links.I}')">Exibir</button>
-                    </div>
-                `;
-                latestAnexoIIContainer.innerHTML = `
-                    <div class="link-item">
-                        <strong>Anexo II</strong>
-                        <button onclick="viewPDF('${data.latest_anexo_links.II}')">Exibir</button>
-                    </div>
-                `;
-                latestAnexoIIIContainer.innerHTML = `
-                    <div class="link-item">
-                        <strong>Anexo III</strong>
-                        <button onclick="viewPDF('${data.latest_anexo_links.III}')">Exibir</button>
-                    </div>
-                `;
-                latestAnexoIVContainer.innerHTML = `
-                    <div class="link-item">
-                        <strong>Anexo IV</strong>
-                        <button onclick="viewPDF('${data.latest_anexo_links.IV}')">Exibir</button>
-                    </div>
-                `;
-            } else {
-                latestAnexoIContainer.innerHTML = '<p>Nenhum Anexo I encontrado</p>';
-                latestAnexoIIContainer.innerHTML = '<p>Nenhum Anexo II encontrado</p>';
-                latestAnexoIIIContainer.innerHTML = '<p>Nenhum Anexo III encontrado</p>';
-                latestAnexoIVContainer.innerHTML = '<p>Nenhum Anexo IV encontrado</p>';
+            for (let anexo in latestAnexoContainers) {
+                if (latestAnexoContainers[anexo]) {
+                    if (data.latest_anexo_links[anexo]) {
+                        console.log(`Anexo ${anexo} mais recente:`, data.latest_anexo_links[anexo]); // Log de depuração
+                        latestAnexoContainers[anexo].innerHTML = `
+                            <div class="link-item">
+                                <strong>Anexo ${anexo}</strong>
+                                <button onclick="viewPDF('${data.latest_anexo_links[anexo]}')">Exibir</button>
+                                <button onclick="downloadPDF('${data.latest_anexo_links[anexo]}')">Download</button>
+                            </div>
+                        `;
+                    } else {
+                        latestAnexoContainers[anexo].innerHTML = `
+                            <div class="link-item">
+                                <strong>Nenhum Anexo ${anexo} encontrado</strong>
+                            </div>
+                        `;
+                    }
+                }
             }
 
-            if (Array.isArray(data.latest_rn_links)) {
-                latestRnContainer.innerHTML = data.latest_rn_links.map(link => `
+            if (Array.isArray(data.latest_rn_links) && data.latest_rn_links.length > 0) {
+                console.log('RN links encontrados:', data.latest_rn_links); // Log para depuração
+                let displayedRnLinks = 0;
+                const rnLinksHtml = data.latest_rn_links.slice(displayedRnLinks, displayedRnLinks + 10).map(link => `
                     <div class="link-item">
-                        <strong>RN nº ${link.number}</strong>
-                        <span>(${link.date})</span>
+                        <strong>RN nº ${link.number}</strong> <span>(${link.date})</span>
                         <button onclick="viewPDF('${link.url}')">Exibir</button>
-                        <button onclick="downloadPDF('${link.url}')">Download</button>
                         <button onclick="fetchRnSummary('${link.url}')">Resumo</button>
                     </div>
                 `).join('');
+                const latestRnContainer = document.getElementById('latestRnContainer');
+                latestRnContainer.innerHTML = rnLinksHtml;
+                displayedRnLinks += 10;
+
+                const loadMoreBtn = document.getElementById('loadMoreBtn');
+                loadMoreBtn.addEventListener('click', function() {
+                    const additionalRnLinksHtml = data.latest_rn_links.slice(displayedRnLinks, displayedRnLinks + 10).map(link => `
+                        <div class="link-item">
+                            <strong>RN nº ${link.number}</strong> <span>(${link.date})</span>
+                            <button onclick="viewPDF('${link.url}')">Exibir</button>
+                            <button onclick="fetchRnSummary('${link.url}')">Resumo</button>
+                        </div>
+                    `).join('');
+                    latestRnContainer.innerHTML += additionalRnLinksHtml;
+                    displayedRnLinks += 10;
+
+                    if (displayedRnLinks >= data.latest_rn_links.length) {
+                        loadMoreBtn.style.display = 'none';
+                    }
+                });
+
+                if (displayedRnLinks >= data.latest_rn_links.length) {
+                    loadMoreBtn.style.display = 'none';
+                }
             } else {
+                const latestRnContainer = document.getElementById('latestRnContainer');
                 latestRnContainer.innerHTML = '<p>Nenhuma RN encontrada</p>';
             }
         })
@@ -108,62 +126,55 @@ document.addEventListener('DOMContentLoaded', function() {
             alert('Erro ao obter os links: ' + error);
         });
 
-    window.viewPDF = function(link) {
-        document.getElementById('pdfViewer').src = link;
-    };
-
-    window.downloadPDF = function(link) {
-        window.open(link, '_blank');
-    };
-
-    window.fetchRnSummary = function(url) {
-        fetch('https://auditoriasite.onrender.com/api/fetch-rn-summary', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ url: url })
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data.summary) {
-                    alert('Resumo: ' + data.summary);
-                } else {
-                    alert('Erro ao obter o resumo: ' + (data.error || 'Erro desconhecido'));
-                }
-            })
-            .catch(error => {
-                console.error('Erro ao obter o resumo:', error);
-                alert('Erro ao obter o resumo: ' + error);
-            });
-    };
-
     function fetchRolVigente() {
         fetch('https://auditoriasite.onrender.com/api/fetch-rol-vigente')
             .then(response => response.json())
             .then(data => {
-                const link = data.latest_excel_link;
-                console.log('Link do arquivo Excel:', link); // Log para depuração
-                if (link) {
-                    fetch(link)
-                        .then(response => response.arrayBuffer())
-                        .then(buffer => {
-                            const data = new Uint8Array(buffer);
-                            const workbook = XLSX.read(data, { type: 'array' });
-                            const sheet = workbook.Sheets[workbook.SheetNames[0]];
-                            const html = XLSX.utils.sheet_to_html(sheet);
-                            document.getElementById('excelViewer').innerHTML = html;
-                        })
-                        .catch(error => {
-                            console.error('Erro ao processar o arquivo Excel:', error);
-                            alert('Erro ao processar o arquivo Excel: ' + error);
-                        });
+                if (data.excel_url) {
+                    console.log('URL do Excel:', data.excel_url); // Log para depuração
+                    const excelViewerContainer = document.getElementById('excelViewerContainer');
+                    excelViewerContainer.innerHTML = `<iframe src="https://view.officeapps.live.com/op/embed.aspx?src=${data.excel_url}" width="100%" height="100%" frameborder="0"></iframe>`;
                 } else {
-                    console.error('Arquivo Excel não encontrado');
-                    alert('Arquivo Excel não encontrado');
+                    console.error('Erro ao obter o URL do Excel:', data.error);
+                    alert('Erro ao obter o URL do Excel: ' + (data.error || 'Erro desconhecido'));
                 }
             })
             .catch(error => {
-                console.error('Erro ao obter o link do arquivo Excel:', error);
-                alert('Erro ao obter o link do arquivo Excel: ' + error);
+                console.error('Erro ao obter o URL do Excel:', error);
+                alert('Erro ao obter o URL do Excel: ' + error);
             });
     }
+
+    window.viewPDF = function(link) {
+        console.log('Exibindo PDF:', link); // Log para depuração
+        document.getElementById('pdfViewer').src = link;
+    };
+
+    window.downloadPDF = function(link) {
+        console.log('Baixando PDF:', link); // Log para depuração
+        window.open(link, '_blank');
+    };
+
+    window.fetchRnSummary = function(url) {
+        console.log('Fetching summary for URL:', url); // Log para depuração
+        fetch('https://auditoriasite.onrender.com/api/fetch-rn-summary', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ url: url })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.summary) {
+                alert('Resumo: ' + data.summary);
+            } else {
+                alert('Erro ao obter o resumo: ' + (data.error || 'Erro desconhecido'));
+            }
+        })
+        .catch(error => {
+            console.error('Erro ao obter o resumo:', error);
+            alert('Erro ao obter o resumo: ' + error);
+        });
+    };
 });
