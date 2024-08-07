@@ -29,9 +29,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function showSection(sectionId) {
         for (let key in sections) {
-            sections[key].classList.remove('active');
+            if (sections[key]) {
+                sections[key].classList.remove('active');
+            }
         }
-        sections[sectionId].classList.add('active');
+        if (sections[sectionId]) {
+            sections[sectionId].classList.add('active');
+        }
     }
 
     // Inicialmente mostrar a seção Anexos Vigentes
@@ -84,9 +88,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 `).join('');
                 latestRnContainer.innerHTML = rnLinksHtml;
 
-                let loadMoreBtn = document.getElementById('loadMoreBtn');
+                const loadMoreBtn = document.getElementById('loadMoreBtn');
                 loadMoreBtn.addEventListener('click', function() {
-                    let additionalRnLinksHtml = data.latest_rn_links.slice(latestRnContainer.childElementCount).map(link => `
+                    let additionalRnLinksHtml = data.latest_rn_links.map(link => `
                         <div class="link-item">
                             <strong>RN nº ${link.number} (${link.date})</strong>
                             <button onclick="viewPDF('${link.url}')">Exibir</button>
