@@ -3,10 +3,9 @@ from flask_cors import CORS
 import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
-import re
 
 app = Flask(__name__)
-CORS(app, resources={r"/api/*": {"origins": "*"}})  # Permitir todas as origens
+CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 @app.route('/api/fetch-ans-links', methods=['GET'])
 def fetch_ans_links():
@@ -19,6 +18,7 @@ def fetch_ans_links():
         
         rn_links = []
         anexo_links = {'I': '', 'II': '', 'III': '', 'IV': ''}
+        
         for link in links:
             href = link.get('href')
             texto = link.get_text().strip()
@@ -27,9 +27,14 @@ def fetch_ans_links():
                 if rn_match:
                     rn_num = int(rn_match.group(1))
                     rn_links.append((rn_num, texto, href))
-            for anexo in anexo_links.keys():
-                if f'ANEXO {anexo}' in texto and href.endswith('.pdf'):
-                    anexo_links[anexo] = urljoin(url, href)
+            elif 'ANEXO I' in texto and href.endswith('.pdf'):
+                anexo_links['I'] = urljoin(url, href)
+            elif 'ANEXO II' in texto and href.endswith('.pdf'):
+                anexo_links['II'] = urljoin(url, href)
+            elif 'ANEXO III' in texto and href.endswith('.pdf'):
+                anexo_links['III'] = urljoin(url, href)
+            elif 'ANEXO IV' in texto and href.endswith('.pdf'):
+                anexo_links['IV'] = urljoin(url, href)
         
         rn_links.sort(reverse=True, key=lambda x: x[0])
         latest_rn_links = []
@@ -44,8 +49,8 @@ def fetch_ans_links():
                 })
 
         return jsonify({
-            'latest_rn_links': latest_rn_links,
-            'latest_anexo_links': anexo_links
+            'latest_anexo_links': anexo_links,
+            'latest_rn_links': latest_rn_links
         })
     else:
         return jsonify({
@@ -72,18 +77,16 @@ def fetch_rn_summary():
 def fetch_rol_vigente():
     url = 'https://www.gov.br/ans/pt-br/acesso-a-informacao/participacao-da-sociedade/atualizacao-do-rol-de-procedimentos'
     response = requests.get(url)
-    
     if response.status_code == 200:
         soup = BeautifulSoup(response.content, 'html.parser')
-        link = soup.find('a', string=re.compile("Correlação TUSS x Rol"))
+        link = soup.find('a', string='Correlação TUSS x Rol')
         if link:
-            href = link.get('href')
-            full_url = urljoin(url, href)
-            return jsonify({'rol_excel_link': full_url})
+            latest_excel_link = urljoin(url, link['href'])
+            return jsonify({'latest_excel_link': latest_excel_link})
         else:
-            return jsonify({'error': 'Link do arquivo Excel não encontrado'}), 404
+            return jsonify({'error': 'Arquivo Excel não encontrado'}), 404
     else:
-        return jsonify({'error': 'Erro ao acessar a página', 'status_code': response.status_code}), response.status_code
+        return jsonify({'error': 'Erro ao acessar a página do Rol Vigente'}), 500
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
