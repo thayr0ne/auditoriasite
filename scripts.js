@@ -92,9 +92,8 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             if (Array.isArray(data.latest_rn_links) && data.latest_rn_links.length > 0) {
-                console.log('RN links encontrados:', data.latest_rn_links);
-                let displayedRnLinks = 0;
-                const rnLinksHtml = data.latest_rn_links.slice(displayedRnLinks, displayedRnLinks + 10).map(link => `
+                let displayedRnLinks = 10;
+                const rnLinksHtml = data.latest_rn_links.slice(0, displayedRnLinks).map(link => `
                     <div class="link-item">
                         <strong>RN nº ${link.number}</strong> <span>(${link.date})</span>
                         <button onclick="viewPDF('${link.url}')">Exibir</button>
