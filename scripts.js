@@ -59,6 +59,10 @@ document.addEventListener('DOMContentLoaded', function() {
     fetch('https://auditoriasite.onrender.com/api/fetch-ans-links')
         .then(response => response.json())
         .then(data => {
+            if (!data.latest_anexo_links || !data.latest_rn_links) {
+                throw new Error("Dados inválidos recebidos");
+            }
+
             const latestAnexoContainers = {
                 I: document.getElementById('latestAnexoIContainer'),
                 II: document.getElementById('latestAnexoIIContainer'),
@@ -101,7 +105,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 latestRnContainer.innerHTML = rnLinksHtml;
                 displayedRnLinks += 10;
 
-                const loadMoreBtn = document.getElementById('loadMoreBtn');
+                const loadMoreBtn = document.getElementById('loadMoreRnBtn');
                 loadMoreBtn.addEventListener('click', function() {
                     const additionalRnLinksHtml = data.latest_rn_links.slice(displayedRnLinks, displayedRnLinks + 10).map(link => `
                         <div class="link-item">
