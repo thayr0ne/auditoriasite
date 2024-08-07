@@ -10,32 +10,37 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('anexosVigentesMenu').addEventListener('click', function() {
         showSection('anexosVigentes');
         document.getElementById('sidebar').style.display = 'block';
-        document.getElementById('pdfViewerContainer').style.display = 'block';
+        document.getElementById('pdfViewer').style.display = 'block';
+        document.getElementById('excelViewerContainer').style.display = 'none';
     });
 
     document.getElementById('rolVigenteMenu').addEventListener('click', function() {
         showSection('rolVigente');
         document.getElementById('sidebar').style.display = 'none';
-        document.getElementById('pdfViewerContainer').style.display = 'none';
+        document.getElementById('pdfViewer').style.display = 'none';
+        document.getElementById('excelViewerContainer').style.display = 'block';
         fetchRolVigente();
     });
 
     document.getElementById('buscarProcedimentosMenu').addEventListener('click', function() {
         showSection('buscarProcedimentos');
         document.getElementById('sidebar').style.display = 'none';
-        document.getElementById('pdfViewerContainer').style.display = 'none';
+        document.getElementById('pdfViewer').style.display = 'none';
+        document.getElementById('excelViewerContainer').style.display = 'none';
     });
 
     document.getElementById('cbhpmMenu').addEventListener('click', function() {
         showSection('cbhpm');
         document.getElementById('sidebar').style.display = 'none';
-        document.getElementById('pdfViewerContainer').style.display = 'none';
+        document.getElementById('pdfViewer').style.display = 'none';
+        document.getElementById('excelViewerContainer').style.display = 'none';
     });
 
     document.getElementById('relatoriosMenu').addEventListener('click', function() {
         showSection('relatorios');
         document.getElementById('sidebar').style.display = 'none';
-        document.getElementById('pdfViewerContainer').style.display = 'none';
+        document.getElementById('pdfViewer').style.display = 'none';
+        document.getElementById('excelViewerContainer').style.display = 'none';
     });
 
     function showSection(sectionId) {
@@ -48,7 +53,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Inicialmente mostrar a seção Anexos Vigentes
     showSection('anexosVigentes');
     document.getElementById('sidebar').style.display = 'block';
-    document.getElementById('pdfViewerContainer').style.display = 'block';
+    document.getElementById('pdfViewer').style.display = 'block';
 
     // Lógica para buscar links do backend
     fetch('https://auditoriasite.onrender.com/api/fetch-ans-links')
@@ -64,7 +69,7 @@ document.addEventListener('DOMContentLoaded', function() {
             for (let anexo in latestAnexoContainers) {
                 if (latestAnexoContainers[anexo]) {
                     if (data.latest_anexo_links[anexo]) {
-                        console.log(`Anexo ${anexo} mais recente:`, data.latest_anexo_links[anexo]); // Log de depuração
+                        console.log(`Anexo ${anexo} mais recente:`, data.latest_anexo_links[anexo]);
                         latestAnexoContainers[anexo].innerHTML = `
                             <div class="link-item">
                                 <strong>Anexo ${anexo}</strong>
@@ -83,7 +88,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             if (Array.isArray(data.latest_rn_links) && data.latest_rn_links.length > 0) {
-                console.log('RN links encontrados:', data.latest_rn_links); // Log para depuração
+                console.log('RN links encontrados:', data.latest_rn_links);
                 let displayedRnLinks = 0;
                 const rnLinksHtml = data.latest_rn_links.slice(displayedRnLinks, displayedRnLinks + 10).map(link => `
                     <div class="link-item">
@@ -131,7 +136,7 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(response => response.json())
             .then(data => {
                 if (data.excel_url) {
-                    console.log('URL do Excel:', data.excel_url); // Log para depuração
+                    console.log('URL do Excel:', data.excel_url);
                     const excelViewerContainer = document.getElementById('excelViewerContainer');
                     excelViewerContainer.innerHTML = `<iframe src="https://view.officeapps.live.com/op/embed.aspx?src=${data.excel_url}" width="100%" height="100%" frameborder="0"></iframe>`;
                 } else {
@@ -146,17 +151,18 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     window.viewPDF = function(link) {
-        console.log('Exibindo PDF:', link); // Log para depuração
+        console.log('Exibindo PDF:', link);
         document.getElementById('pdfViewer').src = link;
+        document.getElementById('pdfViewer').style.display = 'block';
     };
 
     window.downloadPDF = function(link) {
-        console.log('Baixando PDF:', link); // Log para depuração
+        console.log('Baixando PDF:', link);
         window.open(link, '_blank');
     };
 
     window.fetchRnSummary = function(url) {
-        console.log('Fetching summary for URL:', url); // Log para depuração
+        console.log('Fetching summary for URL:', url);
         fetch('https://auditoriasite.onrender.com/api/fetch-rn-summary', {
             method: 'POST',
             headers: {
