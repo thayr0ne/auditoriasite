@@ -40,7 +40,7 @@ nav ul li:hover {
 }
 
 .sidebar {
-    width: 450px; /* Aumentado em 50% em relação à largura original de 300px */
+    width: 450px;
     padding: 1rem;
     background-color: #fff;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -50,7 +50,7 @@ nav ul li:hover {
 }
 
 .main-content {
-    margin-left: 470px; /* Ajustado para a largura da barra lateral */
+    margin-left: 470px;
     padding: 1rem;
     flex: 1;
 }
@@ -124,10 +124,16 @@ h2 {
     font-size: 1.5rem;
 }
 
-#pdfViewer, #excelViewer {
+#pdfViewer {
     width: 100%;
     height: calc(100vh - 2rem - 60px);
     border: none;
+}
+
+#excelViewerContainer {
+    width: 100%;
+    height: calc(100vh - 2rem - 60px);
+    overflow: auto;
 }
 
 .section {
