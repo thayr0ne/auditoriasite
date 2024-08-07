@@ -68,5 +68,21 @@ def fetch_rn_summary():
     else:
         return jsonify({'error': 'Erro ao acessar a página da RN'}), 500
 
+def fetch_rol_vigente():
+    url = 'https://www.gov.br/ans/pt-br/acesso-a-informacao/participacao-da-sociedade/atualizacao-do-rol-de-procedimentos'
+    response = requests.get(url)
+    
+    if response.status_code == 200:
+        soup = BeautifulSoup(response.content, 'html.parser')
+        link = soup.find('a', string=re.compile("Correlação TUSS x Rol"))
+        if link:
+            href = link.get('href')
+            full_url = urljoin(url, href)
+            return jsonify({'rol_excel_link': full_url})
+        else:
+            return jsonify({'error': 'Link do arquivo Excel não encontrado'}), 404
+    else:
+        return jsonify({'error': 'Erro ao acessar a página'}), 500
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
