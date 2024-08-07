@@ -2,7 +2,6 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 import requests
 from bs4 import BeautifulSoup
-import re
 
 app = Flask(__name__)
 CORS(app)
@@ -17,13 +16,14 @@ def fetch_ans_links():
 
     for tag in anexo_tags:
         href = tag['href']
-        if "Anexo I" in tag.text:
+        text = tag.text.strip()
+        if "Anexo I" in text:
             anexo_links["I"] = "https://www.ans.gov.br" + href.replace('../../../', '/')
-        elif "Anexo II" in tag.text:
+        elif "Anexo II" in text:
             anexo_links["II"] = "https://www.ans.gov.br" + href.replace('../../../', '/')
-        elif "Anexo III" in tag.text:
+        elif "Anexo III" in text:
             anexo_links["III"] = "https://www.ans.gov.br" + href.replace('../../../', '/')
-        elif "Anexo IV" in tag.text:
+        elif "Anexo IV" in text:
             anexo_links["IV"] = "https://www.ans.gov.br" + href.replace('../../../', '/')
 
     rn_links = []
