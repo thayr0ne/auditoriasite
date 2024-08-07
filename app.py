@@ -2,8 +2,6 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 import requests
 from bs4 import BeautifulSoup
-from urllib.parse import urljoin
-import re
 
 app = Flask(__name__)
 CORS(app)
@@ -53,7 +51,7 @@ def fetch_rol_vigente():
     soup = BeautifulSoup(response.content, 'html.parser')
 
     excel_url = ""
-    excel_tag = soup.find('a', text="Correlação TUSS x Rol")
+    excel_tag = soup.find('a', text=lambda x: x and "Correlação TUSS x Rol" in x)
     if excel_tag:
         excel_url = "https://www.gov.br" + excel_tag.get('href')
     
@@ -81,6 +79,5 @@ def fetch_rn_summary():
 
     return jsonify({"summary": summary})
 
-
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(debug=True)
