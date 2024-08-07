@@ -69,7 +69,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 III: document.getElementById('latestAnexoIIIContainer'),
                 IV: document.getElementById('latestAnexoIVContainer')
             };
-            const latestRnContainer = document.getElementById('latestRnContainer');
 
             for (let anexo in latestAnexoContainers) {
                 if (latestAnexoContainers[anexo]) {
@@ -102,6 +101,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         <button onclick="fetchRnSummary('${link.url}')">Resumo</button>
                     </div>
                 `).join('');
+                const latestRnContainer = document.getElementById('latestRnContainer');
                 latestRnContainer.innerHTML = rnLinksHtml;
                 displayedRnLinks += 10;
 
@@ -126,6 +126,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     loadMoreBtn.style.display = 'none';
                 }
             } else {
+                const latestRnContainer = document.getElementById('latestRnContainer');
                 latestRnContainer.innerHTML = '<p>Nenhuma RN encontrada</p>';
             }
         })
