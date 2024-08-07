@@ -9,22 +9,27 @@ document.addEventListener('DOMContentLoaded', function() {
 
     document.getElementById('anexosVigentesMenu').addEventListener('click', function() {
         showSection('anexosVigentes');
+        document.getElementById('sidebar').style.display = 'block';
     });
 
     document.getElementById('rolVigenteMenu').addEventListener('click', function() {
         showSection('rolVigente');
+        document.getElementById('sidebar').style.display = 'none';
     });
 
     document.getElementById('buscarProcedimentosMenu').addEventListener('click', function() {
         showSection('buscarProcedimentos');
+        document.getElementById('sidebar').style.display = 'none';
     });
 
     document.getElementById('cbhpmMenu').addEventListener('click', function() {
         showSection('cbhpm');
+        document.getElementById('sidebar').style.display = 'none';
     });
 
     document.getElementById('relatoriosMenu').addEventListener('click', function() {
         showSection('relatorios');
+        document.getElementById('sidebar').style.display = 'none';
     });
 
     function showSection(sectionId) {
@@ -40,6 +45,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Inicialmente mostrar a seção Anexos Vigentes
     showSection('anexosVigentes');
+    document.getElementById('sidebar').style.display = 'block';
 
     // Lógica para buscar links do backend
     fetch('https://auditoriasite.onrender.com/api/fetch-ans-links')
@@ -72,16 +78,20 @@ document.addEventListener('DOMContentLoaded', function() {
                         `;
                     } else {
                         console.log(`Nenhum Anexo ${anexo} encontrado`); // Log de depuração
-                        latestAnexoContainers[anexo].innerHTML = `<p>Nenhum Anexo ${anexo} encontrado</p>`;
+                        latestAnexoContainers[anexo].innerHTML = `
+                            <div class="link-item">
+                                <strong>Nenhum Anexo ${anexo} encontrado</strong>
+                            </div>
+                        `;
                     }
                 }
             }
 
-            if (Array.isArray(data.latest_rn_links)) {
+            if (Array.isArray(data.latest_rn_links) && data.latest_rn_links.length > 0) {
                 console.log('RN links encontrados:', data.latest_rn_links); // Log para depuração
-                let rnLinksHtml = data.latest_rn_links.map(link => `
+                let rnLinksHtml = data.latest_rn_links.slice(0, 10).map(link => `
                     <div class="link-item">
-                        <strong>RN nº ${link.number} (${link.date})</strong>
+                        <strong>RN nº ${link.number}</strong> <span>(${link.date})</span>
                         <button onclick="viewPDF('${link.url}')">Exibir</button>
                         <button onclick="fetchRnSummary('${link.url}')">Resumo</button>
                     </div>
@@ -90,9 +100,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 const loadMoreBtn = document.getElementById('loadMoreBtn');
                 loadMoreBtn.addEventListener('click', function() {
-                    let additionalRnLinksHtml = data.latest_rn_links.map(link => `
+                    let additionalRnLinksHtml = data.latest_rn_links.slice(10).map(link => `
                         <div class="link-item">
-                            <strong>RN nº ${link.number} (${link.date})</strong>
+                            <strong>RN nº ${link.number}</strong> <span>(${link.date})</span>
                             <button onclick="viewPDF('${link.url}')">Exibir</button>
                             <button onclick="fetchRnSummary('${link.url}')">Resumo</button>
                         </div>
