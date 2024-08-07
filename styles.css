@@ -1,154 +1,85 @@
-/* Reset básico */
-* {
+body {
+    font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
 }
 
-body {
-    font-family: 'Arial', sans-serif;
-    background-color: #f4f4f4;
-    color: #333;
-}
-
-nav {
+header {
     background-color: #333;
-    padding: 1rem;
+    color: #fff;
+    padding: 1em 0;
 }
 
 nav ul {
-    list-style-type: none;
+    list-style: none;
     display: flex;
     justify-content: center;
-    gap: 1rem;
+    padding: 0;
 }
 
 nav ul li {
+    margin: 0 1em;
+}
+
+nav ul li a {
     color: #fff;
-    cursor: pointer;
-    padding: 0.5rem 1rem;
-    transition: background-color 0.3s;
+    text-decoration: none;
 }
 
-nav ul li:hover {
-    background-color: #555;
-}
-
-.container {
+#main-content {
     display: flex;
-    height: calc(100vh - 60px);
+    flex: 1;
+    overflow: hidden;
 }
 
-.sidebar {
-    width: 450px;
-    padding: 1rem;
-    background-color: #fff;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+#sidebar {
+    display: flex;
+    flex-direction: column;
+    width: 25%;
+    background-color: #f4f4f4;
+    padding: 1em;
     overflow-y: auto;
-    position: fixed;
-    height: calc(100vh - 60px);
 }
 
-.main-content {
-    margin-left: 470px;
-    padding: 1rem;
+#pdf-viewer-container,
+#excel-container {
     flex: 1;
+    padding: 1em;
+    overflow-y: auto;
 }
 
-.anexo-container {
-    background: #fff;
-    padding: 1rem;
-    margin: 1rem 0;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s, box-shadow 0.3s;
+#pdf-viewer {
+    width: 100%;
+    height: 100%;
 }
 
-.anexo-container:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+#anexos-recentes-container,
+#rn-historico-container {
+    margin-bottom: 1em;
 }
 
-.link-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px; /* Adicionado espaçamento entre as linhas */
+#anexos-recentes-container ul,
+#rn-historico-container ul {
+    list-style: none;
+    padding: 0;
 }
 
-.link-item strong {
-    flex: 1;
+#anexos-recentes-container li,
+#rn-historico-container li {
+    margin-bottom: 0.5em;
 }
 
-.link-item span {
-    flex: 1;
-    font-weight: normal; /* Datas não em negrito */
-}
-
-.link-item button {
-    background-color: #6c757d;
-    color: #fff;
+button {
+    margin-top: 1em;
+    padding: 0.5em 1em;
+    background-color: #ccc;
     border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
     cursor: pointer;
-    transition: background-color 0.3s;
-    margin-left: 0.5rem;
 }
 
-.link-item button:hover {
-    background-color: #5a6268;
-}
-
-.load-more {
-    display: block;
-    width: 100%;
-    background-color: #6c757d;
-    color: #fff;
-    border: none;
-    padding: 0.75rem;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    margin-top: 1rem;
-    text-align: center;
-}
-
-.load-more:hover {
-    background-color: #5a6268;
-}
-
-h2 {
-    margin-bottom: 1rem;
-    color: #333;
-    font-size: 1.5rem;
-}
-
-#pdfViewer {
-    width: 100%;
-    height: calc(100vh - 2rem - 60px);
-    border: none;
-}
-
-#excelViewerContainer {
-    width: 100%;
-    height: calc(100vh - 2rem - 60px);
-    overflow: auto;
-}
-
-.section {
-    display: none;
-}
-
-.section.active {
-    display: block;
-}
-
-#recentes {
-    margin-bottom: 20px; /* Espaço entre os containers de Anexos Recentes e Histórico */
-}
-
-#historicoRnContainer {
-    max-height: 60vh; /* Limite de altura para o histórico de RNs */
-    overflow-y: auto; /* Barra de rolagem apenas para o histórico de RNs */
+button:hover {
+    background-color: #bbb;
 }
