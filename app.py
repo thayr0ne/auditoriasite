@@ -85,16 +85,17 @@ def fetch_rn_summary():
 def fetch_rol_vigente():
     url = 'https://www.gov.br/ans/pt-br/acesso-a-informacao/participacao-da-sociedade/atualizacao-do-rol-de-procedimentos'
     response = requests.get(url)
+    
     if response.status_code == 200:
         soup = BeautifulSoup(response.content, 'html.parser')
-        link = soup.find('a', string='Correlação TUSS x Rol')
+        link = soup.find('a', text=re.compile(r'Correlação TUSS x Rol'))
         if link:
-            latest_excel_link = urljoin(url, link['href'])
-            return jsonify({'latest_excel_link': latest_excel_link})
+            excel_url = urljoin(url, link.get('href'))
+            return jsonify({'excel_url': excel_url})
         else:
-            return jsonify({'error': 'Arquivo Excel não encontrado'}), 404
+            return jsonify({'error': 'Link do arquivo Excel não encontrado'})
     else:
-        return jsonify({'error': 'Erro ao acessar a página do Rol Vigente'}), 500
+        return jsonify({'error': 'Erro ao acessar a página'}), 500
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
