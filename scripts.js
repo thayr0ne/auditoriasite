@@ -1,54 +1,196 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="styles.css">
-    <!-- Adicionando a biblioteca SheetJS -->
-    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.0/dist/xlsx.full.min.js"></script>
-</head>
-<body>
-    <div id="menu">
-        <button id="anexosVigentesMenu">Anexos Vigentes</button>
-        <button id="rolVigenteMenu">Rol Vigente</button>
-        <button id="buscarProcedimentosMenu">Buscar Procedimentos</button>
-        <button id="cbhpmMenu">CBHPM</button>
-        <button id="relatoriosMenu">Relatórios</button>
-    </div>
+document.addEventListener('DOMContentLoaded', function() {
+    const sections = {
+        anexosVigentes: document.getElementById('anexosVigentes'),
+        rolVigente: document.getElementById('rolVigente'),
+        buscarProcedimentos: document.getElementById('buscarProcedimentos'),
+        cbhpm: document.getElementById('cbhpm'),
+        relatorios: document.getElementById('relatorios')
+    };
 
-    <div id="anexosVigentes" class="section">
-        <div id="sidebar">
-            <h3>RECENTES</h3>
-            <div id="latestAnexoIContainer"></div>
-            <div id="latestAnexoIIContainer"></div>
-            <div id="latestAnexoIIIContainer"></div>
-            <div id="latestAnexoIVContainer"></div>
-            <h3>HISTÓRICO</h3>
-            <div id="latestRnContainer"></div>
-            <button id="loadMoreBtn">Mostrar mais</button>
-        </div>
-        <div id="pdfViewerContainer">
-            <iframe id="pdfViewer" width="100%" height="600px"></iframe>
-        </div>
-    </div>
+    document.getElementById('anexosVigentesMenu').addEventListener('click', function() {
+        showSection('anexosVigentes');
+        document.getElementById('sidebar').style.display = 'block';
+        document.getElementById('pdfViewerContainer').style.display = 'block';
+    });
 
-    <div id="rolVigente" class="section">
-        <div id="rolVigenteContainer"></div>
-    </div>
+    document.getElementById('rolVigenteMenu').addEventListener('click', function() {
+        showSection('rolVigente');
+        document.getElementById('sidebar').style.display = 'none';
+        document.getElementById('pdfViewerContainer').style.display = 'none';
+        fetchRolVigente();
+    });
 
-    <div id="buscarProcedimentos" class="section">
-        <!-- Conteúdo da seção Buscar Procedimentos -->
-    </div>
+    document.getElementById('buscarProcedimentosMenu').addEventListener('click', function() {
+        showSection('buscarProcedimentos');
+        document.getElementById('sidebar').style.display = 'none';
+        document.getElementById('pdfViewerContainer').style.display = 'none';
+    });
 
-    <div id="cbhpm" class="section">
-        <!-- Conteúdo da seção CBHPM -->
-    </div>
+    document.getElementById('cbhpmMenu').addEventListener('click', function() {
+        showSection('cbhpm');
+        document.getElementById('sidebar').style.display = 'none';
+        document.getElementById('pdfViewerContainer').style.display = 'none';
+    });
 
-    <div id="relatorios" class="section">
-        <!-- Conteúdo da seção Relatórios -->
-    </div>
+    document.getElementById('relatoriosMenu').addEventListener('click', function() {
+        showSection('relatorios');
+        document.getElementById('sidebar').style.display = 'none';
+        document.getElementById('pdfViewerContainer').style.display = 'none';
+    });
 
-    <script src="scripts.js"></script>
-</body>
-</html>
+    function showSection(sectionId) {
+        for (let key in sections) {
+            if (sections[key]) {
+                sections[key].classList.remove('active');
+            }
+        }
+        if (sections[sectionId]) {
+            sections[sectionId].classList.add('active');
+        }
+    }
+
+    // Inicialmente mostrar a seção Anexos Vigentes
+    showSection('anexosVigentes');
+    document.getElementById('sidebar').style.display = 'block';
+    document.getElementById('pdfViewerContainer').style.display = 'block';
+
+    // Lógica para buscar links do backend
+    fetch('https://auditoriasite.onrender.com/api/fetch-ans-links')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Dados recebidos da API:', data); // Log para depuração
+
+            const latestAnexoIContainer = document.getElementById('latestAnexoIContainer');
+            const latestAnexoIIContainer = document.getElementById('latestAnexoIIContainer');
+            const latestAnexoIIIContainer = document.getElementById('latestAnexoIIIContainer');
+            const latestAnexoIVContainer = document.getElementById('latestAnexoIVContainer');
+            const latestRnContainer = document.getElementById('historicoRnContainer');
+
+            if (data.latest_anexo_links) {
+                latestAnexoIContainer.innerHTML = `
+                    <div class="link-item">
+                        <strong>Anexo I</strong>
+                        <button onclick="viewPDF('${data.latest_anexo_links.I}')">Exibir</button>
+                    </div>
+                `;
+                latestAnexoIIContainer.innerHTML = `
+                    <div class="link-item">
+                        <strong>Anexo II</strong>
+                        <button onclick="viewPDF('${data.latest_anexo_links.II}')">Exibir</button>
+                    </div>
+                `;
+                latestAnexoIIIContainer.innerHTML = `
+                    <div class="link-item">
+                        <strong>Anexo III</strong>
+                        <button onclick="viewPDF('${data.latest_anexo_links.III}')">Exibir</button>
+                    </div>
+                `;
+                latestAnexoIVContainer.innerHTML = `
+                    <div class="link-item">
+                        <strong>Anexo IV</strong>
+                        <button onclick="viewPDF('${data.latest_anexo_links.IV}')">Exibir</button>
+                    </div>
+                `;
+            } else {
+                latestAnexoIContainer.innerHTML = '<p>Nenhum Anexo I encontrado</p>';
+                latestAnexoIIContainer.innerHTML = '<p>Nenhum Anexo II encontrado</p>';
+                latestAnexoIIIContainer.innerHTML = '<p>Nenhum Anexo III encontrado</p>';
+                latestAnexoIVContainer.innerHTML = '<p>Nenhum Anexo IV encontrado</p>';
+            }
+
+            if (Array.isArray(data.latest_rn_links)) {
+                latestRnContainer.innerHTML = data.latest_rn_links.map(link => `
+                    <div class="link-item">
+                        <strong>RN nº ${link.number}</strong>
+                        <span>(${link.date})</span>
+                        <button onclick="viewPDF('${link.url}')">Exibir</button>
+                        <button onclick="fetchRnSummary('${link.url}')">Resumo</button>
+                    </div>
+                `).join('');
+            } else {
+                latestRnContainer.innerHTML = '<p>Nenhuma RN encontrada</p>';
+            }
+        })
+        .catch(error => {
+            console.error('Erro ao obter os links:', error);
+            alert('Erro ao obter os links: ' + error);
+        });
+
+    let rnCount = 10;
+    document.getElementById('loadMoreBtn').addEventListener('click', function() {
+        rnCount += 10;
+        fetch('https://auditoriasite.onrender.com/api/fetch-ans-links')
+            .then(response => response.json())
+            .then(data => {
+                const latestRnContainer = document.getElementById('historicoRnContainer');
+                const rnLinks = data.latest_rn_links.slice(0, rnCount);
+                latestRnContainer.innerHTML = rnLinks.map(link => `
+                    <div class="link-item">
+                        <strong>RN nº ${link.number}</strong>
+                        <span>(${link.date})</span>
+                        <button onclick="viewPDF('${link.url}')">Exibir</button>
+                        <button onclick="fetchRnSummary('${link.url}')">Resumo</button>
+                    </div>
+                `).join('');
+                if (rnCount >= data.latest_rn_links.length) {
+                    document.getElementById('loadMoreBtn').style.display = 'none';
+                }
+            });
+    });
+
+    window.viewPDF = function(link) {
+        document.getElementById('pdfViewer').src = link;
+    };
+
+    window.fetchRnSummary = function(url) {
+        console.log('Fetching summary for URL:', url); // Log para depuração
+        fetch('https://auditoriasite.onrender.com/api/fetch-rn-summary', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ url: url })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.summary) {
+                alert('Resumo: ' + data.summary);
+            } else {
+                alert('Erro ao obter o resumo: ' + (data.error || 'Erro desconhecido'));
+            }
+        })
+        .catch(error => {
+            console.error('Erro ao obter o resumo:', error);
+            alert('Erro ao obter o resumo: ' + error);
+        });
+    };
+
+    function fetchRolVigente() {
+        fetch('https://auditoriasite.onrender.com/api/fetch-rol-vigente')
+            .then(response => response.json())
+            .then(data => {
+                console.log('Link do arquivo Excel:', data.latest_excel_link); // Log para depuração
+                const rolVigenteContainer = document.getElementById('rolVigenteContainer');
+                rolVigenteContainer.innerHTML = ''; // Limpar conteúdo anterior
+                const url = data.latest_excel_link;
+                fetch(url)
+                    .then(response => response.arrayBuffer())
+                    .then(data => {
+                        const workbook = XLSX.read(new Uint8Array(data), { type: 'array' });
+                        workbook.SheetNames.forEach(sheetName => {
+                            const htmlString = XLSX.utils.sheet_to_html(workbook.Sheets[sheetName], { id: 'data-table' });
+                            rolVigenteContainer.innerHTML += htmlString;
+                        });
+                    });
+            })
+            .catch(error => {
+                console.error('Erro ao obter o link do arquivo Excel:', error);
+                alert('Erro ao obter o link do arquivo Excel: ' + error);
+            });
+    }
+});
