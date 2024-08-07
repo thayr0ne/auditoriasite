@@ -20,7 +20,7 @@ nav ul {
     list-style-type: none;
     display: flex;
     justify-content: center;
-    gap: 2rem;
+    gap: 1rem;
 }
 
 nav ul li {
@@ -45,19 +45,14 @@ nav ul li:hover {
     background-color: #fff;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     overflow-y: auto;
+    position: fixed;
+    height: calc(100vh - 60px);
 }
 
 .main-content {
-    flex: 1;
+    margin-left: 320px;
     padding: 1rem;
-}
-
-.section {
-    display: none;
-}
-
-.section.active {
-    display: block;
+    flex: 1;
 }
 
 .anexo-container {
