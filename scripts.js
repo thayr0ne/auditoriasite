@@ -95,6 +95,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         <strong>RN nº ${link.number}</strong>
                         <span>(${link.date})</span>
                         <button onclick="viewPDF('${link.url}')">Exibir</button>
+                        <button onclick="downloadPDF('${link.url}')">Download</button>
                         <button onclick="fetchRnSummary('${link.url}')">Resumo</button>
                     </div>
                 `).join('');
@@ -109,6 +110,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     window.viewPDF = function(link) {
         document.getElementById('pdfViewer').src = link;
+    };
+
+    window.downloadPDF = function(link) {
+        window.open(link, '_blank');
     };
 
     window.fetchRnSummary = function(url) {
