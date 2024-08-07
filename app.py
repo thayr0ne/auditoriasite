@@ -27,9 +27,14 @@ def fetch_ans_links():
                 if rn_match:
                     rn_num = int(rn_match.group(1))
                     rn_links.append((rn_num, texto, href))
-            for anexo in anexo_links.keys():
-                if f'ANEXO {anexo}' in texto and href.endswith('.pdf'):
-                    anexo_links[anexo] = urljoin(url, href)
+            if 'ANEXO I' in texto and href.endswith('.pdf'):
+                anexo_links['I'] = urljoin(url, href)
+            elif 'ANEXO II' in texto and href.endswith('.pdf'):
+                anexo_links['II'] = urljoin(url, href)
+            elif 'ANEXO III' in texto and href.endswith('.pdf'):
+                anexo_links['III'] = urljoin(url, href)
+            elif 'ANEXO IV' in texto and href.endswith('.pdf'):
+                anexo_links['IV'] = urljoin(url, href)
         
         rn_links.sort(reverse=True, key=lambda x: x[0])
         latest_rn_links = []
