@@ -17,6 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
         showSection('rolVigente');
         document.getElementById('sidebar').style.display = 'none';
         document.getElementById('pdfViewerContainer').style.display = 'none';
+        fetchRolVigente();
     });
 
     document.getElementById('buscarProcedimentosMenu').addEventListener('click', function() {
@@ -55,14 +56,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Lógica para buscar links do backend
     fetch('https://auditoriasite.onrender.com/api/fetch-ans-links')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.json();
-        })
+        .then(response => response.json())
         .then(data => {
-            console.log('Dados recebidos da API:', data); // Log para depuração
             const latestAnexoContainers = {
                 I: document.getElementById('latestAnexoIContainer'),
                 II: document.getElementById('latestAnexoIIContainer'),
@@ -166,5 +161,39 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error('Erro ao obter o resumo:', error);
             alert('Erro ao obter o resumo: ' + error);
         });
+    };
+
+    function fetchRolVigente() {
+        fetch('https://auditoriasite.onrender.com/api/fetch-rol-vigente')
+            .then(response => response.json())
+            .then(data => {
+                if (data.rol_excel_link) {
+                    const rolVigenteContainer = document.getElementById('rolVigenteContainer');
+                    rolVigenteContainer.innerHTML = `
+                        <div class="link-item">
+                            <strong>Correlação TUSS x Rol</strong>
+                            <button onclick="viewExcel('${data.rol_excel_link}')">Exibir</button>
+                            <button onclick="downloadExcel('${data.rol_excel_link}')">Download</button>
+                        </div>
+                    `;
+                } else {
+                    const rolVigenteContainer = document.getElementById('rolVigenteContainer');
+                    rolVigenteContainer.innerHTML = '<p>Erro ao obter o link do arquivo Excel</p>';
+                }
+            })
+            .catch(error => {
+                console.error('Erro ao obter o link do arquivo Excel:', error);
+                alert('Erro ao obter o link do arquivo Excel: ' + error);
+            });
+    }
+
+    window.viewExcel = function(link) {
+        console.log('Exibindo Excel:', link); // Log para depuração
+        window.open(link, '_blank');
+    };
+
+    window.downloadExcel = function(link) {
+        console.log('Baixando Excel:', link); // Log para depuração
+        window.open(link, '_blank');
     };
 });
