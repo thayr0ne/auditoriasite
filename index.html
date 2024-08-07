@@ -16,29 +16,25 @@
             <li id="relatoriosMenu">Relatórios</li>
         </ul>
     </nav>
-    <main>
-        <div id="anexosVigentes" class="section active">
-            <h2>RECENTES</h2>
-            <div id="latestAnexoIContainer" class="anexo-container"></div>
-            <div id="latestAnexoIIContainer" class="anexo-container"></div>
-            <div id="latestAnexoIIIContainer" class="anexo-container"></div>
-            <div id="latestAnexoIVContainer" class="anexo-container"></div>
-            <div id="latestRnContainer" class="anexo-container"></div>
-        </div>
-        <div id="rolVigente" class="section">
-            <!-- Conteúdo para Rol Vigente -->
-        </div>
-        <div id="buscarProcedimentos" class="section">
-            <!-- Conteúdo para Buscar Procedimentos -->
-        </div>
-        <div id="cbhpm" class="section">
-            <!-- Conteúdo para CBHPM -->
-        </div>
-        <div id="relatorios" class="section">
-            <!-- Conteúdo para Relatórios -->
-        </div>
-        <iframe id="pdfViewer" style="width: 100%; height: 500px;"></iframe>
-    </main>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="section active" id="anexosVigentes">
+                <h2>RECENTES</h2>
+                <div id="latestAnexosContainer">
+                    <div id="latestAnexoIContainer"></div>
+                    <div id="latestAnexoIIContainer"></div>
+                    <div id="latestAnexoIIIContainer"></div>
+                    <div id="latestAnexoIVContainer"></div>
+                </div>
+                <h2>Histórico de RNs</h2>
+                <div id="latestRnContainer" class="anexo-container"></div>
+                <button id="loadMoreBtn" class="load-more">Mostrar mais</button>
+            </div>
+        </aside>
+        <main class="main-content">
+            <iframe id="pdfViewer"></iframe>
+        </main>
+    </div>
     <script src="scripts.js"></script>
 </body>
 </html>
