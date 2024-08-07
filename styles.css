@@ -124,7 +124,7 @@ h2 {
     font-size: 1.5rem;
 }
 
-#pdfViewer {
+#pdfViewer, #excelViewer {
     width: 100%;
     height: calc(100vh - 2rem - 60px);
     border: none;
