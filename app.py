@@ -2,6 +2,7 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 import requests
 from bs4 import BeautifulSoup
+import re
 
 app = Flask(__name__)
 CORS(app)
@@ -28,7 +29,7 @@ def fetch_ans_links():
     rn_links = []
     rn_tags = soup.find_all('a', href=True, text=lambda x: x and 'RN' in x)
     for tag in rn_tags:
-        rn_number = int(tag.text.split(' ')[-1])
+        rn_number = int(re.search(r'\d+', tag.text).group())
         rn_date = tag.find_next('p').text if tag.find_next('p') else "N/A"
         rn_url = "https://www.ans.gov.br" + tag.get('href').replace('../../../', '/')
         rn_links.append({"number": rn_number, "date": rn_date, "url": rn_url})
@@ -54,7 +55,9 @@ def fetch_rol_vigente():
     excel_url = ""
     excel_tag = soup.find('a', href=True, text=lambda x: x and "Correlação TUSS x Rol" in x)
     if excel_tag:
-        excel_url = "https://www.gov.br" + excel_tag['href']
+        excel_url = excel_tag['href']
+        if not excel_url.startswith('http'):
+            excel_url = "https://www.gov.br" + excel_url
     
     return {"excel_url": excel_url}
 
