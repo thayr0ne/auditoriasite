@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 from urllib.parse import urljoin
 
 app = Flask(__name__)
-CORS(app, resources={r"/api/*": {"origins": "*"}})
+CORS(app, resources={r"/*": {"origins": "*"}})  # Permitir todas as origens
 
 @app.route('/api/fetch-ans-links', methods=['GET'])
 def fetch_ans_links():
