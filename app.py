@@ -16,14 +16,15 @@ def fetch_ans_links():
     anexo_tags = soup.find_all('a', href=True)
 
     for tag in anexo_tags:
+        href = tag['href']
         if "Anexo I" in tag.text:
-            anexo_links["I"] = "https://www.ans.gov.br" + tag['href'].replace('../../../', '/')
+            anexo_links["I"] = "https://www.ans.gov.br" + href.replace('../../../', '/')
         elif "Anexo II" in tag.text:
-            anexo_links["II"] = "https://www.ans.gov.br" + tag['href'].replace('../../../', '/')
+            anexo_links["II"] = "https://www.ans.gov.br" + href.replace('../../../', '/')
         elif "Anexo III" in tag.text:
-            anexo_links["III"] = "https://www.ans.gov.br" + tag['href'].replace('../../../', '/')
+            anexo_links["III"] = "https://www.ans.gov.br" + href.replace('../../../', '/')
         elif "Anexo IV" in tag.text:
-            anexo_links["IV"] = "https://www.ans.gov.br" + tag['href'].replace('../../../', '/')
+            anexo_links["IV"] = "https://www.ans.gov.br" + href.replace('../../../', '/')
 
     rn_links = []
     rn_tags = soup.find_all('a', href=True, text=lambda x: x and 'RN' in x)
@@ -52,9 +53,9 @@ def fetch_rol_vigente():
     soup = BeautifulSoup(response.content, 'html.parser')
 
     excel_url = ""
-    excel_tag = soup.find('a', text=lambda x: x and "Correlação TUSS x Rol" in x)
+    excel_tag = soup.find('a', href=True, text=lambda x: x and "Correlação TUSS x Rol" in x)
     if excel_tag:
-        excel_url = "https://www.gov.br" + excel_tag.get('href')
+        excel_url = "https://www.gov.br" + excel_tag['href']
     
     return {"excel_url": excel_url}
 
