@@ -4,19 +4,29 @@ import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
 import re
+import logging
 
 app = Flask(__name__)
 CORS(app, resources={r"/api/*": {"origins": "*"}})  # Permitir todas as origens
 
+logging.basicConfig(level=logging.INFO)
+
 @app.route('/api/fetch-ans-links', methods=['GET'])
 def fetch_ans_links():
     url = 'https://www.ans.gov.br/component/legislacao/?view=legislacao&task=TextoLei&format=raw&id=NDAzMw==#anexosvigentes'
-    response = requests.get(url)
-    
+    logging.info(f'Fetching data from URL: {url}')
+    try:
+        response = requests.get(url)
+    except requests.exceptions.RequestException as e:
+        logging.error(f'Error fetching data from URL: {e}')
+        return jsonify({'error': f'Error fetching data from URL: {e}'}), 500
+
     if response.status_code == 200:
+        logging.info('Page fetched successfully')
         soup = BeautifulSoup(response.content, 'html.parser')
         links = soup.find_all('a')
-        
+        logging.info(f'Found {len(links)} links on the page')
+
         rn_links = []
         anexo_links = {'I': '', 'II': '', 'III': '', 'IV': ''}
         for link in links:
@@ -27,16 +37,18 @@ def fetch_ans_links():
                 if rn_match:
                     rn_num = int(rn_match.group(1))
                     rn_links.append((rn_num, texto, href))
-            if 'ANEXO I' in texto and 'I_' in href:
+            if 'ANEXO I' in texto and href.endswith('.pdf'):
                 anexo_links['I'] = urljoin(url, href)
-            elif 'ANEXO II' in texto and 'II_' in href:
+            elif 'ANEXO II' in texto and href.endswith('.pdf'):
                 anexo_links['II'] = urljoin(url, href)
-            elif 'ANEXO III' in texto and 'III_' in href:
+            elif 'ANEXO III' in texto and href.endswith('.pdf'):
                 anexo_links['III'] = urljoin(url, href)
-            elif 'ANEXO IV' in texto and 'IV_' in href:
+            elif 'ANEXO IV' in texto and href.endswith('.pdf'):
                 anexo_links['IV'] = urljoin(url, href)
-        
+
+        rn_links = list(dict.fromkeys(rn_links))  # Remove duplicatas
         rn_links.sort(reverse=True, key=lambda x: x[0])
+        logging.info(f'Sorted and deduplicated RN links: {rn_links}')
         latest_rn_links = []
         for rn_num, texto, href in rn_links:
             date_match = re.search(r'de (\d{2}/\d{2}/\d{4})', texto)
@@ -48,11 +60,14 @@ def fetch_ans_links():
                     'url': urljoin(url, href)
                 })
 
+        logging.info(f'Latest Anexo links: {anexo_links}')
+
         return jsonify({
             'latest_rn_links': latest_rn_links,
             'latest_anexo_links': anexo_links
         })
     else:
+        logging.error(f'Error fetching page: {response.status_code}')
         return jsonify({
             'error': 'Erro ao acessar a página'
         })
