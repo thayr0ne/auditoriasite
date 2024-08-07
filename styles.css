@@ -40,7 +40,7 @@ nav ul li:hover {
 }
 
 .sidebar {
-    width: 400px;
+    width: 450px; /* Aumentado em 50% em relação à largura original de 300px */
     padding: 1rem;
     background-color: #fff;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -50,7 +50,7 @@ nav ul li:hover {
 }
 
 .main-content {
-    margin-left: 320px;
+    margin-left: 470px; /* Ajustado para a largura da barra lateral */
     padding: 1rem;
     flex: 1;
 }
@@ -77,6 +77,11 @@ nav ul li:hover {
 
 .link-item strong {
     flex: 1;
+}
+
+.link-item span {
+    flex: 1;
+    font-weight: normal; /* Datas não em negrito */
 }
 
 .link-item button {
@@ -122,4 +127,12 @@ h2 {
     width: 100%;
     height: calc(100vh - 2rem - 60px);
     border: none;
+}
+
+.section {
+    display: none;
+}
+
+.section.active {
+    display: block;
 }
