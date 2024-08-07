@@ -75,13 +75,26 @@ document.addEventListener('DOMContentLoaded', function() {
 
             if (Array.isArray(data.latest_rn_links)) {
                 console.log('RN links encontrados:', data.latest_rn_links); // Log para depuração
-                latestRnContainer.innerHTML = data.latest_rn_links.map(link => `
+                let rnLinksHtml = data.latest_rn_links.map(link => `
                     <div class="link-item">
                         <strong>RN nº ${link.number} (${link.date})</strong>
                         <button onclick="viewPDF('${link.url}')">Exibir</button>
                         <button onclick="fetchRnSummary('${link.url}')">Resumo</button>
                     </div>
                 `).join('');
+                latestRnContainer.innerHTML = rnLinksHtml;
+
+                let loadMoreBtn = document.getElementById('loadMoreBtn');
+                loadMoreBtn.addEventListener('click', function() {
+                    let additionalRnLinksHtml = data.latest_rn_links.slice(latestRnContainer.childElementCount).map(link => `
+                        <div class="link-item">
+                            <strong>RN nº ${link.number} (${link.date})</strong>
+                            <button onclick="viewPDF('${link.url}')">Exibir</button>
+                            <button onclick="fetchRnSummary('${link.url}')">Resumo</button>
+                        </div>
+                    `).join('');
+                    latestRnContainer.innerHTML += additionalRnLinksHtml;
+                });
             } else {
                 latestRnContainer.innerHTML = '<p>Nenhuma RN encontrada</p>';
             }
@@ -105,7 +118,9 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('Fetching summary for URL:', url); // Log para depuração
         fetch('https://auditoriasite.onrender.com/api/fetch-rn-summary', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Content-Type': 'application/json'
+            },
             body: JSON.stringify({ url: url })
         })
         .then(response => response.json())
@@ -121,9 +136,4 @@ document.addEventListener('DOMContentLoaded', function() {
             alert('Erro ao obter o resumo: ' + error);
         });
     };
-
-    function formatDate(dateStr) {
-        const date = new Date(dateStr);
-        return date.toLocaleDateString('pt-BR');
-    }
 });
