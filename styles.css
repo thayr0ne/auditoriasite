@@ -146,3 +146,7 @@ h2 {
     max-height: 60vh; /* Limite de altura para o histórico de RNs */
     overflow-y: auto; /* Barra de rolagem apenas para o histórico de RNs */
 }
+
+#rolVigenteContainer {
+    padding: 20px;
+}
