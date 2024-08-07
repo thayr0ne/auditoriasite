@@ -14,10 +14,17 @@ def fetch_ans_links():
     soup = BeautifulSoup(response.content, 'html.parser')
 
     anexo_links = {"I": "", "II": "", "III": "", "IV": ""}
-    for anexo in ["I", "II", "III", "IV"]:
-        anexo_tag = soup.find('a', text=f"Anexo {anexo}")
-        if anexo_tag:
-            anexo_links[anexo] = "https://www.ans.gov.br" + anexo_tag.get('href').replace('../../../', '/')
+    anexo_tags = soup.find_all('a', href=True)
+
+    for tag in anexo_tags:
+        if "Anexo I" in tag.text:
+            anexo_links["I"] = "https://www.ans.gov.br" + tag['href'].replace('../../../', '/')
+        elif "Anexo II" in tag.text:
+            anexo_links["II"] = "https://www.ans.gov.br" + tag['href'].replace('../../../', '/')
+        elif "Anexo III" in tag.text:
+            anexo_links["III"] = "https://www.ans.gov.br" + tag['href'].replace('../../../', '/')
+        elif "Anexo IV" in tag.text:
+            anexo_links["IV"] = "https://www.ans.gov.br" + tag['href'].replace('../../../', '/')
 
     rn_links = []
     rn_tags = soup.find_all('a', href=True, text=lambda x: x and 'RN' in x)
