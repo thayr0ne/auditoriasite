@@ -9,50 +9,36 @@ document.addEventListener('DOMContentLoaded', function() {
 
     document.getElementById('anexosVigentesMenu').addEventListener('click', function() {
         showSection('anexosVigentes');
-        document.getElementById('sidebar').style.display = 'block';
-        document.getElementById('pdfViewerContainer').style.display = 'block';
     });
 
     document.getElementById('rolVigenteMenu').addEventListener('click', function() {
         showSection('rolVigente');
-        document.getElementById('sidebar').style.display = 'none';
-        document.getElementById('pdfViewerContainer').style.display = 'none';
-        fetchRolVigente();
     });
 
     document.getElementById('buscarProcedimentosMenu').addEventListener('click', function() {
         showSection('buscarProcedimentos');
-        document.getElementById('sidebar').style.display = 'none';
-        document.getElementById('pdfViewerContainer').style.display = 'none';
     });
 
     document.getElementById('cbhpmMenu').addEventListener('click', function() {
         showSection('cbhpm');
-        document.getElementById('sidebar').style.display = 'none';
-        document.getElementById('pdfViewerContainer').style.display = 'none';
     });
 
     document.getElementById('relatoriosMenu').addEventListener('click', function() {
         showSection('relatorios');
-        document.getElementById('sidebar').style.display = 'none';
-        document.getElementById('pdfViewerContainer').style.display = 'none';
     });
 
     function showSection(sectionId) {
         for (let key in sections) {
-            if (sections[key]) {
-                sections[key].classList.remove('active');
-            }
+            sections[key].classList.remove('active');
         }
-        if (sections[sectionId]) {
-            sections[sectionId].classList.add('active');
+        sections[sectionId].classList.add('active');
+        if (sectionId === 'rolVigente') {
+            fetchRolVigente();
         }
     }
 
     // Inicialmente mostrar a seção Anexos Vigentes
     showSection('anexosVigentes');
-    document.getElementById('sidebar').style.display = 'block';
-    document.getElementById('pdfViewerContainer').style.display = 'block';
 
     // Lógica para buscar links do backend
     fetch('https://auditoriasite.onrender.com/api/fetch-ans-links')
@@ -121,26 +107,26 @@ document.addEventListener('DOMContentLoaded', function() {
             alert('Erro ao obter os links: ' + error);
         });
 
-    let rnCount = 10;
-    document.getElementById('loadMoreBtn').addEventListener('click', function() {
-        rnCount += 10;
+    let rnIndex = 10;
+    document.getElementById('loadMoreRn').addEventListener('click', function() {
         fetch('https://auditoriasite.onrender.com/api/fetch-ans-links')
             .then(response => response.json())
             .then(data => {
-                const latestRnContainer = document.getElementById('historicoRnContainer');
-                const rnLinks = data.latest_rn_links.slice(0, rnCount);
-                latestRnContainer.innerHTML = rnLinks.map(link => `
-                    <div class="link-item">
-                        <strong>RN nº ${link.number}</strong>
-                        <span>(${link.date})</span>
-                        <button onclick="viewPDF('${link.url}')">Exibir</button>
-                        <button onclick="fetchRnSummary('${link.url}')">Resumo</button>
-                    </div>
-                `).join('');
-                if (rnCount >= data.latest_rn_links.length) {
-                    document.getElementById('loadMoreBtn').style.display = 'none';
+                const rnLinks = data.latest_rn_links.slice(rnIndex, rnIndex + 10);
+                if (rnLinks.length > 0) {
+                    const rnContainer = document.getElementById('historicoRnContainer');
+                    rnContainer.innerHTML += rnLinks.map(link => `
+                        <div class="link-item">
+                            <strong>RN nº ${link.number}</strong>
+                            <span>(${link.date})</span>
+                            <button onclick="viewPDF('${link.url}')">Exibir</button>
+                            <button onclick="fetchRnSummary('${link.url}')">Resumo</button>
+                        </div>
+                    `).join('');
+                    rnIndex += 10;
                 }
-            });
+            })
+            .catch(error => console.error('Erro ao carregar mais RNs:', error));
     });
 
     window.viewPDF = function(link) {
@@ -148,45 +134,49 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     window.fetchRnSummary = function(url) {
-        console.log('Fetching summary for URL:', url); // Log para depuração
         fetch('https://auditoriasite.onrender.com/api/fetch-rn-summary', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ url: url })
         })
-        .then(response => response.json())
-        .then(data => {
-            if (data.summary) {
-                alert('Resumo: ' + data.summary);
-            } else {
-                alert('Erro ao obter o resumo: ' + (data.error || 'Erro desconhecido'));
-            }
-        })
-        .catch(error => {
-            console.error('Erro ao obter o resumo:', error);
-            alert('Erro ao obter o resumo: ' + error);
-        });
+            .then(response => response.json())
+            .then(data => {
+                if (data.summary) {
+                    alert('Resumo: ' + data.summary);
+                } else {
+                    alert('Erro ao obter o resumo: ' + (data.error || 'Erro desconhecido'));
+                }
+            })
+            .catch(error => {
+                console.error('Erro ao obter o resumo:', error);
+                alert('Erro ao obter o resumo: ' + error);
+            });
     };
 
     function fetchRolVigente() {
         fetch('https://auditoriasite.onrender.com/api/fetch-rol-vigente')
             .then(response => response.json())
             .then(data => {
-                console.log('Link do arquivo Excel:', data.latest_excel_link); // Log para depuração
-                const rolVigenteContainer = document.getElementById('rolVigenteContainer');
-                rolVigenteContainer.innerHTML = ''; // Limpar conteúdo anterior
-                const url = data.latest_excel_link;
-                fetch(url)
-                    .then(response => response.arrayBuffer())
-                    .then(data => {
-                        const workbook = XLSX.read(new Uint8Array(data), { type: 'array' });
-                        workbook.SheetNames.forEach(sheetName => {
-                            const htmlString = XLSX.utils.sheet_to_html(workbook.Sheets[sheetName], { id: 'data-table' });
-                            rolVigenteContainer.innerHTML += htmlString;
+                const link = data.latest_excel_link;
+                console.log('Link do arquivo Excel:', link); // Log para depuração
+                if (link) {
+                    fetch(link)
+                        .then(response => response.arrayBuffer())
+                        .then(buffer => {
+                            const data = new Uint8Array(buffer);
+                            const workbook = XLSX.read(data, { type: 'array' });
+                            const sheet = workbook.Sheets[workbook.SheetNames[0]];
+                            const html = XLSX.utils.sheet_to_html(sheet);
+                            document.getElementById('excelViewer').innerHTML = html;
+                        })
+                        .catch(error => {
+                            console.error('Erro ao processar o arquivo Excel:', error);
+                            alert('Erro ao processar o arquivo Excel: ' + error);
                         });
-                    });
+                } else {
+                    console.error('Arquivo Excel não encontrado');
+                    alert('Arquivo Excel não encontrado');
+                }
             })
             .catch(error => {
                 console.error('Erro ao obter o link do arquivo Excel:', error);
