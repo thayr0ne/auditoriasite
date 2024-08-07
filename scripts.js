@@ -174,13 +174,21 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(data => {
                 if (data.rol_excel_link) {
                     const rolVigenteContainer = document.getElementById('rolVigenteContainer');
-                    rolVigenteContainer.innerHTML = `
-                        <div class="link-item">
-                            <strong>Correlação TUSS x Rol</strong>
-                            <button onclick="viewExcel('${data.rol_excel_link}')">Exibir</button>
-                            <button onclick="downloadExcel('${data.rol_excel_link}')">Download</button>
-                        </div>
-                    `;
+                    // Usando a biblioteca SheetJS (XLSX) para renderizar o conteúdo do Excel
+                    fetch(data.rol_excel_link)
+                        .then(response => response.arrayBuffer())
+                        .then(arrayBuffer => {
+                            const data = new Uint8Array(arrayBuffer);
+                            const workbook = XLSX.read(data, {type: "array"});
+                            const sheetName = workbook.SheetNames[0];
+                            const worksheet = workbook.Sheets[sheetName];
+                            const htmlString = XLSX.utils.sheet_to_html(worksheet, {editable: true});
+                            rolVigenteContainer.innerHTML = htmlString;
+                        })
+                        .catch(error => {
+                            console.error('Erro ao carregar o arquivo Excel:', error);
+                            rolVigenteContainer.innerHTML = '<p>Erro ao carregar o arquivo Excel</p>';
+                        });
                 } else {
                     const rolVigenteContainer = document.getElementById('rolVigenteContainer');
                     rolVigenteContainer.innerHTML = '<p>Erro ao obter o link do arquivo Excel</p>';
@@ -191,14 +199,4 @@ document.addEventListener('DOMContentLoaded', function() {
                 alert('Erro ao obter o link do arquivo Excel: ' + error);
             });
     }
-
-    window.viewExcel = function(link) {
-        console.log('Exibindo Excel:', link); // Log para depuração
-        window.open(link, '_blank');
-    };
-
-    window.downloadExcel = function(link) {
-        console.log('Baixando Excel:', link); // Log para depuração
-        window.open(link, '_blank');
-    };
 });
