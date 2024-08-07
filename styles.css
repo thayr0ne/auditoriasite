@@ -137,3 +137,12 @@ h2 {
 .section.active {
     display: block;
 }
+
+#recentes {
+    margin-bottom: 20px; /* Espaço entre os containers de Anexos Recentes e Histórico */
+}
+
+#historicoRnContainer {
+    max-height: 60vh; /* Limite de altura para o histórico de RNs */
+    overflow-y: auto; /* Barra de rolagem apenas para o histórico de RNs */
+}
