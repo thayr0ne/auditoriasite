@@ -107,28 +107,6 @@ document.addEventListener('DOMContentLoaded', function() {
             alert('Erro ao obter os links: ' + error);
         });
 
-    let rnIndex = 10;
-    document.getElementById('loadMoreRn').addEventListener('click', function() {
-        fetch('https://auditoriasite.onrender.com/api/fetch-ans-links')
-            .then(response => response.json())
-            .then(data => {
-                const rnLinks = data.latest_rn_links.slice(rnIndex, rnIndex + 10);
-                if (rnLinks.length > 0) {
-                    const rnContainer = document.getElementById('historicoRnContainer');
-                    rnContainer.innerHTML += rnLinks.map(link => `
-                        <div class="link-item">
-                            <strong>RN nº ${link.number}</strong>
-                            <span>(${link.date})</span>
-                            <button onclick="viewPDF('${link.url}')">Exibir</button>
-                            <button onclick="fetchRnSummary('${link.url}')">Resumo</button>
-                        </div>
-                    `).join('');
-                    rnIndex += 10;
-                }
-            })
-            .catch(error => console.error('Erro ao carregar mais RNs:', error));
-    });
-
     window.viewPDF = function(link) {
         document.getElementById('pdfViewer').src = link;
     };
