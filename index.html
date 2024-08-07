@@ -3,45 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Anexos e RNs</title>
+    <title>Document</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <nav>
-        <ul>
-            <li id="anexosVigentesMenu">Anexos Vigentes</li>
-            <li id="rolVigenteMenu">Rol Vigente</li>
-            <li id="buscarProcedimentosMenu">Buscar Procedimentos</li>
-            <li id="cbhpmMenu">CBHPM</li>
-            <li id="relatoriosMenu">Relatórios</li>
-        </ul>
-    </nav>
-    <div class="container">
-        <aside class="sidebar" id="sidebar">
-            <div id="recentes">
-                <h2>RECENTES</h2>
-                <div id="latestAnexosContainer">
-                    <div id="latestAnexoIContainer"></div>
-                    <div id="latestAnexoIIContainer"></div>
-                    <div id="latestAnexoIIIContainer"></div>
-                    <div id="latestAnexoIVContainer"></div>
-                </div>
-            </div>
-            <div id="historicoRnContainer">
-                <h2>Histórico de RNs</h2>
-                <div id="latestRnContainer" class="anexo-container"></div>
-                <button id="loadMoreBtn" class="load-more">Mostrar mais</button>
-            </div>
-        </aside>
-        <main class="main-content" id="pdfViewerContainer">
-            <iframe id="pdfViewer"></iframe>
-        </main>
+    <div id="menu">
+        <button id="anexosVigentesMenu">Anexos Vigentes</button>
+        <button id="rolVigenteMenu">Rol Vigente</button>
+        <button id="buscarProcedimentosMenu">Buscar Procedimentos</button>
+        <button id="cbhpmMenu">CBHPM</button>
+        <button id="relatoriosMenu">Relatórios</button>
     </div>
-    <div id="anexosVigentes" class="section active"></div>
-    <div id="rolVigente" class="section"></div>
-    <div id="buscarProcedimentos" class="section"></div>
-    <div id="cbhpm" class="section"></div>
-    <div id="relatorios" class="section"></div>
+
+    <div id="anexosVigentes" class="section">
+        <div id="sidebar">
+            <h3>RECENTES</h3>
+            <div id="latestAnexoIContainer"></div>
+            <div id="latestAnexoIIContainer"></div>
+            <div id="latestAnexoIIIContainer"></div>
+            <div id="latestAnexoIVContainer"></div>
+            <h3>HISTÓRICO</h3>
+            <div id="latestRnContainer"></div>
+            <button id="loadMoreBtn">Mostrar mais</button>
+        </div>
+        <div id="pdfViewerContainer">
+            <iframe id="pdfViewer" width="100%" height="600px"></iframe>
+        </div>
+    </div>
+
+    <div id="rolVigente" class="section">
+        <div id="rolVigenteContainer"></div>
+    </div>
+
+    <div id="buscarProcedimentos" class="section">
+        <!-- Conteúdo da seção Buscar Procedimentos -->
+    </div>
+
+    <div id="cbhpm" class="section">
+        <!-- Conteúdo da seção CBHPM -->
+    </div>
+
+    <div id="relatorios" class="section">
+        <!-- Conteúdo da seção Relatórios -->
+    </div>
+
     <script src="scripts.js"></script>
 </body>
 </html>
