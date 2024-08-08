@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('pdfViewer').style.display = 'block';
 
     // Lógica para buscar links do backend
-    fetch('https://auditoriasite.onrender.com/api/fetch-ans-links')
+    fetch('/api/fetch-ans-links')
         .then(response => response.json())
         .then(data => {
             if (!data.latest_anexo_links || !data.latest_rn_links) {
@@ -97,7 +97,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <div class="link-item">
                         <strong>RN nº ${link.number}</strong> <span>(${link.date})</span>
                         <button onclick="viewPDF('${link.url}')">Exibir</button>
-                        <button onclick="fetchRnSummary('${link.url}')">Resumo</button>
+                        <button onclick="fetchSummary('${link.url}')">Resumo</button>
                     </div>
                 `).join('');
                 const latestRnContainer = document.getElementById('latestRnContainer');
@@ -110,7 +110,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         <div class="link-item">
                             <strong>RN nº ${link.number}</strong> <span>(${link.date})</span>
                             <button onclick="viewPDF('${link.url}')">Exibir</button>
-                            <button onclick="fetchRnSummary('${link.url}')">Resumo</button>
+                            <button onclick="fetchSummary('${link.url}')">Resumo</button>
                         </div>
                     `).join('');
                     latestRnContainer.innerHTML += additionalRnLinksHtml;
@@ -135,7 +135,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
     function fetchRolVigente() {
-        fetch('https://auditoriasite.onrender.com/api/fetch-rol-vigente')
+        fetch('/api/fetch-rol-vigente')
             .then(response => response.json())
             .then(data => {
                 if (data.excel_url) {
@@ -164,9 +164,9 @@ document.addEventListener('DOMContentLoaded', function() {
         window.open(link, '_blank');
     };
 
-    window.fetchRnSummary = function(url) {
+    window.fetchSummary = function(url) {
         console.log('Fetching summary for URL:', url);
-        fetch('https://auditoriasite.onrender.com/api/fetch-rn-summary', {
+        fetch('/api/fetch-rn-summary', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
