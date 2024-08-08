@@ -134,8 +134,7 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error('Erro ao obter os links:', error);
             alert('Erro ao obter os links: ' + error);
         });
-
-   function fetchRolVigente() {
+ function fetchRolVigente() {
         fetch('https://auditoriasite.onrender.com/api/fetch-limited-rol')
             .then(response => response.json())
             .then(data => {
