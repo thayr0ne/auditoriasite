@@ -133,7 +133,7 @@ h2 {
 #excelViewerContainer {
     width: 100%;
     height: calc(100vh - 2rem - 60px);;
-    overflow: auto;
+    overflow: hidden;
 }
 
 .section {
