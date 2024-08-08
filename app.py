@@ -1,14 +1,15 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, send_file
 from flask_cors import CORS
 import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
-import re
+import pandas as pd
+from io import BytesIO
 import logging
+import re
 
 app = Flask(__name__)
-CORS(app, resources={r"/api/*": {"origins": "*"}})  # Permitir todas as origens
-logging.basicConfig(level=logging.INFO)
+CORS(app, resources={r"/api/*": {"origins": "https://thayr0ne.github.io"}})  # Permitir apenas a origem específica
 
 @app.route('/api/fetch-ans-links', methods=['GET'])
 def fetch_ans_links():
@@ -94,19 +95,13 @@ def fetch_rn_summary():
     if not url:
         return jsonify({'error': 'URL não fornecida'}), 400
 
-    try:
-        response = requests.get(url)
-    except requests.exceptions.RequestException as e:
-        logging.error(f'Error fetching data from URL: {e}')
-        return jsonify({'error': f'Error fetching data from URL: {e}'}), 500
-
+    response = requests.get(url)
     if response.status_code == 200:
         soup = BeautifulSoup(response.content, 'html.parser')
         paragraphs = soup.find_all('p', class_='ementa')
         summary = "\n".join(p.get_text().strip() for p in paragraphs)
         return jsonify({'summary': summary})
     else:
-        logging.error(f'Error fetching page: {response.status_code}')
         return jsonify({'error': 'Erro ao acessar a página da RN'}), 500
 
 if __name__ == '__main__':
