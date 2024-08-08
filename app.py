@@ -66,35 +66,26 @@ def fetch_ans_links():
 
 @app.route('/api/fetch-rol-vigente', methods=['GET'])
 def fetch_rol_vigente():
-    url = 'https://www.gov.br/ans/pt-br/acesso-a-informacao/participacao-da-sociedade/atualizacao-do-rol-de-procedimentos'
-    logging.info(f'Fetching data from URL: {url}')
-    try:
-        response = requests.get(url)
-    except requests.exceptions.RequestException as e:
-        logging.error(f'Error fetching data from URL: {e}')
-        return jsonify({'error': f'Error fetching data from URL: {e}'}), 500
-
+    url = 'https://www.gov.br/ans/pt-br/acesso-a-informacao/participacao-da-sociedade/atualizacao-do-rol-de-procedimentos/CorrelaoTUSS.2021Rol.2021_RN610.RN611.RN612.xlsx'
+    response = requests.get(url)
+    
     if response.status_code == 200:
-        soup = BeautifulSoup(response.content, 'html.parser')
-        links = soup.find_all('a')
-        excel_link = None
-        for link in links:
-            href = link.get('href')
-            if 'Correlação TUSS x Rol' in link.text and href.endswith('.xlsx'):
-                excel_link = urljoin(url, href)
-                break
-
-        if excel_link:
-            logging.info(f'Found Excel link: {excel_link}')
-            return jsonify({'excel_url': excel_link})
-        else:
-            logging.error('Excel link not found')
-            return jsonify({'error': 'Excel link not found'}), 404
+        # Load Excel file into a pandas DataFrame
+        df = pd.read_excel(BytesIO(response.content))
+        
+        # Select rows and columns
+        df_filtered = df.iloc[6:, :12]  # Rows starting from row 7, columns A to L
+        
+        # Save the filtered DataFrame to a new Excel file
+        output = BytesIO()
+        writer = pd.ExcelWriter(output, engine='xlsxwriter')
+        df_filtered.to_excel(writer, index=False, header=False)
+        writer.save()
+        output.seek(0)
+        
+        return send_file(output, attachment_filename='filtered_rol_vigente.xlsx', as_attachment=True)
     else:
-        logging.error(f'Error fetching page: {response.status_code}')
-        return jsonify({
-            'error': 'Erro ao acessar a página'
-        })
+        return jsonify({'error': 'Erro ao acessar a página'}), 500
 
 @app.route('/api/fetch-rn-summary', methods=['POST'])
 def fetch_rn_summary():
