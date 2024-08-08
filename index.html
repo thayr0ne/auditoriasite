@@ -3,41 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ANS Auditoria</title>
+    <title>Portal de Auditoria</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <header>
-        <nav>
-            <ul>
-                <li><a href="anexos-vigentes.html">Anexos Vigentes</a></li>
-                <li><a href="rol-vigente.html">Rol Vigente</a></li>
-                <li><a href="buscar-procedimento.html">Buscar Procedimento</a></li>
-                <li><a href="cbhpm.html">CBHPM</a></li>
-                <li><a href="relatorios.html">Relatórios</a></li>
-            </ul>
-        </nav>
-    </header>
+    <nav>
+        <ul>
+            <li><a href="#" onclick="showSection('anexos')">Anexos Vigentes</a></li>
+            <li><a href="#" onclick="showSection('rol')">Rol Vigente</a></li>
+            <li><a href="#">Buscar Procedimentos</a></li>
+            <li><a href="#">CBHPM</a></li>
+            <li><a href="#">Relatórios</a></li>
+        </ul>
+    </nav>
 
-    <main id="main-content">
-        <div id="sidebar">
-            <div id="anexos-recentes-container">
+    <section id="anexos" class="section">
+        <div class="sidebar">
+            <div class="recent-container">
                 <h2>Anexos Recentes</h2>
-                <ul id="anexos-recentes"></ul>
+                <div id="recent-anexos"></div>
             </div>
-            <div id="rn-historico-container">
+            <div class="historical-container">
                 <h2>Histórico de RNs</h2>
-                <ul id="rn-historico"></ul>
-                <button id="mostrar-mais-rn">Mostrar Mais</button>
+                <div id="historical-rns"></div>
+                <button onclick="showMoreRNs()">Mostrar mais</button>
             </div>
         </div>
-        <div id="pdf-viewer-container">
-            <iframe id="pdf-viewer" src=""></iframe>
+        <div class="pdf-viewer">
+            <iframe id="pdf-frame" width="100%" height="600px"></iframe>
         </div>
-        <div id="excel-container">
-            <div id="excel-viewer"></div>
+    </section>
+
+    <section id="rol" class="section" style="display: none;">
+        <div class="excel-viewer">
+            <iframe id="excel-frame" width="100%" height="600px"></iframe>
         </div>
-    </main>
+    </section>
 
     <script src="scripts.js"></script>
 </body>
