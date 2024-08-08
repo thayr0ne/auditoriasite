@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('pdfViewer').style.display = 'block';
 
     // Lógica para buscar links do backend
-    fetch('/api/fetch-ans-links')
+    fetch('https://auditoriasite.onrender.com/api/fetch-ans-links')
         .then(response => {
             if (!response.ok) {
                 throw new Error('Network response was not ok');
@@ -140,7 +140,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
     function fetchRolVigente() {
-        fetch('/api/fetch-rol-vigente')
+        fetch('https://auditoriasite.onrender.com/api/fetch-rol-vigente')
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
@@ -176,7 +176,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     window.fetchRnSummary = function(url) {
         console.log('Fetching summary for URL:', url);
-        fetch('/api/fetch-rn-summary', {
+        fetch('https://auditoriasite.onrender.com/api/fetch-rn-summary', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
