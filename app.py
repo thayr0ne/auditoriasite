@@ -74,7 +74,7 @@ def fetch_rol_vigente():
     
     if response.status_code == 200:
         soup = BeautifulSoup(response.content, 'html.parser')
-        excel_link = soup.find('a', string='Correlação TUSS x Rol')
+        excel_link = soup.find('a', href=True, text='Correlação TUSS x Rol')
         if excel_link:
             excel_url = urljoin(url, excel_link['href'])
             return jsonify({'excel_url': excel_url})
