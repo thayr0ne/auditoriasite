@@ -57,12 +57,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Lógica para buscar links do backend
     fetch('https://auditoriasite.onrender.com/api/fetch-ans-links')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
+        .then(response => response.json())
         .then(data => {
             if (!data.latest_anexo_links || !data.latest_rn_links) {
                 throw new Error("Dados inválidos recebidos");
@@ -141,17 +136,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function fetchRolVigente() {
         fetch('https://auditoriasite.onrender.com/api/fetch-rol-vigente')
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
+            .then(response => response.json())
             .then(data => {
                 if (data.excel_url) {
                     console.log('URL do Excel:', data.excel_url);
-                    const excelViewerContainer = document.getElementById('excelViewerContainer');
-                    excelViewerContainer.innerHTML = `<iframe src="https://view.officeapps.live.com/op/embed.aspx?src=${data.excel_url}" width="100%" height="600px" frameborder="0"></iframe>`;
+                    const excelViewer = document.getElementById('excelViewer');
+                    excelViewer.src = `https://view.officeapps.live.com/op/embed.aspx?src=${data.excel_url}`;
                 } else {
                     console.error('Erro ao obter o URL do Excel:', data.error);
                     alert('Erro ao obter o URL do Excel: ' + (data.error || 'Erro desconhecido'));
