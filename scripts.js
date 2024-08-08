@@ -97,7 +97,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <div class="link-item">
                         <strong>RN nº ${link.number}</strong> <span>(${link.date})</span>
                         <button onclick="viewPDF('${link.url}')">Exibir</button>
-                        <button onclick="fetchSummary('${link.url}')">Resumo</button>
+                        <button onclick="fetchRnSummary('${link.url}')">Resumo</button>
                     </div>
                 `).join('');
                 const latestRnContainer = document.getElementById('latestRnContainer');
@@ -110,7 +110,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         <div class="link-item">
                             <strong>RN nº ${link.number}</strong> <span>(${link.date})</span>
                             <button onclick="viewPDF('${link.url}')">Exibir</button>
-                            <button onclick="fetchSummary('${link.url}')">Resumo</button>
+                            <button onclick="fetchRnSummary('${link.url}')">Resumo</button>
                         </div>
                     `).join('');
                     latestRnContainer.innerHTML += additionalRnLinksHtml;
@@ -164,7 +164,7 @@ document.addEventListener('DOMContentLoaded', function() {
         window.open(link, '_blank');
     };
 
-    window.fetchSummary = function(url) {
+    window.fetchRnSummary = function(url) {
         console.log('Fetching summary for URL:', url);
         fetch('/api/fetch-rn-summary', {
             method: 'POST',
