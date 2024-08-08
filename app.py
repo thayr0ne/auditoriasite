@@ -37,14 +37,9 @@ def fetch_ans_links():
                 if rn_match:
                     rn_num = int(rn_match.group(1))
                     rn_links.append((rn_num, texto, href))
-            if texto == 'ANEXO I' and href.endswith('.pdf'):
-                anexo_links['I'] = urljoin(url, href)
-            elif texto == 'ANEXO II' and href.endswith('.pdf'):
-                anexo_links['II'] = urljoin(url, href)
-            elif texto == 'ANEXO III' and href.endswith('.pdf'):
-                anexo_links['III'] = urljoin(url, href)
-            elif texto == 'ANEXO IV' and href.endswith('.pdf'):
-                anexo_links['IV'] = urljoin(url, href)
+            for anexo in anexo_links.keys():
+                if re.fullmatch(f'ANEXO {anexo}', texto) and href.endswith('.pdf'):
+                    anexo_links[anexo] = urljoin(url, href)
 
         rn_links = list(dict.fromkeys(rn_links))  # Remove duplicatas
         rn_links.sort(reverse=True, key=lambda x: x[0])
@@ -72,20 +67,6 @@ def fetch_ans_links():
             'error': 'Erro ao acessar a página'
         })
 
-@app.route('/api/fetch-rol-vigente', methods=['GET'])
-def fetch_rol_vigente():
-    url = "https://www.gov.br/ans/pt-br/acesso-a-informacao/participacao-da-sociedade/atualizacao-do-rol-de-procedimentos"
-    response = requests.get(url)
-    if response.status_code == 200:
-        soup = BeautifulSoup(response.content, 'html.parser')
-        excel_url = ""
-        excel_tag = soup.find('a', href=True, text=lambda x: x and "Correlação TUSS x Rol" in x)
-        if excel_tag:
-            excel_url = urljoin(url, excel_tag['href'])
-        return jsonify({"excel_url": excel_url})
-    else:
-        return jsonify({"error": "Erro ao acessar a página"})
-
 @app.route('/api/fetch-rn-summary', methods=['POST'])
 def fetch_rn_summary():
     data = request.get_json()
@@ -101,6 +82,31 @@ def fetch_rn_summary():
         return jsonify({'summary': summary})
     else:
         return jsonify({'error': 'Erro ao acessar a página da RN'}), 500
+
+@app.route('/api/fetch-rol-vigente', methods=['GET'])
+def fetch_rol_vigente():
+    url = 'https://www.gov.br/ans/pt-br/acesso-a-informacao/participacao-da-sociedade/atualizacao-do-rol-de-procedimentos'
+    logging.info(f'Fetching Excel URL from: {url}')
+    try:
+        response = requests.get(url)
+    except requests.exceptions.RequestException as e:
+        logging.error(f'Error fetching Excel URL: {e}')
+        return jsonify({'error': f'Error fetching Excel URL: {e}'}), 500
+
+    if response.status_code == 200:
+        logging.info('Page fetched successfully')
+        soup = BeautifulSoup(response.content, 'html.parser')
+        excel_link = soup.find('a', string=re.compile(r'Correlação TUSS x Rol'))
+        if excel_link:
+            excel_url = urljoin(url, excel_link.get('href'))
+            logging.info(f'Excel URL: {excel_url}')
+            return jsonify({'excel_url': excel_url})
+        else:
+            logging.error('Excel link not found')
+            return jsonify({'error': 'Excel link not found'}), 404
+    else:
+        logging.error(f'Error fetching page: {response.status_code}')
+        return jsonify({'error': 'Erro ao acessar a página'}), 500
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
