@@ -57,7 +57,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Lógica para buscar links do backend
     fetch('/api/fetch-ans-links')
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
         .then(data => {
             if (!data.latest_anexo_links || !data.latest_rn_links) {
                 throw new Error("Dados inválidos recebidos");
@@ -136,7 +141,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function fetchRolVigente() {
         fetch('/api/fetch-rol-vigente')
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
             .then(data => {
                 if (data.excel_url) {
                     console.log('URL do Excel:', data.excel_url);
