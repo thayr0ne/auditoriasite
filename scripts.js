@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', function() {
         buscarProcedimentos: document.getElementById('buscarProcedimentos'),
         cbhpm: document.getElementById('cbhpm'),
         relatorios: document.getElementById('relatorios')
+        
     };
 
     document.getElementById('anexosVigentesMenu').addEventListener('click', function() {
