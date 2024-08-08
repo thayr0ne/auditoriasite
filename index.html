@@ -3,42 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ANS Auditoria</title>
+    <title>Gerência de Inteligência Assistencial</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <header>
         <nav>
             <ul>
-                <li><a href="anexos-vigentes.html">Anexos Vigentes</a></li>
-                <li><a href="rol-vigente.html">Rol Vigente</a></li>
-                <li><a href="buscar-procedimento.html">Buscar Procedimento</a></li>
-                <li><a href="cbhpm.html">CBHPM</a></li>
-                <li><a href="relatorios.html">Relatórios</a></li>
+                <li id="anexosVigentesMenu">Anexos Vigentes</li>
+                <li id="rolVigenteMenu">Rol Vigente</li>
+                <li id="buscarProcedimentosMenu">Buscar Procedimentos</li>
+                <li id="cbhpmMenu">CBHPM</li>
+                <li id="relatoriosMenu">Relatórios</li>
             </ul>
         </nav>
     </header>
-
-    <main id="main-content">
+    <div id="mainContent">
         <div id="sidebar">
-            <div id="anexos-recentes-container">
+            <div id="recentContainer">
                 <h2>Anexos Recentes</h2>
-                <ul id="anexos-recentes"></ul>
+                <div id="latestAnexoIContainer"></div>
+                <div id="latestAnexoIIContainer"></div>
+                <div id="latestAnexoIIIContainer"></div>
+                <div id="latestAnexoIVContainer"></div>
             </div>
-            <div id="rn-historico-container">
+            <div id="historyContainer">
                 <h2>Histórico de RNs</h2>
-                <ul id="rn-historico"></ul>
-                <button id="mostrar-mais-rn">Mostrar Mais</button>
+                <div id="latestRnContainer"></div>
+                <button id="loadMoreRnBtn">Mostrar Mais</button>
             </div>
         </div>
-        <div id="pdf-viewer-container">
-            <iframe id="pdf-viewer" src=""></iframe>
+        <div id="pdfViewerContainer">
+            <iframe id="pdfViewer" width="100%" height="600px" frameborder="0"></iframe>
         </div>
-        <div id="excel-container">
-            <div id="excel-viewer"></div>
-        </div>
-    </main>
-
+        <div id="excelViewerContainer"></div>
+    </div>
     <script src="scripts.js"></script>
 </body>
 </html>
