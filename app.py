@@ -1,15 +1,14 @@
-from flask import Flask, jsonify, request, send_file
+from flask import Flask, jsonify, request
 from flask_cors import CORS
 import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
-import pandas as pd
-from io import BytesIO
-import logging
 import re
+import logging
 
 app = Flask(__name__)
-CORS(app, resources={r"/api/*": {"origins": "https://thayr0ne.github.io"}})  # Permitir apenas a origem específica
+CORS(app, resources={r"/api/*": {"origins": "*"}})  # Permitir todas as origens
+logging.basicConfig(level=logging.INFO)
 
 @app.route('/api/fetch-ans-links', methods=['GET'])
 def fetch_ans_links():
@@ -67,26 +66,35 @@ def fetch_ans_links():
 
 @app.route('/api/fetch-rol-vigente', methods=['GET'])
 def fetch_rol_vigente():
-    url = 'https://www.gov.br/ans/pt-br/acesso-a-informacao/participacao-da-sociedade/atualizacao-do-rol-de-procedimentos/CorrelaoTUSS.2021Rol.2021_RN610.RN611.RN612.xlsx'
-    response = requests.get(url)
-    
+    url = 'https://www.gov.br/ans/pt-br/acesso-a-informacao/participacao-da-sociedade/atualizacao-do-rol-de-procedimentos'
+    logging.info(f'Fetching data from URL: {url}')
+    try:
+        response = requests.get(url)
+    except requests.exceptions.RequestException as e:
+        logging.error(f'Error fetching data from URL: {e}')
+        return jsonify({'error': f'Error fetching data from URL: {e}'}), 500
+
     if response.status_code == 200:
-        # Load Excel file into a pandas DataFrame
-        df = pd.read_excel(BytesIO(response.content))
-        
-        # Select rows and columns
-        df_filtered = df.iloc[6:, :12]  # Rows starting from row 7, columns A to L
-        
-        # Save the filtered DataFrame to a new Excel file
-        output = BytesIO()
-        writer = pd.ExcelWriter(output, engine='xlsxwriter')
-        df_filtered.to_excel(writer, index=False, header=False)
-        writer.save()
-        output.seek(0)
-        
-        return send_file(output, attachment_filename='filtered_rol_vigente.xlsx', as_attachment=True)
+        soup = BeautifulSoup(response.content, 'html.parser')
+        links = soup.find_all('a')
+        excel_link = None
+        for link in links:
+            href = link.get('href')
+            if 'Correlação TUSS x Rol' in link.text and href.endswith('.xlsx'):
+                excel_link = urljoin(url, href)
+                break
+
+        if excel_link:
+            logging.info(f'Found Excel link: {excel_link}')
+            return jsonify({'excel_url': excel_link})
+        else:
+            logging.error('Excel link not found')
+            return jsonify({'error': 'Excel link not found'}), 404
     else:
-        return jsonify({'error': 'Erro ao acessar a página'}), 500
+        logging.error(f'Error fetching page: {response.status_code}')
+        return jsonify({
+            'error': 'Erro ao acessar a página'
+        })
 
 @app.route('/api/fetch-rn-summary', methods=['POST'])
 def fetch_rn_summary():
@@ -95,13 +103,19 @@ def fetch_rn_summary():
     if not url:
         return jsonify({'error': 'URL não fornecida'}), 400
 
-    response = requests.get(url)
+    try:
+        response = requests.get(url)
+    except requests.exceptions.RequestException as e:
+        logging.error(f'Error fetching data from URL: {e}')
+        return jsonify({'error': f'Error fetching data from URL: {e}'}), 500
+
     if response.status_code == 200:
         soup = BeautifulSoup(response.content, 'html.parser')
         paragraphs = soup.find_all('p', class_='ementa')
         summary = "\n".join(p.get_text().strip() for p in paragraphs)
         return jsonify({'summary': summary})
     else:
+        logging.error(f'Error fetching page: {response.status_code}')
         return jsonify({'error': 'Erro ao acessar a página da RN'}), 500
 
 if __name__ == '__main__':
