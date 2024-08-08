@@ -136,16 +136,11 @@ document.addEventListener('DOMContentLoaded', function() {
         });
  function fetchRolVigente() {
         fetch('https://auditoriasite.onrender.com/api/fetch-limited-rol')
-            .then(response => response.json())
-            .then(data => {
-                if (data.excel_url) {
-                    console.log('URL do Excel:', data.excel_url);
-                    const excelViewerContainer = document.getElementById('excelViewerContainer');
-                    excelViewerContainer.innerHTML = `<iframe src="https://view.officeapps.live.com/op/embed.aspx?src=${data.excel_url}" width="100%" height="600px" frameborder="0"></iframe>`;
-                } else {
-                    console.error('Erro ao obter o URL do Excel:', data.error);
-                    alert('Erro ao obter o URL do Excel: ' + (data.error || 'Erro desconhecido'));
-                }
+            .then(response => response.blob())
+            .then(blob => {
+                const url = URL.createObjectURL(blob);
+                const excelViewerContainer = document.getElementById('excelViewerContainer');
+                excelViewerContainer.innerHTML = `<iframe src="https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(url)}" width="100%" height="100%" frameborder="0"></iframe>`;
             })
             .catch(error => {
                 console.error('Erro ao obter o URL do Excel:', error);
