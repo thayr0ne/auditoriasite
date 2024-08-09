@@ -158,3 +158,32 @@ h2 {
     max-height: 60vh; /* Limite de altura para o histórico de RNs */
     overflow-y: auto; /* Barra de rolagem apenas para o histórico de RNs */
 }
+
+.search-container {
+    margin: 20px 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.search-container input, .search-container select, .search-container button {
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    flex: 1 1 200px;
+}
+
+.result-container {
+    margin-top: 20px;
+}
+
+#resultTable {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#resultTable th, #resultTable td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
