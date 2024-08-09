@@ -5,6 +5,7 @@ from bs4 import BeautifulSoup
 from urllib.parse import urljoin
 import re
 import logging
+import pandas as pd
 
 app = Flask(__name__)
 CORS(app, resources={r"/api/*": {"origins": "*"}})  # Permitir todas as origens
@@ -117,6 +118,39 @@ def fetch_rn_summary():
     else:
         logging.error(f'Error fetching page: {response.status_code}')
         return jsonify({'error': 'Erro ao acessar a página da RN'}), 500
+
+# Carrega a planilha
+file_path = '/mnt/data/PORTES E VALORES - CBHPMS SITE.xlsx'
+tabela_portes = pd.read_excel(file_path, sheet_name='TABELA 01')
+tabela_portes_com_portes = pd.read_excel(file_path, sheet_name='TABELA COM PORTES')
+tabela_portes_cbphm = pd.read_excel(file_path, sheet_name='PORTES CBHPM')
+
+# Função auxiliar para calcular valores
+def calcular_valores(tabela_portes, cbhpm_edicao, percentual_cirurgico, percentual_anestesico, multiplo, via_acesso, horario_especial, nova_regra_auxilio, acomodacao):
+    # Implementar a lógica de cálculo com base nas instruções da planilha
+    # Exemplo: Filtragem dos dados com base na edição da CBHPM, e cálculo dos valores
+    pass
+
+# API para buscar procedimento
+@app.route('/api/buscar-procedimento', methods=['GET'])
+def buscar_procedimento():
+    nome_proc = request.args.get('nomenclatura', '')
+    codigo_tuss = request.args.get('codigo_tuss', '')
+    cbhpm_edicao = request.args.get('cbhpm_edicao', '')
+    percentual_cirurgico = float(request.args.get('percentual_cirurgico', 0))
+    percentual_anestesico = float(request.args.get('percentual_anestesico', 0))
+    multiplo = request.args.get('multiplo', 'Não')
+    via_acesso = request.args.get('via_acesso', 'Mesma via')
+    horario_especial = request.args.get('horario_especial', 'Não')
+    nova_regra_auxilio = request.args.get('nova_regra_auxilio', 'Não')
+    acomodacao = request.args.get('acomodacao', 'Enfermaria')
+
+    # Implementar a lógica de busca do procedimento
+    # Filtrar pelo nome ou código TUSS, e calcular os valores com base nos parâmetros
+    resultado = []  # Substituir pela lógica de busca e cálculo
+
+    return jsonify(resultado)
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
