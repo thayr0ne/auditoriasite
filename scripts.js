@@ -43,6 +43,44 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('excelViewerContainer').style.display = 'none';
     });
 
+    document.getElementById('buscarBtn').addEventListener('click', function() {
+        const nome = document.getElementById('searchNome').value;
+        const codigo = document.getElementById('searchCodigo').value;
+        const cbhpmEdicao = document.getElementById('cbhpmEdicao').value;
+        const percentualCirurgico = document.getElementById('percentualCirurgico').value || 0;
+        const percentualAnestesico = document.getElementById('percentualAnestesico').value || 0;
+        const multiplo = document.getElementById('multiplo').value;
+        const viaAcesso = document.getElementById('viaAcesso').value;
+        const horarioEspecial = document.getElementById('horarioEspecial').value;
+        const novaRegraAuxilio = document.getElementById('novaRegraAuxilio').value;
+        const acomodacao = document.getElementById('acomodacao').value;
+    
+        fetch(`/api/buscar-procedimento?nomenclatura=${nome}&codigo_tuss=${codigo}&cbhpm_edicao=${cbhpmEdicao}&percentual_cirurgico=${percentualCirurgico}&percentual_anestesico=${percentualAnestesico}&multiplo=${multiplo}&via_acesso=${viaAcesso}&horario_especial=${horarioEspecial}&nova_regra_auxilio=${novaRegraAuxilio}&acomodacao=${acomodacao}`)
+            .then(response => response.json())
+            .then(data => {
+                const tbody = document.querySelector('#resultTable tbody');
+                tbody.innerHTML = '';
+                data.forEach(row => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${row.nomenclatura}</td>
+                        <td>${row.codigo_tuss}</td>
+                        <td>${row.porte_cirurgico}</td>
+                        <td>${row.valor_porte_cirurgico}</td>
+                        <td>${row.num_auxiliares}</td>
+                        <td>${row.valor_auxiliar}</td>
+                        <td>${row.porte_anestesico}</td>
+                        <td>${row.valor_porte_anestesico}</td>
+                        <td>${row.correlacao_rol_vigente}</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            });
+    });
+
+
+    
+
     function showSection(sectionId) {
         for (let key in sections) {
             sections[key].classList.remove('active');
