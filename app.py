@@ -103,20 +103,26 @@ def verificar_correlacao_rol(codigo_tuss):
 # API para buscar procedimento
 @app.route('/api/buscar-procedimento', methods=['GET'])
 def buscar_procedimento_api():
-    nome_proc = request.args.get('nomenclatura', '')
-    codigo_tuss = request.args.get('codigo_tuss', '')
-    cbhpm_edicao = request.args.get('cbhpm_edicao', '')
-    percentual_cirurgico = float(request.args.get('percentual_cirurgico', 0))
-    percentual_anestesico = float(request.args.get('percentual_anestesico', 0))
-    multiplo = request.args.get('multiplo', 'Não')
-    via_acesso = request.args.get('via_acesso', 'Mesma via')
-    horario_especial = request.args.get('horario_especial', 'Não')
-    nova_regra_auxilio = request.args.get('nova_regra_auxilio', 'Não')
-    acomodacao = request.args.get('acomodacao', 'Enfermaria')
+    nome_proc = request.args.get('nomenclatura', '').strip()
+    codigo_tuss = request.args.get('codigo_tuss', '').strip()
+    cbhpm_edicao = request.args.get('cbhpm_edicao', '').strip()
+    
+    if not nome_proc and not codigo_tuss:
+        return jsonify({'error': 'Informe pelo menos um parâmetro para busca'}), 400
+    
+    if tabela_portes.empty:
+        return jsonify({'error': 'Erro ao carregar a base de dados'}), 500
 
-    resultado = buscar_procedimento(nome_proc, codigo_tuss, cbhpm_edicao, percentual_cirurgico, percentual_anestesico, multiplo, via_acesso, horario_especial, nova_regra_auxilio, acomodacao)
-
-    return jsonify(resultado)
+    try:
+        resultado = buscar_procedimento(nome_proc, codigo_tuss, cbhpm_edicao)
+        
+        if not resultado:
+            return jsonify([])  # Retornar lista vazia caso não encontre nada
+        return jsonify(resultado)
+    
+    except Exception as e:
+        print(f'Erro na busca de procedimentos: {e}')
+        return jsonify({'error': 'Erro interno na busca'}), 500
 
 # Funções para buscar RNs e Anexos mais recentes
 def fetch_ans_links():
