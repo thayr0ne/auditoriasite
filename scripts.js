@@ -60,7 +60,8 @@ document.addEventListener('DOMContentLoaded', function() {
         botaoBuscar.disabled = true;
         botaoBuscar.innerText = 'Buscando...';
 
-        fetch(`/api/buscar-procedimento?nomenclatura=${nome}&codigo_tuss=${codigo}&cbhpm_edicao=${cbhpmEdicao}&percentual_cirurgico=${percentualCirurgico}&percentual_anestesico=${percentualAnestesico}&multiplo=${multiplo}&via_acesso=${viaAcesso}&horario_especial=${horarioEspecial}&nova_regra_auxilio=${novaRegraAuxilio}&acomodacao=${acomodacao}`)
+      fetch(`https://auditoriasite.vercel.app/api/buscar-procedimento?nomenclatura=${nome}&codigo_tuss=${codigo}&cbhpm_edicao=${cbhpmEdicao}&percentual_cirurgico=${percentualCirurgico}&percentual_anestesico=${percentualAnestesico}&multiplo=${multiplo}&via_acesso=${viaAcesso}&horario_especial=${horarioEspecial}&nova_regra_auxilio=${novaRegraAuxilio}&acomodacao=${acomodacao}`)
+
             .then(response => {
                 if (!response.ok) {
                     throw new Error(`Erro na busca: ${response.status}`);
