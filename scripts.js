@@ -44,8 +44,8 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     document.getElementById('buscarBtn').addEventListener('click', function() {
-        const nome = document.getElementById('searchNome').value;
-        const codigo = document.getElementById('searchCodigo').value;
+        const nome = document.getElementById('searchNome').value.trim();
+        const codigo = document.getElementById('searchCodigo').value.trim();
         const cbhpmEdicao = document.getElementById('cbhpmEdicao').value;
         const percentualCirurgico = document.getElementById('percentualCirurgico').value || 0;
         const percentualAnestesico = document.getElementById('percentualAnestesico').value || 0;
@@ -54,27 +54,49 @@ document.addEventListener('DOMContentLoaded', function() {
         const horarioEspecial = document.getElementById('horarioEspecial').value;
         const novaRegraAuxilio = document.getElementById('novaRegraAuxilio').value;
         const acomodacao = document.getElementById('acomodacao').value;
-    
+
+        // Desabilitar o botão e exibir mensagem de carregamento
+        const botaoBuscar = document.getElementById('buscarBtn');
+        botaoBuscar.disabled = true;
+        botaoBuscar.innerText = 'Buscando...';
+
         fetch(`/api/buscar-procedimento?nomenclatura=${nome}&codigo_tuss=${codigo}&cbhpm_edicao=${cbhpmEdicao}&percentual_cirurgico=${percentualCirurgico}&percentual_anestesico=${percentualAnestesico}&multiplo=${multiplo}&via_acesso=${viaAcesso}&horario_especial=${horarioEspecial}&nova_regra_auxilio=${novaRegraAuxilio}&acomodacao=${acomodacao}`)
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Erro na busca: ${response.status}`);
+                }
+                return response.json();
+            })
             .then(data => {
                 const tbody = document.querySelector('#resultTable tbody');
                 tbody.innerHTML = '';
-                data.forEach(row => {
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `
-                        <td>${row.nomenclatura}</td>
-                        <td>${row.codigo_tuss}</td>
-                        <td>${row.porte_cirurgico}</td>
-                        <td>${row.valor_porte_cirurgico}</td>
-                        <td>${row.num_auxiliares}</td>
-                        <td>${row.valor_auxiliar}</td>
-                        <td>${row.porte_anestesico}</td>
-                        <td>${row.valor_porte_anestesico}</td>
-                        <td>${row.correlacao_rol_vigente}</td>
-                    `;
-                    tbody.appendChild(tr);
-                });
+
+                if (data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="9">Nenhum resultado encontrado.</td></tr>';
+                } else {
+                    data.forEach(row => {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td>${row.nomenclatura}</td>
+                            <td>${row.codigo_tuss}</td>
+                            <td>${row.porte_cirurgico}</td>
+                            <td>${row.valor_porte_cirurgico}</td>
+                            <td>${row.num_auxiliares}</td>
+                            <td>${row.valor_auxiliar}</td>
+                            <td>${row.porte_anestesico}</td>
+                            <td>${row.valor_porte_anestesico}</td>
+                            <td>${row.correlacao_rol_vigente}</td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                }
+            })
+            .catch(error => {
+                alert(`Erro ao buscar procedimentos: ${error.message}`);
+            })
+            .finally(() => {
+                botaoBuscar.disabled = false;
+                botaoBuscar.innerText = 'Buscar';
             });
     });
 
