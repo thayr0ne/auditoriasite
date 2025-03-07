@@ -9,12 +9,13 @@ import pandas as pd
 app = Flask(__name__)
 CORS(app, resources={r"/api/*": {"origins": "*"}})  # Permitir todas as origens
 
-import os
+import pandas as pd
+import requests
 
-# 🔹 Link direto de download do Google Drive
+# 🔹 Link direto para download da planilha no Google Drive
 google_drive_link = "https://drive.google.com/uc?export=download&id=1EBlt886g7wQ45-9B2KfvkgNqWI2VUBrw"
 
-# 🔹 Caminho temporário para salvar o arquivo no servidor
+# 🔹 Caminho onde salvaremos o arquivo temporariamente
 file_path = "/tmp/PORTES_E_VALORES_CBHPMS_SITE.xlsx"
 
 # 🔹 Baixar o arquivo do Google Drive
@@ -27,16 +28,12 @@ if response.status_code == 200:
 else:
     raise Exception(f"❌ Erro ao baixar planilha: {response.status_code}")
 
-# 🔹 Verificar se o arquivo foi baixado corretamente
-if not os.path.exists(file_path):
-    raise FileNotFoundError(f"Arquivo não encontrado: {file_path}")
-
 # 🔹 Carregar a planilha no Pandas
 try:
     tabela_portes = pd.read_excel(file_path, sheet_name="TABELA 01")
-    print("✅ Planilha carregada com sucesso no Pandas!")
+    print("✅ Planilha carregada no Pandas com sucesso!")
 except Exception as e:
-    raise Exception(f"Erro ao carregar planilha no Pandas: {e}")
+    raise Exception(f"❌ Erro ao carregar planilha: {str(e)}")
 
 
 # Carregar as planilhas principais
