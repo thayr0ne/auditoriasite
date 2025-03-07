@@ -9,8 +9,25 @@ import pandas as pd
 app = Flask(__name__)
 CORS(app, resources={r"/api/*": {"origins": "*"}})  # Permitir todas as origens
 
-# Caminho do arquivo principal
-file_path = '/mnt/data/PORTES E VALORES - CBHPMS SITE.xlsx'
+
+# 🔹 Link do Google Drive compartilhado
+google_drive_link = "https://docs.google.com/spreadsheets/d/1EBlt886g7wQ45-9B2KfvkgNqWI2VUBrw/export?format=xlsx"
+
+# 🔹 Caminho temporário para salvar o arquivo
+file_path = "/tmp/PORTES_E_VALORES_CBHPMS_SITE.xlsx"
+
+# 🔹 Baixar o arquivo do Google Drive
+response = requests.get(google_drive_link)
+if response.status_code == 200:
+    with open(file_path, "wb") as f:
+        f.write(response.content)
+    print("Planilha baixada com sucesso!")
+else:
+    raise Exception(f"Erro ao baixar planilha: {response.status_code}")
+
+# 🔹 Carregar a planilha no Pandas
+tabela_portes = pd.read_excel(file_path, sheet_name="TABELA 01")
+
 
 # Carregar as planilhas principais
 tabela_portes = pd.read_excel(file_path, sheet_name='TABELA 01')
