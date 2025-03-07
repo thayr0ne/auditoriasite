@@ -7,64 +7,53 @@ document.addEventListener('DOMContentLoaded', function() {
         relatorios: document.getElementById('relatorios')
     };
 
+    function showSection(sectionId) {
+        for (let key in sections) {
+            sections[key].style.display = 'none'; // Esconder todas as seções
+        }
+        sections[sectionId].style.display = 'block'; // Mostrar a seção correta
+        
+        // 🔹 Recarregar dados específicos ao trocar de aba
+        if (sectionId === 'rolVigente') {
+            fetchRolVigente();
+        }
+        if (sectionId === 'anexosVigentes') {
+            fetchAnexosVigentes();
+        }
+    }
+
     document.getElementById('anexosVigentesMenu').addEventListener('click', function() {
         showSection('anexosVigentes');
-        document.getElementById('sidebar').style.display = 'block';
-        document.getElementById('pdfViewer').style.display = 'block';
-        document.getElementById('excelViewerContainer').style.display = 'none';
     });
 
     document.getElementById('rolVigenteMenu').addEventListener('click', function() {
         showSection('rolVigente');
-        document.getElementById('sidebar').style.display = 'none';
-        document.getElementById('pdfViewer').style.display = 'none';
-        document.getElementById('excelViewerContainer').style.display = 'block';
-        fetchRolVigente();
     });
 
     document.getElementById('buscarProcedimentosMenu').addEventListener('click', function() {
         showSection('buscarProcedimentos');
-        document.getElementById('sidebar').style.display = 'none';
-        document.getElementById('pdfViewer').style.display = 'none';
-        document.getElementById('excelViewerContainer').style.display = 'none';
     });
 
     document.getElementById('cbhpmMenu').addEventListener('click', function() {
         showSection('cbhpm');
-        document.getElementById('sidebar').style.display = 'none';
-        document.getElementById('pdfViewer').style.display = 'none';
-        document.getElementById('excelViewerContainer').style.display = 'none';
     });
 
     document.getElementById('relatoriosMenu').addEventListener('click', function() {
         showSection('relatorios');
-        document.getElementById('sidebar').style.display = 'none';
-        document.getElementById('pdfViewer').style.display = 'none';
-        document.getElementById('excelViewerContainer').style.display = 'none';
     });
 
     document.getElementById('buscarBtn').addEventListener('click', function() {
         const nome = document.getElementById('searchNome').value.trim();
         const codigo = document.getElementById('searchCodigo').value.trim();
         const cbhpmEdicao = document.getElementById('cbhpmEdicao').value;
-        const percentualCirurgico = document.getElementById('percentualCirurgico').value || 0;
-        const percentualAnestesico = document.getElementById('percentualAnestesico').value || 0;
-        const multiplo = document.getElementById('multiplo').value;
-        const viaAcesso = document.getElementById('viaAcesso').value;
-        const horarioEspecial = document.getElementById('horarioEspecial').value;
-        const novaRegraAuxilio = document.getElementById('novaRegraAuxilio').value;
-        const acomodacao = document.getElementById('acomodacao').value;
 
-        // Desabilitar o botão e exibir mensagem de carregamento
         const botaoBuscar = document.getElementById('buscarBtn');
         botaoBuscar.disabled = true;
         botaoBuscar.innerText = 'Buscando...';
 
-        fetch(`https://auditoriasite.vercel.app/api/buscar-procedimento?nomenclatura=${nome}&codigo_tuss=${codigo}&cbhpm_edicao=${cbhpmEdicao}&percentual_cirurgico=${percentualCirurgico}&percentual_anestesico=${percentualAnestesico}&multiplo=${multiplo}&via_acesso=${viaAcesso}&horario_especial=${horarioEspecial}&nova_regra_auxilio=${novaRegraAuxilio}&acomodacao=${acomodacao}`)
+        fetch(`https://auditoriasite.vercel.app/api/buscar-procedimento?nomenclatura=${nome}&codigo_tuss=${codigo}&cbhpm_edicao=${cbhpmEdicao}`)
             .then(response => {
-                if (!response.ok) {
-                    throw new Error(`Erro na busca: ${response.status}`);
-                }
+                if (!response.ok) throw new Error(`Erro na busca: ${response.status}`);
                 return response.json();
             })
             .then(data => {
@@ -100,14 +89,30 @@ document.addEventListener('DOMContentLoaded', function() {
             });
     });
 
-    function showSection(sectionId) {
-        for (let key in sections) {
-            sections[key].classList.remove('active');
-        }
-        sections[sectionId].classList.add('active');
+    function fetchRolVigente() {
+        fetch('https://auditoriasite.onrender.com/api/fetch-rol-vigente')
+            .then(response => response.json())
+            .then(data => {
+                if (data.excel_url) {
+                    document.getElementById('excelViewer').src = `https://view.officeapps.live.com/op/embed.aspx?src=${data.excel_url}`;
+                } else {
+                    console.error('Erro ao obter o URL do Excel:', data.error);
+                }
+            })
+            .catch(error => console.error('Erro ao obter o URL do Excel:', error));
+    }
+
+    function fetchAnexosVigentes() {
+        fetch('https://auditoriasite.onrender.com/api/fetch-ans-links')
+            .then(response => response.json())
+            .then(data => {
+                if (!data.latest_anexo_links || !data.latest_rn_links) {
+                    throw new Error("Dados inválidos recebidos");
+                }
+                console.log('Anexos carregados', data);
+            })
+            .catch(error => console.error('Erro ao obter os anexos:', error));
     }
 
     showSection('anexosVigentes');
-    document.getElementById('sidebar').style.display = 'block';
-    document.getElementById('pdfViewer').style.display = 'block';
 });
