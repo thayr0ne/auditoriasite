@@ -1,6 +1,109 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="stylesheet" href="styles.css" />
+  <title>ANS Auditoria</title>
+</head>
+<body>
+  <header>
+    <nav>
+      <ul>
+        <li id="anexosVigentesMenu">Anexos Vigentes</li>
+        <li id="rolVigenteMenu">Rol Vigente</li>
+        <li id="buscarProcedimentosMenu">Buscar Procedimento</li>
+        <li id="cbhpmMenu">CBHPM</li>
+        <li id="relatoriosMenu">Relatórios</li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <!-- =======================
+         SEÇÃO: ANEXOS VIGENTES
+         (Exemplo parcial)
+    ======================= -->
+    <section id="anexosVigentes" class="section active">
+      <div class="container">
+        <div class="sidebar" id="sidebar">
+          <div id="recentes" class="anexo-container">
+            <h2>ANEXOS</h2>
+            <div id="latestAnexoIContainer"></div>
+            <!-- ... resto do conteúdo ... -->
+          </div>
+        </div>
+        <div class="main-content">
+          <iframe id="pdfViewer" style="width: 100%; height: 90vh;"></iframe>
+        </div>
+      </div>
+    </section>
+
+    <!-- =======================
+         SEÇÃO: ROL VIGENTE
+         (Exemplo parcial)
+    ======================= -->
+    <section id="rolVigente" class="section">
+      <div class="container main-content">
+        <h2>Rol Vigente</h2>
+        <!-- ... conteúdo ... -->
+      </div>
+    </section>
+
+    <!-- =======================
+         SEÇÃO: BUSCAR PROCEDIMENTOS
+         (ADICIONAR OU SUBSTITUIR)
+    ======================= -->
+    <section id="buscarProcedimentos" class="section">
+      <div class="container main-content">
+        <h2>Buscar Procedimentos</h2>
+        
+        <!-- Campo de texto para digitar termo da busca -->
+        <input 
+          type="text" 
+          id="inputTermoProcedimento" 
+          placeholder="Digite o procedimento..."
+          style="margin-right: 10px;"
+        />
+
+        <!-- Botão para acionar a busca -->
+        <button id="btnBuscarProcedimentos">Buscar</button>
+
+        <!-- Div onde os resultados serão exibidos -->
+        <div id="resultadosProcedimentos" style="margin-top: 20px;"></div>
+      </div>
+    </section>
+
+    <!-- =======================
+         SEÇÃO: CBHPM
+    ======================= -->
+    <section id="cbhpm" class="section">
+      <div class="container main-content">
+        <h2>CBHPM</h2>
+        <!-- ... conteúdo ... -->
+      </div>
+    </section>
+
+    <!-- =======================
+         SEÇÃO: RELATÓRIOS
+    ======================= -->
+    <section id="relatorios" class="section">
+      <div class="container main-content">
+        <h2>Relatórios</h2>
+        <!-- ... conteúdo ... -->
+      </div>
+    </section>
+  </main>
+
+  <!-- Scripts -->
+  <script src="scripts.js"></script>
+</body>
+</html>
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles.css">
