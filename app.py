@@ -16,7 +16,7 @@ app = Flask(__name__)
 # Caminho absoluto, usando o diretório atual do script
 EXCEL_PATH = os.getenv(
     'EXCEL_PATH', 
-    os.path.join(os.path.dirname(os.path.abspath(__file__)), 'dados', 'PORTES E VALORES - CBHPMS SITE.xlsx')
+    os.path.join(os.path.dirname(os.path.abspath(__file__)), 'dados', 'PORTES E VALORES - CBHPMS  SITE.xlsx')
 )
 
 # Função para carregar e manter dados em memória (Cache)
