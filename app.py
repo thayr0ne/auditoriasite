@@ -50,20 +50,18 @@ def fetch_rol_vigente():
 
 @app.route('/api/fetch-rol-vigente', methods=['GET'])
 def api_fetch_rol_vigente():
-    url = fetch_rol_vigente()
-    if url:
-        return jsonify({'excel_url': url})
-    return jsonify({'error': 'Link não encontrado'}), 404
+    # Retorno temporário para resolver erro imediato
+    return jsonify({'error': 'Funcionalidade temporariamente desabilitada'}), 503
 
 # Buscar procedimento e realizar cálculos
 @app.route('/api/buscar-procedimento', methods=['GET'])
 def buscar_procedimento():
-    nome_proc = request.args.get('nomenclatura', '').strip()  # <-- Corrigido aqui
+    nome_proc = request.args.get('nomenclatura', '').strip()
     codigo_tuss = request.args.get('codigo_tuss', '').strip()
     cbhpm_edicao = request.args.get('cbhpm_edicao', '').strip()
     percentual_cirurgico = float(request.args.get('percentual_cirurgico', 0))
 
-    tabela_portes = carregar_planilha('TABELA COM PORTES')  # Atualize a aba corretamente
+    tabela_portes = carregar_planilha('TABELA COM PORTES')
 
     if nome_proc:
         resultado = tabela_portes[tabela_portes['NOMENCLATURA'].str.contains(nome_proc, case=False)]
@@ -89,7 +87,7 @@ def buscar_procedimento():
             'valor_porte_cirurgico': valor_porte_cirurgico,
             'num_auxiliares': num_auxiliares,
             'valor_auxiliar': valor_auxiliar,
-            'porte_anestesico': porte_anestesico,
+            'porte_anestesico': row.get('PORTE ANESTÉSICO', ''),
             'valor_porte_anestesico': valor_porte_anestesico,
             'correlacao_rol_vigente': correlacao_rol_vigente
         })
