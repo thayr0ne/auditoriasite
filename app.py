@@ -9,8 +9,11 @@ from functools import lru_cache
 
 app = Flask(__name__)
 
-# Configuração do caminho do arquivo Excel usando variável de ambiente
-EXCEL_PATH = os.getenv('EXCEL_PATH', 'dados/PORTES E VALORES - CBHPMS SITE.xlsx')
+# Caminho absoluto, usando o diretório atual do script
+EXCEL_PATH = os.getenv(
+    'EXCEL_PATH', 
+    os.path.join(os.path.dirname(os.path.abspath(__file__)), 'dados', 'PORTES E VALORES - CBHPMS SITE.xlsx')
+)
 
 # Função para carregar e manter dados em memória (Cache)
 @lru_cache(maxsize=None)
