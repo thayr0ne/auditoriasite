@@ -136,5 +136,6 @@ def fetch_rn_summary():
         return jsonify({'summary': ementa.get_text().strip() if ementa else ''})
     return jsonify({'error': 'Erro ao acessar página da RN'}), 500
 
+# Final do arquivo app.py
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=False)
