@@ -27,9 +27,10 @@ def carregar_planilha(sheet_name):
     print("Abas disponíveis no Excel:", excel.sheet_names)  # <-- vai mostrar no log do Render
     return excel.parse(sheet_name=sheet_name)
 
-# Carregar planilhas em cache no início do aplicativo
-tabela_portes = carregar_planilha('TABELA 01')
-tabela_portes_valores = carregar_planilha('Tabela com portes')
+# Carregar planilhas em cache no início do aplicativo com o nome correto das abas
+tabela_portes = carregar_planilha('TABELA COM PORTES')
+tabela_portes_valores = carregar_planilha('PORTES CBHPM')
+
 
 # Endpoint Flask
 app = Flask(__name__)
