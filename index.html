@@ -18,27 +18,31 @@
             </ul>
         </nav>
     </header>
+    
     <main>
+        <!-- Seção de Anexos Vigentes -->
         <section id="anexosVigentes" class="section active">
             <div class="container">
-                <div class="sidebar" id="sidebar">
+                <aside class="sidebar" id="sidebar">
                     <h2>ANEXOS E RNs</h2>
                     <div id="latestAnexoContainer"></div>
                     <div id="latestRnContainer"></div>
                     <button id="loadMoreRnBtn" class="load-more">Mostrar mais</button>
-                </div>
+                </aside>
                 <div class="main-content">
                     <iframe id="pdfViewer" src="" frameborder="0"></iframe>
                 </div>
             </div>
         </section>
         
+        <!-- Seção de Rol Vigente -->
         <section id="rolVigente" class="section">
             <div id="excelViewerContainer">
                 <iframe id="excelViewer" src="" frameborder="0"></iframe>
             </div>
         </section>
         
+        <!-- Seção de Busca de Procedimentos -->
         <section id="buscarProcedimentos" class="section">
             <div class="search-container">
                 <input type="text" id="searchNome" placeholder="Buscar por Nome do Procedimento">
@@ -75,115 +79,7 @@
         <section id="cbhpm" class="section"></section>
         <section id="relatorios" class="section"></section>
     </main>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="scripts.js"></script>
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styles.css">
-    <title>ANS Auditoria</title>
-</head>
-<body>
-    <header>
-        <nav>
-            <ul>
-                <li id="anexosVigentesMenu">Anexos Vigentes</li>
-                <li id="rolVigenteMenu">Rol Vigente</li>
-                <li id="buscarProcedimentosMenu">Buscar Procedimento</li>
-                <li id="cbhpmMenu">CBHPM</li>
-                <li id="relatoriosMenu">Relatórios</li>
-            </ul>
-        </nav>
-    </header>
-    <main>
-        <section id="anexosVigentes" class="section active">
-            <div class="container">
-                <div class="sidebar" id="sidebar">
-                    <div id="recentes" class="anexo-container">
-                        <h2>ANEXOS</h2>
-                        <div id="latestAnexoIContainer"></div>
-                        <div id="latestAnexoIIContainer"></div>
-                        <div id="latestAnexoIIIContainer"></div>
-                        <div id="latestAnexoIVContainer"></div>
-                    </div>
-                    <div id="historicoRnContainer" class="anexo-container">
-                        <h2>HISTÓRICO</h2>
-                        <div id="latestRnContainer"></div>
-                        <button id="loadMoreRnBtn" class="load-more">Mostrar mais</button>
-                    </div>
-                </div>
-                <div class="main-content">
-                    <iframe id="pdfViewer" src="" frameborder="0"></iframe>
-                </div>
-            </div>
-        </section>
-        <section id="rolVigente" class="section">
-            <div id="excelViewerContainer">
-                <iframe id="excelViewer" src="" frameborder="0"></iframe>
-            </div>
-        </section>
-        <section id="buscarProcedimentos" class="section">
-            <div class="search-container">
-                <input type="text" id="searchNome" placeholder="Buscar por Nome do Procedimento">
-                <input type="text" id="searchCodigo" placeholder="Buscar por Código TUSS">
-                <select id="cbhpmEdicao">
-                    <option value="4ª">4ª Edição</option>
-                    <option value="5ª">5ª Edição</option>
-                    <!-- Adicionar mais edições conforme necessário -->
-                </select>
-                <input type="number" id="percentualCirurgico" placeholder="Percentual Cirúrgico">
-                <input type="number" id="percentualAnestesico" placeholder="Percentual Anestésico">
-                <select id="multiplo">
-                    <option value="Não">Procedimento Único</option>
-                    <option value="Sim">Procedimento Múltiplo</option>
-                </select>
-                <select id="viaAcesso">
-                    <option value="Mesma via">Mesma Via</option>
-                    <option value="Vias diferentes">Vias Diferentes</option>
-                </select>
-                <select id="horarioEspecial">
-                    <option value="Não">Horário Normal</option>
-                    <option value="Sim">Horário Especial</option>
-                </select>
-                <select id="novaRegraAuxilio">
-                    <option value="Não">Regra Antiga</option>
-                    <option value="Sim">Nova Regra</option>
-                </select>
-                <select id="acomodacao">
-                    <option value="Enfermaria">Enfermaria</option>
-                    <option value="Apartamento">Apartamento</option>
-                </select>
-                <button id="buscarBtn">Buscar</button>
-            </div>
-            <div class="result-container">
-                <table id="resultTable">
-                    <thead>
-                        <tr>
-                            <th>NOMENCLATURA</th>
-                            <th>CÓDIGO TUSS</th>
-                            <th>PORTE CIRÚRGICO</th>
-                            <th>VALOR DO PORTE CIRÚRGICO</th>
-                            <th>NÚMERO DE AUXILIARES</th>
-                            <th>VALOR DO AUXILIAR</th>
-                            <th>PORTE ANESTÉSICO</th>
-                            <th>VALOR DO PORTE ANESTÉSICO</th>
-                            <th>CORRELAÇÃO COM O ROL VIGENTE</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Os resultados da busca serão exibidos aqui -->
-                    </tbody>
-                </table>
-            </div>
-        </section>
 
-        <section id="cbhpm" class="section"></section>
-        <section id="relatorios" class="section"></section>
-    </main>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="scripts.js"></script>
 </body>
