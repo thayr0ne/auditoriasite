@@ -60,14 +60,22 @@ def buscar_procedimento():
     codigo_tuss = request.args.get('codigo_tuss', '').strip()
     cbhpm_edicao = request.args.get('cbhpm_edicao', '').strip()
     percentual_cirurgico = float(request.args.get('percentual_cirurgico', 0))
+    percentual_anestesico = float(request.args.get('percentual_anestesico', 0))
+    multiplo = request.args.get('multiplo', 'Não')
+    via_acesso = request.args.get('via_acesso', 'Mesma via')
+    horario_especial = request.args.get('horario_especial', 'Não')
+    nova_regra_auxilio = request.args.get('nova_regra_auxilio', 'Não')
+    acomodacao = request.args.get('acomodacao', 'Enfermaria')
 
     tabela_portes = carregar_planilha('TABELA COM PORTES')
 
+    resultado = pd.DataFrame()
     if nome_proc:
         resultado = tabela_portes[tabela_portes['NOMENCLATURA'].str.contains(nome_proc, case=False)]
     elif codigo_tuss:
         resultado = tabela_portes[tabela_portes['CÓDIGO TUSS'] == int(codigo_tuss)]
-    else:
+
+    if resultado.empty:
         return jsonify([])
 
     resultado_final = []
@@ -77,22 +85,23 @@ def buscar_procedimento():
         num_auxiliares = row.get('NÚMERO DE AUXILIARES', 0)
         valor_auxiliar = valor_porte_cirurgico * 0.3 * num_auxiliares
         porte_anestesico = row.get('PORTE ANESTÉSICO', 0)
-        valor_porte_anestesico = calcular_valor_porte(porte_anestesico, cbhpm_edicao, percentual_cirurgico)
+        valor_porte_anestesico = calcular_valor_porte(porte_anestesico, cbhpm_edicao, percentual_anestesico)
         correlacao_rol_vigente = verificar_correlacao_rol(row['CÓDIGO TUSS'])
 
-        resultado_final.append({
+        resultado_final = {
             'nomenclatura': row['NOMENCLATURA'],
             'codigo_tuss': row['CÓDIGO TUSS'],
             'porte_cirurgico': porte_cirurgico,
             'valor_porte_cirurgico': valor_porte_cirurgico,
             'num_auxiliares': num_auxiliares,
             'valor_auxiliar': valor_auxiliar,
-            'porte_anestesico': row.get('PORTE ANESTÉSICO', ''),
+            'porte_anestesico': porte_anestesico,
             'valor_porte_anestesico': valor_porte_anestesico,
             'correlacao_rol_vigente': correlacao_rol_vigente
-        })
+        }
+        return jsonify(resultado_final)
 
-    return jsonify(resultado_final)
+    return jsonify({'erro': 'Nenhum resultado encontrado.'}), 404
 
 
 
