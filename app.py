@@ -14,7 +14,8 @@ print("Conteúdo da pasta dados:", os.listdir(os.path.join(os.path.dirname(os.pa
 
 from flask_cors import CORS
 app = Flask(__name__)
-CORS(app)  # libera para qualquer domínio (uso geral)
+CORS(app, resources={r"/api/*": {"origins": "*"}})
+
 
 # Caminho absoluto, usando o diretório atual do script
 EXCEL_PATH = os.getenv(
