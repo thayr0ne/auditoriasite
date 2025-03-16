@@ -17,32 +17,6 @@ document.addEventListener('DOMContentLoaded', function() {
         if (excelViewerContainer) excelViewerContainer.style.display = excelViewer ? 'block' : 'none';
     }
 
-    document.getElementById('anexosVigentesMenu').addEventListener('click', function() {
-        showSection('anexosVigentes');
-        toggleElements(true, true, false);
-    });
-
-    document.getElementById('rolVigenteMenu').addEventListener('click', function() {
-        showSection('rolVigente');
-        toggleElements(false, false, true);
-        fetchRolVigente();
-    });
-
-    document.getElementById('buscarProcedimentosMenu').addEventListener('click', function() {
-        showSection('buscarProcedimentos');
-        toggleElements(false, false, false);
-    });
-
-    document.getElementById('cbhpmMenu').addEventListener('click', function() {
-        showSection('cbhpm');
-        toggleElements(false, false, false);
-    });
-
-    document.getElementById('relatoriosMenu').addEventListener('click', function() {
-        showSection('relatorios');
-        toggleElements(false, false, false);
-    });
-
     function showSection(sectionId) {
         for (let key in sections) {
             if (sections[key]) sections[key].classList.remove('active');
@@ -56,9 +30,10 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(data => {
                 const container = document.getElementById('latestAnexoContainer');
                 if (!container) return;
-                container.innerHTML = '<h3>RNs Recentes e Anexos</h3>';
+                container.innerHTML = '';
                 data.links.forEach(link => {
                     const div = document.createElement('div');
+                    div.classList.add('link-item');
                     div.innerHTML = `
                         <a href="${link}" target="_blank">${link}</a>
                         <button onclick="viewPDF('${link}')">Visualizar</button>
@@ -111,6 +86,33 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(data => Swal.fire('Resumo da RN', data.summary || 'Nenhum resumo encontrado.', 'info'))
         .catch(() => Swal.fire('Erro', 'Erro ao buscar resumo da RN.', 'error'));
     };
+
+    document.getElementById('anexosVigentesMenu').addEventListener('click', function() {
+        showSection('anexosVigentes');
+        toggleElements(true, true, false);
+        fetchAnexosVigentes();
+    });
+
+    document.getElementById('rolVigenteMenu').addEventListener('click', function() {
+        showSection('rolVigente');
+        toggleElements(false, false, true);
+        fetchRolVigente();
+    });
+
+    document.getElementById('buscarProcedimentosMenu').addEventListener('click', function() {
+        showSection('buscarProcedimentos');
+        toggleElements(false, false, false);
+    });
+
+    document.getElementById('cbhpmMenu').addEventListener('click', function() {
+        showSection('cbhpm');
+        toggleElements(false, false, false);
+    });
+
+    document.getElementById('relatoriosMenu').addEventListener('click', function() {
+        showSection('relatorios');
+        toggleElements(false, false, false);
+    });
 
     fetchAnexosVigentes();
     showSection('anexosVigentes');
