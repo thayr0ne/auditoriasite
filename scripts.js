@@ -51,16 +51,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const percentualCirurgico = document.getElementById('percentualCirurgico').value || 0;
         const percentualAnestesico = document.getElementById('percentualAnestesico').value || 0;
-        const multiplo = document.getElementById('multiplo').value;
-        const viaAcesso = document.getElementById('viaAcesso').value;
-        const horarioEspecial = document.getElementById('horarioEspecial').value;
-        const novaRegraAuxilio = document.getElementById('novaRegraAuxilio').value;
-        const acomodacao = document.getElementById('acomodacao').value;
+        const multiplo = document.getElementById('multiplo').value || 'Não';
+        const viaAcesso = document.getElementById('viaAcesso').value || 'Mesma via';
+        const horarioEspecial = document.getElementById('horarioEspecial').value || 'Não';
+        const novaRegraAuxilio = document.getElementById('novaRegraAuxilio').value || 'Não';
+        const acomodacao = document.getElementById('acomodacao').value || 'Enfermaria';
 
         const tbody = document.querySelector('#resultTable tbody');
         tbody.innerHTML = '<tr><td colspan="9">Buscando resultados...</td></tr>';
 
-        fetch(`/api/buscar-procedimento?nomenclatura=${nome}&codigo_tuss=${codigo}&cbhpm_edicao=${cbhpmEdicao}&percentual_cirurgico=${percentualCirurgico}&percentual_anestesico=${percentualAnestesico}&multiplo=${multiplo}&via_acesso=${viaAcesso}&horario_especial=${horarioEspecial}&nova_regra_auxilio=${novaRegraAuxilio}&acomodacao=${acomodacao}`)
+        fetch(`https://auditoriasite.onrender.com/api/buscar-procedimento?nomenclatura=${nome}&codigo_tuss=${codigo}&cbhpm_edicao=${cbhpmEdicao}&percentual_cirurgico=${percentualCirurgico}&percentual_anestesico=${percentualAnestesico}&multiplo=${multiplo}&via_acesso=${viaAcesso}&horario_especial=${horarioEspecial}&nova_regra_auxilio=${novaRegraAuxilio}&acomodacao=${acomodacao}`)
             .then(response => response.json())
             .then(data => {
                 tbody.innerHTML = '';
@@ -101,41 +101,15 @@ document.addEventListener('DOMContentLoaded', function() {
     fetch('https://auditoriasite.onrender.com/api/fetch-ans-links')
         .then(response => response.json())
         .then(data => {
-            // restante do seu código original mantido
+            const container = document.getElementById('anexosVigentes');
+            container.innerHTML = '';
+            data.links.forEach(link => {
+                const a = document.createElement('a');
+                a.href = link;
+                a.textContent = link;
+                a.target = '_blank';
+                container.appendChild(a);
+            });
         })
         .catch(() => Swal.fire('Erro', 'Erro ao obter links.', 'error'));
-
-    function fetchRolVigente() {
-        fetch('https://auditoriasite.onrender.com/api/fetch-rol-vigente')
-            .then(response => response.json())
-            .then(data => {
-                if (data.excel_url) {
-                    document.getElementById('excelViewer').src = `https://view.officeapps.live.com/op/embed.aspx?src=${data.excel_url}`;
-                } else {
-                    Swal.fire('Erro', 'Erro ao obter URL do Excel.', 'error');
-                }
-            })
-            .catch(() => Swal.fire('Erro', 'Erro ao obter URL do Excel.', 'error'));
-    }
-
-    window.viewPDF = function(link) {
-        document.getElementById('pdfViewer').src = link;
-        toggleElements(true, true, false);
-    };
-
-    window.downloadPDF = function(link) {
-        window.open(link, '_blank');
-    };
-
-    window.fetchRnSummary = function(url) {
-        fetch('https://auditoriasite.onrender.com/api/fetch-rn-summary', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ url })
-        })
-        .then(response => response.json())
-        .then(data => {
-            Swal.fire('Resumo da RN', data.summary || 'Nenhum resumo encontrado.', 'info');
-        }).catch(() => Swal.fire('Erro', 'Erro ao buscar resumo da RN.', 'error'));
-    };
 });
