@@ -5,3 +5,4 @@ beautifulsoup4==4.9.3
 Werkzeug==2.0.3
 pandas
 openpyxl
+lxml
