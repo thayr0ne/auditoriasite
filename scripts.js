@@ -43,49 +43,6 @@ document.addEventListener('DOMContentLoaded', function() {
         toggleElements(false, false, false);
     });
 
-    document.getElementById('buscarBtn').addEventListener('click', function() {
-        const nome = document.getElementById('searchNome').value;
-        const codigo = document.getElementById('searchCodigo').value;
-        const cbhpmEdicao = document.getElementById('cbhpmEdicao').value;
-        const percentualCirurgico = document.getElementById('percentualCirurgico').value || 0;
-        const percentualAnestesico = document.getElementById('percentualAnestesico').value || 0;
-
-        if (!nome && !codigo) {
-            Swal.fire('Atenção', 'Preencha pelo menos o nome ou o código para buscar.', 'warning');
-            return;
-        }
-
-        const tbody = document.querySelector('#resultTable tbody');
-        tbody.innerHTML = '<tr><td colspan="9">Buscando resultados...</td></tr>';
-
-        fetch(`https://auditoriasite.onrender.com/api/buscar-procedimento?nomenclatura=${nome}&codigo_tuss=${codigo}&cbhpm_edicao=${cbhpmEdicao}&percentual_cirurgico=${percentualCirurgico}&percentual_anestesico=${percentualAnestesico}`)
-            .then(response => response.json())
-            .then(data => {
-                tbody.innerHTML = '';
-                if (data.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="9">Nenhum resultado encontrado.</td></tr>';
-                    return;
-                }
-                data.forEach(row => {
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `
-                        <td>${row.nomenclatura}</td>
-                        <td>${row.codigo_tuss}</td>
-                        <td>${row.porte_cirurgico}</td>
-                        <td>${row.valor_porte_cirurgico}</td>
-                        <td>${row.num_auxiliares}</td>
-                        <td>${row.valor_auxiliar}</td>
-                        <td>${row.porte_anestesico}</td>
-                        <td>${row.valor_porte_anestesico}</td>
-                        <td>${row.correlacao_rol_vigente}</td>
-                    `;
-                    tbody.appendChild(tr);
-                });
-            }).catch(() => {
-                Swal.fire('Erro', 'Erro ao buscar os resultados.', 'error');
-            });
-    });
-
     function showSection(sectionId) {
         for (let key in sections) {
             if (sections[key]) sections[key].classList.remove('active');
@@ -93,14 +50,12 @@ document.addEventListener('DOMContentLoaded', function() {
         if (sections[sectionId]) sections[sectionId].classList.add('active');
     }
 
-    showSection('anexosVigentes');
-    toggleElements(true, true, false);
-
     function fetchAnexosVigentes() {
         fetch('https://auditoriasite.onrender.com/api/fetch-ans-links')
             .then(response => response.json())
             .then(data => {
-                const container = document.getElementById('anexosVigentes');
+                const container = document.getElementById('latestAnexoContainer');
+                if (!container) return;
                 container.innerHTML = '<h3>RNs Recentes e Anexos</h3>';
                 data.links.forEach(link => {
                     const div = document.createElement('div');
@@ -120,8 +75,10 @@ document.addEventListener('DOMContentLoaded', function() {
         fetch('https://auditoriasite.onrender.com/api/fetch-rol-vigente')
             .then(response => response.json())
             .then(data => {
+                const excelViewer = document.getElementById('excelViewer');
+                if (!excelViewer) return;
                 if (data.excel_url) {
-                    document.getElementById('excelViewer').src = `https://view.officeapps.live.com/op/embed.aspx?src=${data.excel_url}`;
+                    excelViewer.src = `https://view.officeapps.live.com/op/embed.aspx?src=${data.excel_url}`;
                 } else {
                     Swal.fire('Erro', data.error || 'Erro ao obter Rol Vigente.', 'error');
                 }
@@ -135,6 +92,7 @@ document.addEventListener('DOMContentLoaded', function() {
             pdfViewer.src = link;
             toggleElements(true, true, false);
         } else {
+            console.error("Elemento 'pdfViewer' não encontrado.");
             Swal.fire('Erro', 'Visualizador de PDF não encontrado.', 'error');
         }
     };
@@ -155,4 +113,6 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     fetchAnexosVigentes();
+    showSection('anexosVigentes');
+    toggleElements(true, true, false);
 });
