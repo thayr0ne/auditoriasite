@@ -55,54 +55,57 @@ def api_fetch_rol_vigente():
     return jsonify({'error': 'Funcionalidade temporariamente desabilitada'}), 503
 
 # Buscar procedimento e realizar cálculos
+# Modificação feita: adicionado tratamento de erros claros e retorno adequado (comentado no código)
 @app.route('/api/buscar-procedimento', methods=['GET'])
 def buscar_procedimento():
-    nome_proc = request.args.get('nomenclatura', '').strip()
-    codigo_tuss = request.args.get('codigo_tuss', '').strip()
-    cbhpm_edicao = request.args.get('cbhpm_edicao', '').strip()
-    percentual_cirurgico = float(request.args.get('percentual_cirurgico', 0))
-    percentual_anestesico = float(request.args.get('percentual_anestesico', 0))
-    multiplo = request.args.get('multiplo', 'Não')
-    via_acesso = request.args.get('via_acesso', 'Mesma via')
-    horario_especial = request.args.get('horario_especial', 'Não')
-    nova_regra_auxilio = request.args.get('nova_regra_auxilio', 'Não')
-    acomodacao = request.args.get('acomodacao', 'Enfermaria')
+    try:
+        nome_proc = request.args.get('nomenclatura', '').strip()
+        codigo_tuss = request.args.get('codigo_tuss', '').strip()
+        cbhpm_edicao = request.args.get('cbhpm_edicao', '').strip()
+        percentual_cirurgico = float(request.args.get('percentual_cirurgico', 0))
+        percentual_anestesico = float(request.args.get('percentual_anestesico', 0))
 
-    tabela_portes = carregar_planilha('TABELA COM PORTES')
+        tabela_portes = carregar_planilha('TABELA COM PORTES')
 
-    resultado = pd.DataFrame()
-    if nome_proc:
-        resultado = tabela_portes[tabela_portes['NOMENCLATURA'].str.contains(nome_proc, case=False)]
-    elif codigo_tuss:
-        resultado = tabela_portes[tabela_portes['CÓDIGO TUSS'] == int(codigo_tuss)]
+        if nome_proc:
+            resultado = tabela_portes[tabela_portes['NOMENCLATURA'].str.contains(nome_proc, case=False)]
+        elif codigo_tuss:
+            resultado = tabela_portes[tabela_portes['CÓDIGO TUSS'] == int(codigo_tuss)]
+        else:
+            # Retorno claro quando faltam parâmetros
+            return jsonify({'erro': 'Informe nome ou código do procedimento.'}), 400
 
-    if resultado.empty:
-        return jsonify([])
+        if resultado.empty:
+            # Retorno claro quando não há resultados
+            return jsonify([]), 200
 
-    resultado_final = []
-    for _, row in resultado.iterrows():
-        porte_cirurgico = row['PORTE CIRÚRGICO']
-        valor_porte_cirurgico = calcular_valor_porte(porte_cirurgico, cbhpm_edicao, percentual_cirurgico)
-        num_auxiliares = row.get('NÚMERO DE AUXILIARES', 0)
-        valor_auxiliar = valor_porte_cirurgico * 0.3 * num_auxiliares
-        porte_anestesico = row.get('PORTE ANESTÉSICO', 0)
-        valor_porte_anestesico = calcular_valor_porte(porte_anestesico, cbhpm_edicao, percentual_anestesico)
-        correlacao_rol_vigente = verificar_correlacao_rol(row['CÓDIGO TUSS'])
+        resultado_final = []
+        for _, row in resultado.iterrows():
+            porte_cirurgico = row['PORTE CIRÚRGICO']
+            valor_porte_cirurgico = calcular_valor_porte(porte_cirurgico, cbhpm_edicao, percentual_cirurgico)
+            num_auxiliares = row.get('NÚMERO DE AUXILIARES', 0)
+            valor_auxiliar = valor_porte_cirurgico * 0.3 * num_auxiliares
+            porte_anestesico = row.get('PORTE ANESTÉSICO', 0)
+            valor_porte_anestesico = calcular_valor_porte(porte_anestesico, cbhpm_edicao, percentual_anestesico)
+            correlacao_rol_vigente = verificar_correlacao_rol(row['CÓDIGO TUSS'])
 
-        resultado_final = {
-            'nomenclatura': row['NOMENCLATURA'],
-            'codigo_tuss': row['CÓDIGO TUSS'],
-            'porte_cirurgico': porte_cirurgico,
-            'valor_porte_cirurgico': valor_porte_cirurgico,
-            'num_auxiliares': num_auxiliares,
-            'valor_auxiliar': valor_auxiliar,
-            'porte_anestesico': porte_anestesico,
-            'valor_porte_anestesico': valor_porte_anestesico,
-            'correlacao_rol_vigente': correlacao_rol_vigente
-        }
-        return jsonify(resultado_final)
+            resultado_final.append({
+                'nomenclatura': row['NOMENCLATURA'],
+                'codigo_tuss': row['CÓDIGO TUSS'],
+                'porte_cirurgico': porte_cirurgico,
+                'valor_porte_cirurgico': valor_porte_cirurgico,
+                'num_auxiliares': num_auxiliares,
+                'valor_auxiliar': valor_auxiliar,
+                'porte_anestesico': porte_anestesico,
+                'valor_porte_anestesico': valor_porte_anestesico,
+                'correlacao_rol_vigente': correlacao_rol_vigente
+            })
 
-    return jsonify({'erro': 'Nenhum resultado encontrado.'}), 404
+        return jsonify(resultado_final), 200
+
+    except Exception as e:
+        # Retorno claro de exceções e erros internos
+        return jsonify({'erro': str(e)}), 500
 
 
 
