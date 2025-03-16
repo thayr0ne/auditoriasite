@@ -71,18 +71,18 @@ def buscar_procedimento():
         valor_porte_anestesico = calcular_valor_porte(porte_anestesico, cbhpm_edicao, percentual_cirurgico)
         correlacao_rol_vigente = verificar_correlacao_rol(row['CÓDIGO TUSS'])
 
-        resultado_final.append({
-            'nomenclatura': row['NOMENCLATURA'],
-            'codigo_tuss': row['CÓDIGO TUSS'],
-            'porte_cirurgico': porte_cirurgico,
-            'valor_porte_cirurgico': valor_porte_cirurgico,
-            'num_auxiliares': num_auxiliares,
-            'valor_auxiliar': valor_auxiliar,
-            'porte_anestesico': porte_anestesico,
-            'valor_porte_anestesico': valor_porte_anestesico,
-            'correlacao_rol_vigente': verificar_correlacao_rol(row['CÓDIGO TUSS'])
-        }
-        resultado_final.append(resultado_dict)
+       resultado_final.append({
+    'nomenclatura': row['NOMENCLATURA'],
+    'codigo_tuss': row['CÓDIGO TUSS'],
+    'porte_cirurgico': porte_cirurgico,
+    'valor_porte_cirurgico': valor_porte_cirurgico,
+    'num_auxiliares': num_auxiliares,
+    'valor_auxiliar': valor_auxiliar,
+    'porte_anestesico': porte_anestesico,
+    'valor_porte_anestesico': valor_porte_anestesico,
+    'correlacao_rol_vigente': correlacao_rol_vigente
+})
+
 
     return jsonify(resultado_final)
 
