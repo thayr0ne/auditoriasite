@@ -20,9 +20,12 @@ EXCEL_PATH = os.getenv(
 )
 
 # Função para carregar e manter dados em memória (Cache)
-@lru_cache(maxsize=None)
+
+# Função com debug para mostrar as abas existentes no Excel
 def carregar_planilha(sheet_name):
-    return pd.read_excel(EXCEL_PATH, sheet_name=sheet_name)
+    excel = pd.ExcelFile(EXCEL_PATH)
+    print("Abas disponíveis no Excel:", excel.sheet_names)  # <-- vai mostrar no log do Render
+    return excel.parse(sheet_name=sheet_name)
 
 # Carregar planilhas em cache no início do aplicativo
 tabela_portes = carregar_planilha('TABELA 01')
