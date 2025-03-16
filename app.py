@@ -36,22 +36,15 @@ tabela_portes = carregar_planilha('TABELA COM PORTES')
 tabela_portes_valores = carregar_planilha('PORTES CBHPM')
 
 # Buscar e salvar Rol Vigente da ANS
-def fetch_rol_vigente():
-    url = 'https://www.gov.br/ans/pt-br/acesso-a-informacao/participacao-da-sociedade/atualizacao-do-rol-de-procedimentos'
-    response = requests.get(url)
-    
-    if response.status_code == 200:
-        tuss_rol_url = pd.read_html(response.content, match='Rol')[0]['Link'].iloc[0]
-        excel_content = requests.get(tuss_rol_url).content
-        with open('/mnt/data/TUSSxROL.xlsx', 'wb') as f:
-            f.write(response.content)
-        return tuss_rol_url
-    return None
-
 @app.route('/api/fetch-rol-vigente', methods=['GET'])
 def api_fetch_rol_vigente():
-    # Retorno temporário para resolver erro imediato
-    return jsonify({'error': 'Funcionalidade temporariamente desabilitada'}), 503
+    try:
+        url = fetch_rol_vigente()
+        if url:
+            return jsonify({'excel_url': url})
+        return jsonify({'error': 'Link não encontrado'}), 404
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 # Buscar procedimento e realizar cálculos
 # Modificação feita: adicionado tratamento de erros claros e retorno adequado (comentado no código)
@@ -71,39 +64,15 @@ def buscar_procedimento():
         elif codigo_tuss:
             resultado = tabela_portes[tabela_portes['CÓDIGO TUSS'] == int(codigo_tuss)]
         else:
-            # Retorno claro quando faltam parâmetros
             return jsonify({'erro': 'Informe nome ou código do procedimento.'}), 400
 
         if resultado.empty:
-            # Retorno claro quando não há resultados
             return jsonify([]), 200
 
-        resultado_final = []
-        for _, row in resultado.iterrows():
-            porte_cirurgico = row['PORTE CIRÚRGICO']
-            valor_porte_cirurgico = calcular_valor_porte(porte_cirurgico, cbhpm_edicao, percentual_cirurgico)
-            num_auxiliares = row.get('NÚMERO DE AUXILIARES', 0)
-            valor_auxiliar = valor_porte_cirurgico * 0.3 * num_auxiliares
-            porte_anestesico = row.get('PORTE ANESTÉSICO', 0)
-            valor_porte_anestesico = calcular_valor_porte(porte_anestesico, cbhpm_edicao, percentual_anestesico)
-            correlacao_rol_vigente = verificar_correlacao_rol(row['CÓDIGO TUSS'])
-
-            resultado_final.append({
-                'nomenclatura': row['NOMENCLATURA'],
-                'codigo_tuss': row['CÓDIGO TUSS'],
-                'porte_cirurgico': porte_cirurgico,
-                'valor_porte_cirurgico': valor_porte_cirurgico,
-                'num_auxiliares': num_auxiliares,
-                'valor_auxiliar': valor_auxiliar,
-                'porte_anestesico': porte_anestesico,
-                'valor_porte_anestesico': valor_porte_anestesico,
-                'correlacao_rol_vigente': correlacao_rol_vigente
-            })
-
-        return jsonify(resultado_final), 200
+        resultado_final = resultado.to_dict(orient='records')
+        return jsonify(resultado_final)
 
     except Exception as e:
-        # Retorno claro de exceções e erros internos
         return jsonify({'erro': str(e)}), 500
 
 
