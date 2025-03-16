@@ -7,11 +7,14 @@ import re
 from urllib.parse import urljoin
 from functools import lru_cache
 
+
+
 print("Caminho atual do script:", os.path.abspath(__file__))
 print("Conteúdo da pasta dados:", os.listdir(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'dados')))
 
-
+from flask_cors import CORS
 app = Flask(__name__)
+CORS(app)  # libera para qualquer domínio (uso geral)
 
 # Caminho absoluto, usando o diretório atual do script
 EXCEL_PATH = os.getenv(
@@ -58,12 +61,12 @@ def api_fetch_rol_vigente():
 # Buscar procedimento e realizar cálculos
 @app.route('/api/buscar-procedimento', methods=['GET'])
 def buscar_procedimento():
-    nome_proc = request.args.get('nome_proc', '').strip()
+    nome_proc = request.args.get('nomenclatura', '').strip()  # <-- Corrigido aqui
     codigo_tuss = request.args.get('codigo_tuss', '').strip()
     cbhpm_edicao = request.args.get('cbhpm_edicao', '').strip()
     percentual_cirurgico = float(request.args.get('percentual_cirurgico', 0))
 
-    tabela_portes = carregar_planilha('TABELA 01')
+    tabela_portes = carregar_planilha('TABELA COM PORTES')  # Atualize a aba corretamente
 
     if nome_proc:
         resultado = tabela_portes[tabela_portes['NOMENCLATURA'].str.contains(nome_proc, case=False)]
@@ -95,6 +98,7 @@ def buscar_procedimento():
         })
 
     return jsonify(resultado_final)
+
 
 
 def calcular_valor_porte(porte, edicao, percentual):
