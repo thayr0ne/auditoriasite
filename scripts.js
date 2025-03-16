@@ -8,9 +8,13 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     function toggleElements(sidebar, pdfViewer, excelViewer) {
-        document.getElementById('sidebar').style.display = sidebar ? 'block' : 'none';
-        document.getElementById('pdfViewer').style.display = pdfViewer ? 'block' : 'none';
-        document.getElementById('excelViewerContainer').style.display = excelViewer ? 'block' : 'none';
+        const sidebarElement = document.getElementById('sidebar');
+        const pdfViewerElement = document.getElementById('pdfViewer');
+        const excelViewerContainer = document.getElementById('excelViewerContainer');
+
+        if (sidebarElement) sidebarElement.style.display = sidebar ? 'block' : 'none';
+        if (pdfViewerElement) pdfViewerElement.style.display = pdfViewer ? 'block' : 'none';
+        if (excelViewerContainer) excelViewerContainer.style.display = excelViewer ? 'block' : 'none';
     }
 
     document.getElementById('anexosVigentesMenu').addEventListener('click', function() {
@@ -45,11 +49,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const cbhpmEdicao = document.getElementById('cbhpmEdicao').value;
         const percentualCirurgico = document.getElementById('percentualCirurgico').value || 0;
         const percentualAnestesico = document.getElementById('percentualAnestesico').value || 0;
-        const multiplo = document.getElementById('multiplo').value || 'Não';
-        const viaAcesso = document.getElementById('viaAcesso').value || 'Mesma via';
-        const horarioEspecial = document.getElementById('horarioEspecial').value || 'Não';
-        const novaRegraAuxilio = document.getElementById('novaRegraAuxilio').value || 'Não';
-        const acomodacao = document.getElementById('acomodacao').value || 'Enfermaria';
 
         if (!nome && !codigo) {
             Swal.fire('Atenção', 'Preencha pelo menos o nome ou o código para buscar.', 'warning');
@@ -59,7 +58,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const tbody = document.querySelector('#resultTable tbody');
         tbody.innerHTML = '<tr><td colspan="9">Buscando resultados...</td></tr>';
 
-        fetch(`https://auditoriasite.onrender.com/api/buscar-procedimento?nomenclatura=${nome}&codigo_tuss=${codigo}&cbhpm_edicao=${cbhpmEdicao}&percentual_cirurgico=${percentualCirurgico}&percentual_anestesico=${percentualAnestesico}&multiplo=${multiplo}&via_acesso=${viaAcesso}&horario_especial=${horarioEspecial}&nova_regra_auxilio=${novaRegraAuxilio}&acomodacao=${acomodacao}`)
+        fetch(`https://auditoriasite.onrender.com/api/buscar-procedimento?nomenclatura=${nome}&codigo_tuss=${codigo}&cbhpm_edicao=${cbhpmEdicao}&percentual_cirurgico=${percentualCirurgico}&percentual_anestesico=${percentualAnestesico}`)
             .then(response => response.json())
             .then(data => {
                 tbody.innerHTML = '';
@@ -89,31 +88,33 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function showSection(sectionId) {
         for (let key in sections) {
-            sections[key].classList.remove('active');
+            if (sections[key]) sections[key].classList.remove('active');
         }
-        sections[sectionId].classList.add('active');
+        if (sections[sectionId]) sections[sectionId].classList.add('active');
     }
 
     showSection('anexosVigentes');
     toggleElements(true, true, false);
 
-    fetch('https://auditoriasite.onrender.com/api/fetch-ans-links')
-        .then(response => response.json())
-        .then(data => {
-            const container = document.getElementById('anexosVigentes');
-            container.innerHTML = '<h3>RNs Recentes e Anexos</h3>';
-            data.links.forEach(link => {
-                const div = document.createElement('div');
-                div.innerHTML = `
-                    <a href="${link}" target="_blank">${link}</a>
-                    <button onclick="viewPDF('${link}')">Visualizar</button>
-                    <button onclick="downloadPDF('${link}')">Download</button>
-                    <button onclick="fetchRnSummary('${link}')">Resumo</button>
-                `;
-                container.appendChild(div);
-            });
-        })
-        .catch(() => Swal.fire('Erro', 'Erro ao obter links.', 'error'));
+    function fetchAnexosVigentes() {
+        fetch('https://auditoriasite.onrender.com/api/fetch-ans-links')
+            .then(response => response.json())
+            .then(data => {
+                const container = document.getElementById('anexosVigentes');
+                container.innerHTML = '<h3>RNs Recentes e Anexos</h3>';
+                data.links.forEach(link => {
+                    const div = document.createElement('div');
+                    div.innerHTML = `
+                        <a href="${link}" target="_blank">${link}</a>
+                        <button onclick="viewPDF('${link}')">Visualizar</button>
+                        <button onclick="downloadPDF('${link}')">Download</button>
+                        <button onclick="fetchRnSummary('${link}')">Resumo</button>
+                    `;
+                    container.appendChild(div);
+                });
+            })
+            .catch(() => Swal.fire('Erro', 'Erro ao obter links.', 'error'));
+    }
 
     function fetchRolVigente() {
         fetch('https://auditoriasite.onrender.com/api/fetch-rol-vigente')
@@ -126,11 +127,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             })
             .catch(() => Swal.fire('Erro', 'Erro ao obter URL do Excel.', 'error'));
-    };
+    }
 
     window.viewPDF = function(link) {
-        document.getElementById('pdfViewer').src = link;
-        toggleElements(true, true, false);
+        const pdfViewer = document.getElementById('pdfViewer');
+        if (pdfViewer) {
+            pdfViewer.src = link;
+            toggleElements(true, true, false);
+        } else {
+            Swal.fire('Erro', 'Visualizador de PDF não encontrado.', 'error');
+        }
     };
 
     window.downloadPDF = function(link) {
@@ -147,4 +153,6 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(data => Swal.fire('Resumo da RN', data.summary || 'Nenhum resumo encontrado.', 'info'))
         .catch(() => Swal.fire('Erro', 'Erro ao buscar resumo da RN.', 'error'));
     };
+
+    fetchAnexosVigentes();
 });
