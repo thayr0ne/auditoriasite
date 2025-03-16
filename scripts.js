@@ -103,13 +103,39 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(data => {
             const container = document.getElementById('anexosVigentes');
             container.innerHTML = '';
+
             data.links.forEach(link => {
-                const a = document.createElement('a');
-                a.href = link;
-                a.textContent = link;
-                a.target = '_blank';
-                container.appendChild(a);
+                const div = document.createElement('div');
+                div.className = 'link-item';
+                div.innerHTML = `
+                    <a href="${link}" target="_blank">${link}</a>
+                    <button onclick="viewPDF('${link}')">Visualizar</button>
+                    <button onclick="downloadPDF('${link}')">Download</button>
+                    <button onclick="fetchRnSummary('${link}')">Resumo</button>
+                `;
+                container.appendChild(div);
             });
         })
         .catch(() => Swal.fire('Erro', 'Erro ao obter links.', 'error'));
+
+    window.viewPDF = function(link) {
+        document.getElementById('pdfViewer').src = link;
+        toggleElements(true, true, false);
+    };
+
+    window.downloadPDF = function(link) {
+        window.open(link, '_blank');
+    };
+
+    window.fetchRnSummary = function(url) {
+        fetch('https://auditoriasite.onrender.com/api/fetch-rn-summary', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ url })
+        })
+        .then(response => response.json())
+        .then(data => {
+            Swal.fire('Resumo da RN', data.summary || 'Nenhum resumo encontrado.', 'info');
+        }).catch(() => Swal.fire('Erro', 'Erro ao buscar resumo da RN.', 'error'));
+    };
 });
