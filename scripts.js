@@ -43,12 +43,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const nome = document.getElementById('searchNome').value;
         const codigo = document.getElementById('searchCodigo').value;
         const cbhpmEdicao = document.getElementById('cbhpmEdicao').value;
-
-        if (!nome && !codigo) {
-            Swal.fire('Atenção', 'Preencha pelo menos o nome ou o código para buscar.', 'warning');
-            return;
-        }
-
         const percentualCirurgico = document.getElementById('percentualCirurgico').value || 0;
         const percentualAnestesico = document.getElementById('percentualAnestesico').value || 0;
         const multiplo = document.getElementById('multiplo').value || 'Não';
@@ -56,6 +50,11 @@ document.addEventListener('DOMContentLoaded', function() {
         const horarioEspecial = document.getElementById('horarioEspecial').value || 'Não';
         const novaRegraAuxilio = document.getElementById('novaRegraAuxilio').value || 'Não';
         const acomodacao = document.getElementById('acomodacao').value || 'Enfermaria';
+
+        if (!nome && !codigo) {
+            Swal.fire('Atenção', 'Preencha pelo menos o nome ou o código para buscar.', 'warning');
+            return;
+        }
 
         const tbody = document.querySelector('#resultTable tbody');
         tbody.innerHTML = '<tr><td colspan="9">Buscando resultados...</td></tr>';
@@ -102,11 +101,9 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(response => response.json())
         .then(data => {
             const container = document.getElementById('anexosVigentes');
-            container.innerHTML = '';
-
+            container.innerHTML = '<h3>RNs Recentes e Anexos</h3>';
             data.links.forEach(link => {
                 const div = document.createElement('div');
-                div.className = 'link-item';
                 div.innerHTML = `
                     <a href="${link}" target="_blank">${link}</a>
                     <button onclick="viewPDF('${link}')">Visualizar</button>
@@ -117,6 +114,19 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         })
         .catch(() => Swal.fire('Erro', 'Erro ao obter links.', 'error'));
+
+    function fetchRolVigente() {
+        fetch('https://auditoriasite.onrender.com/api/fetch-rol-vigente')
+            .then(response => response.json())
+            .then(data => {
+                if (data.excel_url) {
+                    document.getElementById('excelViewer').src = `https://view.officeapps.live.com/op/embed.aspx?src=${data.excel_url}`;
+                } else {
+                    Swal.fire('Erro', data.error || 'Erro ao obter Rol Vigente.', 'error');
+                }
+            })
+            .catch(() => Swal.fire('Erro', 'Erro ao obter URL do Excel.', 'error'));
+    };
 
     window.viewPDF = function(link) {
         document.getElementById('pdfViewer').src = link;
@@ -134,8 +144,7 @@ document.addEventListener('DOMContentLoaded', function() {
             body: JSON.stringify({ url })
         })
         .then(response => response.json())
-        .then(data => {
-            Swal.fire('Resumo da RN', data.summary || 'Nenhum resumo encontrado.', 'info');
-        }).catch(() => Swal.fire('Erro', 'Erro ao buscar resumo da RN.', 'error'));
+        .then(data => Swal.fire('Resumo da RN', data.summary || 'Nenhum resumo encontrado.', 'info'))
+        .catch(() => Swal.fire('Erro', 'Erro ao buscar resumo da RN.', 'error'));
     };
 });
