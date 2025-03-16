@@ -35,7 +35,6 @@ def carregar_planilha(sheet_name):
 tabela_portes = carregar_planilha('TABELA COM PORTES')
 tabela_portes_valores = carregar_planilha('PORTES CBHPM')
 
-
 # Buscar e salvar Rol Vigente da ANS
 def fetch_rol_vigente():
     url = 'https://www.gov.br/ans/pt-br/acesso-a-informacao/participacao-da-sociedade/atualizacao-do-rol-de-procedimentos'
