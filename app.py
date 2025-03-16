@@ -7,6 +7,10 @@ import re
 from urllib.parse import urljoin
 from functools import lru_cache
 
+print("Caminho atual do script:", os.path.abspath(__file__))
+print("Conteúdo da pasta dados:", os.listdir(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'dados')))
+
+
 app = Flask(__name__)
 
 # Caminho absoluto, usando o diretório atual do script
